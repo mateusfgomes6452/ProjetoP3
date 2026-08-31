@@ -1,0 +1,4 @@
+id;tipo;nome;email;cpf;senha;ativo
+1;Administrador;Jackson-Raniel;jacksonmepassaporfavor@loja.com;000.000.000-00;obrigadojackson;true
+2;Funcionario;Funcionário Padrão;funcpad@loja.com;111.111.111-78;123456;true
+3;Cliente;Cliente Fiel;fiel@loja.com;333.333.333-33;123456;true

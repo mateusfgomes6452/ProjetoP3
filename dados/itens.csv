@@ -1,0 +1,3 @@
+id;nome;descricao;taxaDiaria;estadoConservacao;valorReposicao;status;ativo;idCategoria;idFornecedor
+1;Cafeteira;de fazer café;10.0;NOVO;5.0;DISPONIVEL;true;0;0
+2;Cafeteira de catiguria;a mesma coisa de uma sem categoria;50.0;NOVO;5.0;DISPONIVEL;true;1;0

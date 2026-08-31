@@ -1,0 +1,2 @@
+IdContrato,Cliente,Item,DataRetirada,DataPrevista,Status,ValorTotal,Multa
+1;Cliente Fiel;Cafeteira de catiguria;2026-06-02;2026-07-01;ATIVO;1450.0;0.0
