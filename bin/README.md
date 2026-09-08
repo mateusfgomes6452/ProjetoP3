@@ -86,12 +86,6 @@
 
 * Caso novas atividades sejam atribuídas, esta seção será atualizada.
 
-## João Henrique
- ### Cruds
- * CRUD de Itens
- ### Regra de negócio
- * RN05 - Integridade
-
 
 </content>
 
