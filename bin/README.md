@@ -93,6 +93,8 @@
 
 Para manter o histórico do projeto organizado e facilitar o acompanhamento da participação de todos os integrantes, a equipe adotará uma convenção para as mensagens de commit.
 
+## Arthur Dias
+
 ## Evite mensagens genéricas
 
 ```bash
