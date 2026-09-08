@@ -115,6 +115,22 @@
 
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <!-- Gera o .jar executável, com Main-Class no manifest.
+                 Não usamos shade/assembly porque o projeto não tem
+                 nenhuma dependência de runtime (só JUnit em escopo test). -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
