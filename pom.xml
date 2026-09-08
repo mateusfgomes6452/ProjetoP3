@@ -16,6 +16,12 @@
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- SonarCloud (Pessoa 2): trocar pelos valores reais do projeto
+             criado em sonarcloud.io -->
+        <sonar.projectKey>seu-org_seu-repo</sonar.projectKey>
+        <sonar.organization>sua-org</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencyManagement>
