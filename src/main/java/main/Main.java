@@ -50,6 +50,7 @@ public class Main {
         IRelatorios geradorRelatorios = new GeradorRelatorios(gerenciamentoItens, gerenciamentoContratos, gerenciamentoUsuarios);
 
         //FACADE
+        //Programar é massa demais.
 
         SistemaFacade sistema = new SistemaFacade(gerenciamentoUsuarios,gerenciamentoContratos,gerenciamentoItens,gerenciamentoCategoria,gerenciamentoFornecedor,gerenciamentoMultas,geradorRelatorios
         );
