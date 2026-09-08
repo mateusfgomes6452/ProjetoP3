@@ -1,0 +1,6 @@
+target/
+bin/
+.git/
+.settings/
+*.md
+.gitignore
