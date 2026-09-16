@@ -1,0 +1,353 @@
+name: Sync Sonar Issues
+
+on:
+  workflow_run:
+    workflows: ["SonarQube"]
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: sync-sonar-issues
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sonar to GitHub Issues
+    runs-on: ubuntu-latest
+
+    # Só executa se o workflow oficial do Sonar terminar com sucesso
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Criar label sonar
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create sonar \
+            --repo "${{ github.repository }}" \
+            --description "Problema identificado automaticamente pelo Sonar" \
+            --color "1D76DB" \
+            --force
+
+      - name: Aguardar análise aparecer no Sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: mateusfgomes6452_ProjetoP3
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          python3 <<'PY'
+          import json
+          import os
+          import time
+          import urllib.parse
+          import urllib.request
+
+          token = os.environ["SONAR_TOKEN"]
+          project = os.environ["SONAR_PROJECT_KEY"]
+          expected_sha = os.environ["EXPECTED_SHA"].lower()
+
+          def sonar_get(url):
+              req = urllib.request.Request(
+                  url,
+                  headers={"Authorization": f"Bearer {token}"}
+              )
+              with urllib.request.urlopen(req) as response:
+                  return json.load(response)
+
+          url = (
+              "https://sonarcloud.io/api/project_analyses/search?"
+              + urllib.parse.urlencode({
+                  "project": project,
+                  "ps": 1
+              })
+          )
+
+          for tentativa in range(36):
+              data = sonar_get(url)
+              analyses = data.get("analyses", [])
+
+              if analyses:
+                  revision = analyses[0].get("revision", "").lower()
+
+                  print(f"Última revisão no Sonar: {revision}")
+                  print(f"Revisão esperada:        {expected_sha}")
+
+                  if revision == expected_sha:
+                      print("Análise correta encontrada no Sonar.")
+                      break
+
+              print("Aguardando o Sonar finalizar o processamento...")
+              time.sleep(5)
+
+          else:
+              raise SystemExit(
+                  "A análise deste commit não apareceu no Sonar dentro do tempo esperado."
+              )
+
+          PY
+
+      - name: Sincronizar Issues
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_PROJECT_KEY: mateusfgomes6452_ProjetoP3
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          python3 <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          import urllib.parse
+          import urllib.request
+
+          token = os.environ["SONAR_TOKEN"]
+          project = os.environ["SONAR_PROJECT_KEY"]
+          repository = os.environ["GH_REPOSITORY"]
+
+          def sonar_get(url):
+              req = urllib.request.Request(
+                  url,
+                  headers={"Authorization": f"Bearer {token}"}
+              )
+
+              with urllib.request.urlopen(req) as response:
+                  return json.load(response)
+
+          # =====================================================
+          # 1. BUSCAR ISSUES DO SONAR
+          # =====================================================
+
+          sonar_issues = {}
+          pagina = 1
+
+          while True:
+              parametros = urllib.parse.urlencode({
+                  "componentKeys": project,
+                  "branch": "main",
+                  "p": pagina,
+                  "ps": 500
+              })
+
+              data = sonar_get(
+                  "https://sonarcloud.io/api/issues/search?"
+                  + parametros
+              )
+
+              for issue in data.get("issues", []):
+                  status = (
+                      issue.get("issueStatus")
+                      or issue.get("status")
+                      or ""
+                  ).upper()
+
+                  # Issues que ainda devem continuar abertas
+                  if status in {
+                      "OPEN",
+                      "ACCEPTED",
+                      "CONFIRMED",
+                      "REOPENED"
+                  }:
+                      sonar_issues[issue["key"]] = issue
+
+              paging = data.get("paging", {})
+
+              total = paging.get(
+                  "total",
+                  data.get("total", 0)
+              )
+
+              page_size = paging.get(
+                  "pageSize",
+                  data.get("ps", 500)
+              )
+
+              if pagina * page_size >= total:
+                  break
+
+              pagina += 1
+
+          print(
+              f"Issues ativas encontradas no Sonar: "
+              f"{len(sonar_issues)}"
+          )
+
+          # =====================================================
+          # 2. BUSCAR ISSUES SONAR JÁ EXISTENTES NO GITHUB
+          # =====================================================
+
+          resultado = subprocess.run(
+              [
+                  "gh",
+                  "issue",
+                  "list",
+                  "--repo",
+                  repository,
+                  "--state",
+                  "all",
+                  "--label",
+                  "sonar",
+                  "--limit",
+                  "1000",
+                  "--json",
+                  "number,state,body,title"
+              ],
+              capture_output=True,
+              text=True,
+              check=True
+          )
+
+          lista_github = json.loads(resultado.stdout)
+
+          github_issues = {}
+
+          marcador = re.compile(
+              r"<!-- sonar-key:(.*?) -->"
+          )
+
+          for issue in lista_github:
+              body = issue.get("body") or ""
+              match = marcador.search(body)
+
+              if match:
+                  github_issues[match.group(1)] = issue
+
+          # =====================================================
+          # 3. CRIAR OU REABRIR ISSUES
+          # =====================================================
+
+          for key, issue in sonar_issues.items():
+
+              if key in github_issues:
+
+                  github_issue = github_issues[key]
+
+                  if github_issue["state"].upper() == "CLOSED":
+                      subprocess.run(
+                          [
+                              "gh",
+                              "issue",
+                              "reopen",
+                              str(github_issue["number"]),
+                              "--repo",
+                              repository
+                          ],
+                          check=True
+                      )
+
+                      subprocess.run(
+                          [
+                              "gh",
+                              "issue",
+                              "comment",
+                              str(github_issue["number"]),
+                              "--repo",
+                              repository,
+                              "--body",
+                              "O Sonar voltou a identificar este problema."
+                          ],
+                          check=True
+                      )
+
+                  continue
+
+              mensagem = issue.get(
+                  "message",
+                  "Problema identificado pelo Sonar"
+              )
+
+              componente = issue.get("component", "")
+
+              if ":" in componente:
+                  arquivo = componente.split(":", 1)[1]
+              else:
+                  arquivo = componente
+
+              linha = issue.get("line", "Não informada")
+              regra = issue.get("rule", "Não informada")
+
+              severidade = (
+                  issue.get("severity")
+                  or issue.get("impactSeverity")
+                  or "Não informada"
+              )
+
+              titulo = f"[Sonar] {mensagem}"
+
+              if len(titulo) > 220:
+                  titulo = titulo[:217] + "..."
+
+              body = f"""Problema identificado automaticamente pelo Sonar.
+
+          Arquivo: `{arquivo}`
+          Linha: `{linha}`
+          Regra: `{regra}`
+          Severidade: `{severidade}`
+
+          Problema:
+
+          {mensagem}
+
+          Sonar Issue Key: `{key}`
+
+          <!-- sonar-key:{key} -->
+          """
+
+              subprocess.run(
+                  [
+                      "gh",
+                      "issue",
+                      "create",
+                      "--repo",
+                      repository,
+                      "--title",
+                      titulo,
+                      "--body",
+                      body,
+                      "--label",
+                      "sonar"
+                  ],
+                  check=True
+              )
+
+              print(f"GitHub Issue criada: {key}")
+
+          # =====================================================
+          # 4. FECHAR ISSUES CORRIGIDAS
+          # =====================================================
+
+          for key, issue in github_issues.items():
+
+              if (
+                  key not in sonar_issues
+                  and issue["state"].upper() == "OPEN"
+              ):
+
+                  subprocess.run(
+                      [
+                          "gh",
+                          "issue",
+                          "close",
+                          str(issue["number"]),
+                          "--repo",
+                          repository,
+                          "--comment",
+                          (
+                              "O Sonar não identificou mais este "
+                              "problema na análise mais recente."
+                          )
+                      ],
+                      check=True
+                  )
+
+                  print(
+                      f"Issue #{issue['number']} fechada."
+                  )
+
+          PY
