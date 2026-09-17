@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+  # Permite executar este workflow manualmente.
+  # Útil para distribuir as Issues que já estão no Backlog.
+  workflow_dispatch:
+
 permissions:
   contents: read
   issues: write
@@ -21,10 +25,16 @@ jobs:
     name: Sonar to GitHub Issues
     runs-on: ubuntu-latest
 
-    # Só executa se o workflow oficial do Sonar terminar com sucesso
-    if: github.event.workflow_run.conclusion == 'success'
+    # Executa automaticamente quando o SonarQube termina com sucesso
+    # ou manualmente através do botão "Run workflow".
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
 
     steps:
+      # =========================================================
+      # 1. CRIAR/GARANTIR A LABEL SONAR
+      # =========================================================
       - name: Criar label sonar
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,7 +45,11 @@ jobs:
             --color "1D76DB" \
             --force
 
+      # =========================================================
+      # 2. AGUARDAR A ANÁLISE CORRETA APARECER NO SONAR
+      # =========================================================
       - name: Aguardar análise aparecer no Sonar
+        if: github.event_name == 'workflow_run'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: mateusfgomes6452_ProjetoP3
@@ -87,11 +101,14 @@ jobs:
 
           else:
               raise SystemExit(
-                  "A análise deste commit não apareceu no Sonar dentro do tempo esperado."
+                  "A análise deste commit não apareceu "
+                  "no Sonar dentro do tempo esperado."
               )
-
           PY
 
+      # =========================================================
+      # 3. SINCRONIZAR SONAR COM GITHUB ISSUES
+      # =========================================================
       - name: Sincronizar Issues
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -116,14 +133,12 @@ jobs:
                   url,
                   headers={"Authorization": f"Bearer {token}"}
               )
-
               with urllib.request.urlopen(req) as response:
                   return json.load(response)
 
           # =====================================================
-          # 1. BUSCAR ISSUES DO SONAR
+          # 3.1 BUSCAR ISSUES DO SONAR
           # =====================================================
-
           sonar_issues = {}
           pagina = 1
 
@@ -147,7 +162,6 @@ jobs:
                       or ""
                   ).upper()
 
-                  # Issues que ainda devem continuar abertas
                   if status in {
                       "OPEN",
                       "ACCEPTED",
@@ -157,16 +171,8 @@ jobs:
                       sonar_issues[issue["key"]] = issue
 
               paging = data.get("paging", {})
-
-              total = paging.get(
-                  "total",
-                  data.get("total", 0)
-              )
-
-              page_size = paging.get(
-                  "pageSize",
-                  data.get("ps", 500)
-              )
+              total = paging.get("total", data.get("total", 0))
+              page_size = paging.get("pageSize", data.get("ps", 500))
 
               if pagina * page_size >= total:
                   break
@@ -179,9 +185,8 @@ jobs:
           )
 
           # =====================================================
-          # 2. BUSCAR ISSUES SONAR JÁ EXISTENTES NO GITHUB
+          # 3.2 BUSCAR ISSUES SONAR JÁ EXISTENTES NO GITHUB
           # =====================================================
-
           resultado = subprocess.run(
               [
                   "gh",
@@ -204,12 +209,8 @@ jobs:
           )
 
           lista_github = json.loads(resultado.stdout)
-
           github_issues = {}
-
-          marcador = re.compile(
-              r"<!-- sonar-key:(.*?) -->"
-          )
+          marcador = re.compile(r"<!-- sonar-key:(.*?) -->")
 
           for issue in lista_github:
               body = issue.get("body") or ""
@@ -219,13 +220,11 @@ jobs:
                   github_issues[match.group(1)] = issue
 
           # =====================================================
-          # 3. CRIAR OU REABRIR ISSUES
+          # 3.3 CRIAR OU REABRIR ISSUES
           # =====================================================
-
           for key, issue in sonar_issues.items():
 
               if key in github_issues:
-
                   github_issue = github_issues[key]
 
                   if github_issue["state"].upper() == "CLOSED":
@@ -283,21 +282,24 @@ jobs:
               if len(titulo) > 220:
                   titulo = titulo[:217] + "..."
 
-              body = f"""Problema identificado automaticamente pelo Sonar.
-
-          Arquivo: `{arquivo}`
-          Linha: `{linha}`
-          Regra: `{regra}`
-          Severidade: `{severidade}`
-
-          Problema:
-
-          {mensagem}
-
-          Sonar Issue Key: `{key}`
-
-          <!-- sonar-key:{key} -->
-          """
+              # O body usa join em vez de string multilinha.
+              # Isso evita problemas de indentação do YAML.
+              body = "\n".join([
+                  "Problema identificado automaticamente pelo Sonar.",
+                  "",
+                  f"Arquivo: `{arquivo}`",
+                  f"Linha: `{linha}`",
+                  f"Regra: `{regra}`",
+                  f"Severidade: `{severidade}`",
+                  "",
+                  "Problema:",
+                  "",
+                  mensagem,
+                  "",
+                  f"Sonar Issue Key: `{key}`",
+                  "",
+                  f"<!-- sonar-key:{key} -->"
+              ])
 
               subprocess.run(
                   [
@@ -319,16 +321,14 @@ jobs:
               print(f"GitHub Issue criada: {key}")
 
           # =====================================================
-          # 4. FECHAR ISSUES CORRIGIDAS
+          # 3.4 FECHAR ISSUES CORRIGIDAS
           # =====================================================
-
           for key, issue in github_issues.items():
 
               if (
                   key not in sonar_issues
                   and issue["state"].upper() == "OPEN"
               ):
-
                   subprocess.run(
                       [
                           "gh",
@@ -346,8 +346,261 @@ jobs:
                       check=True
                   )
 
+                  print(f"Issue #{issue['number']} fechada.")
+          PY
+
+      # =========================================================
+      # 4. DISTRIBUIR ISSUES ENTRE A EQUIPE
+      #
+      # REGRAS:
+      #
+      # - só considera Issues com label sonar;
+      # - nunca redistribui uma Issue que já tem responsável;
+      # - Issues abertas e fechadas contam no histórico;
+      # - concluir uma Issue não reduz a carga histórica;
+      # - quem recebeu menos Issues no histórico recebe a próxima;
+      # - todos os cinco membros precisam estar aptos a receber.
+      # =========================================================
+      - name: Distribuir Issues entre a equipe
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          python3 <<'PY'
+          import json
+          import os
+          import subprocess
+
+          repository = os.environ["GH_REPOSITORY"]
+
+          # =====================================================
+          # EQUIPE FIXA
+          # =====================================================
+          team = [
+              "mateusfgomes6452",
+              "FabJMA",
+              "diasmarthur",
+              "raullteoss",
+              "MarceloOBarbosa"
+          ]
+
+          # =====================================================
+          # 4.1 VERIFICAR SE TODOS PODEM RECEBER ISSUES
+          # =====================================================
+          print("Verificando integrantes da equipe...")
+
+          ineligible = []
+
+          for user in team:
+              result = subprocess.run(
+                  [
+                      "gh",
+                      "api",
+                      f"repos/{repository}/assignees/{user}"
+                  ],
+                  capture_output=True,
+                  text=True
+              )
+
+              if result.returncode == 0:
+                  print(f"OK: {user}")
+
+              else:
                   print(
-                      f"Issue #{issue['number']} fechada."
+                      f"ERRO: {user} ainda não pode "
+                      f"receber Issues."
                   )
 
+                  ineligible.append(user)
+
+          # Se qualquer membro ainda não puder receber Issues,
+          # interrompe a distribuição para não favorecer apenas
+          # quem já está habilitado.
+          if ineligible:
+              print("\nA distribuição foi interrompida.")
+
+              print(
+                  "Os seguintes integrantes ainda não "
+                  "podem receber Issues:"
+              )
+
+              for user in ineligible:
+                  print(f"- {user}")
+
+              raise SystemExit(
+                  "Todos os integrantes precisam estar "
+                  "aptos a receber Issues antes da distribuição."
+              )
+
+          # =====================================================
+          # 4.2 BUSCAR TODO O HISTÓRICO DE ISSUES SONAR
+          #
+          # state=all:
+          # inclui Issues abertas e fechadas.
+          # =====================================================
+          result = subprocess.run(
+              [
+                  "gh",
+                  "issue",
+                  "list",
+                  "--repo",
+                  repository,
+                  "--state",
+                  "all",
+                  "--label",
+                  "sonar",
+                  "--limit",
+                  "1000",
+                  "--json",
+                  "number,title,state,assignees"
+              ],
+              capture_output=True,
+              text=True,
+              check=True
+          )
+
+          issues = json.loads(result.stdout)
+
+          print(
+              f"\nTotal histórico de Issues Sonar: "
+              f"{len(issues)}"
+          )
+
+          # =====================================================
+          # 4.3 CONTAR QUANTAS ISSUES CADA PESSOA JÁ RECEBEU
+          # =====================================================
+          workload = {
+              user: 0
+              for user in team
+          }
+
+          # Permite comparar os usernames sem diferença
+          # entre letras maiúsculas e minúsculas.
+          team_lookup = {
+              user.lower(): user
+              for user in team
+          }
+
+          unassigned_open_issues = []
+
+          for issue in issues:
+              assignees = issue.get("assignees", [])
+
+              # -------------------------------------------------
+              # CONTAGEM HISTÓRICA
+              #
+              # Uma Issue continua contando mesmo se estiver
+              # fechada/Done.
+              # -------------------------------------------------
+              for assignee in assignees:
+                  login = (
+                      assignee
+                      .get("login", "")
+                      .lower()
+                  )
+
+                  if login in team_lookup:
+                      user = team_lookup[login]
+                      workload[user] += 1
+
+              # -------------------------------------------------
+              # SÓ DISTRIBUI SE:
+              #
+              # - a Issue estiver aberta;
+              # - a Issue não tiver nenhum assignee.
+              #
+              # Se já houver responsável, nunca redistribui.
+              # -------------------------------------------------
+              if (
+                  issue["state"].upper() == "OPEN"
+                  and len(assignees) == 0
+              ):
+                  unassigned_open_issues.append(issue)
+
+          # =====================================================
+          # 4.4 MOSTRAR A DISTRIBUIÇÃO ATUAL
+          # =====================================================
+          print("\nDistribuição histórica atual:")
+
+          for user in team:
+              print(
+                  f"{user}: "
+                  f"{workload[user]} "
+                  f"Issues recebidas"
+              )
+
+          print(
+              f"\nIssues abertas sem responsável: "
+              f"{len(unassigned_open_issues)}"
+          )
+
+          # =====================================================
+          # 4.5 ORDENAR ISSUES
+          #
+          # A ordenação pelo número deixa o comportamento
+          # previsível.
+          # =====================================================
+          unassigned_open_issues.sort(
+              key=lambda issue: issue["number"]
+          )
+
+          # =====================================================
+          # 4.6 DISTRIBUIR
+          # =====================================================
+          for issue in unassigned_open_issues:
+
+              # Escolhe quem recebeu menos Issues historicamente.
+              #
+              # Em caso de empate, segue a ordem definida
+              # na lista team.
+              chosen = min(
+                  team,
+                  key=lambda user: (
+                      workload[user],
+                      team.index(user)
+                  )
+              )
+
+              issue_number = issue["number"]
+
+              print(
+                  f"\nAtribuindo Issue "
+                  f"#{issue_number} para {chosen}..."
+              )
+
+              subprocess.run(
+                  [
+                      "gh",
+                      "issue",
+                      "edit",
+                      str(issue_number),
+                      "--repo",
+                      repository,
+                      "--add-assignee",
+                      chosen
+                  ],
+                  check=True
+              )
+
+              # Aumenta imediatamente a carga histórica.
+              # Assim, a próxima Issue tende a ir para outro
+              # integrante.
+              workload[chosen] += 1
+
+              print(
+                  f"Issue #{issue_number} "
+                  f"atribuída a {chosen}."
+              )
+
+          # =====================================================
+          # 4.7 RESULTADO FINAL
+          # =====================================================
+          print("\nDistribuição histórica final:")
+
+          for user in team:
+              print(
+                  f"{user}: "
+                  f"{workload[user]} "
+                  f"Issues recebidas"
+              )
           PY
