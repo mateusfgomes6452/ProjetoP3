@@ -81,12 +81,10 @@ public class MenuContratos {
 
         Usuario usuario = sistema.buscarUsuario(idCliente);
 
-        if (!(usuario instanceof Cliente)) {
+        if (!(usuario instanceof Cliente cliente)) {
             System.out.println("Cliente não encontrado");
             
         } else{
-
-            Cliente cliente = (Cliente) usuario;
 
             if (sistema.clientePossuiMultaPendente(cliente.getId())) {
                 System.out.println("Cliente possui multa pendente e não pode realizar novos aluguéis");
