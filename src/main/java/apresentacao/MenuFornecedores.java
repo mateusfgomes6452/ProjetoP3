@@ -6,6 +6,7 @@ import java.util.Scanner;
 import entidades.Fornecedor;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuFornecedores {
 
     private SistemaFacade sistema;
