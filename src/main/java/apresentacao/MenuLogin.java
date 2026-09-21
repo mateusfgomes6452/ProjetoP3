@@ -68,17 +68,17 @@ public class MenuLogin {
  
             System.out.println("\nBem-vindo(a), " + usuario.getNome() + "!");
     
-            if (usuario instanceof Cliente) {
+            if (usuario instanceof Cliente cliente) {
     
-                new MenuCliente(sistema, (Cliente) usuario, scanner).exibir();
+                new MenuCliente(sistema, cliente, scanner).exibir();
     
-            } else if (usuario instanceof Funcionario) {
+            } else if (usuario instanceof Funcionario funcionario) {
     
-                new MenuPrincipalFuncionario(sistema, (Funcionario) usuario, scanner).exibir();
+                new MenuPrincipalFuncionario(sistema, funcionario, scanner).exibir();
     
-            } else if (usuario instanceof Administrador) {
+            } else if (usuario instanceof Administrador administrador) {
     
-                new MenuPrincipalAdministrador(sistema, (Administrador) usuario, scanner).exibir();
+                new MenuPrincipalAdministrador(sistema, administrador, scanner).exibir();
     
             }
         }
