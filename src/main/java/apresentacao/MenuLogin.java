@@ -73,13 +73,13 @@ public class MenuLogin {
     
                 new MenuCliente(sistema, cliente, scanner).exibir();
     
-            } else if (usuario instanceof Funcionario) {
+            } else if (usuario instanceof Funcionario funcionario) {
     
-                new MenuPrincipalFuncionario(sistema, (Funcionario) usuario, scanner).exibir();
+                new MenuPrincipalFuncionario(sistema, funcionario, scanner).exibir();
     
-            } else if (usuario instanceof Administrador) {
+            } else if (usuario instanceof Administrador administrador) {
     
-                new MenuPrincipalAdministrador(sistema, (Administrador) usuario, scanner).exibir();
+                new MenuPrincipalAdministrador(sistema, administrador, scanner).exibir();
     
             }
         }
