@@ -13,6 +13,7 @@ public class MenuItens {
 
     private SistemaFacade sistema;
     private Scanner scanner;
+    private static final String ID_DO_ITEM = "ID do item: ";
 
     public MenuItens(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
@@ -169,7 +170,7 @@ public class MenuItens {
 
     public void buscarItem() {
 
-        System.out.print("ID do item: ");
+        System.out.print(ID_DO_ITEM);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Item item = sistema.buscarItem(id);
@@ -215,7 +216,7 @@ public class MenuItens {
 
     public void atualizarItem() {
 
-        System.out.print("ID do item: ");
+        System.out.print(ID_DO_ITEM);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Item item = sistema.buscarItem(id);
@@ -264,7 +265,7 @@ public class MenuItens {
 
     private void desativarItem() {
 
-        System.out.print("ID do item: ");
+        System.out.print(ID_DO_ITEM);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         if (sistema.excluirItem(id)) {
