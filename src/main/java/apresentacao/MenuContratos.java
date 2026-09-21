@@ -16,6 +16,7 @@ public class MenuContratos {
 
     private SistemaFacade sistema;
     private Scanner scanner;
+    private static final String CONTRATO_N_ENCONTRADO = "Contrato não encontrado";
 
     public MenuContratos(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
@@ -156,7 +157,7 @@ public class MenuContratos {
         ContratoAluguel contrato = sistema.buscarContrato(id);
 
         if (contrato == null) {
-            System.out.println("Contrato não encontrado");
+            System.out.println(CONTRATO_N_ENCONTRADO);
         }else {
 
             exibirDetalhesContrato(contrato);
@@ -190,7 +191,7 @@ public class MenuContratos {
         ContratoAluguel contrato = sistema.buscarContrato(id);
 
         if (contrato == null) {
-            System.out.println("Contrato não encontrado");
+            System.out.println(CONTRATO_N_ENCONTRADO);
             
         } else{
 
@@ -246,7 +247,7 @@ public class MenuContratos {
         ContratoAluguel contrato = sistema.buscarContrato(id);
 
         if (contrato == null) {
-            System.out.println("Contrato não encontrado");
+            System.out.println(CONTRATO_N_ENCONTRADO);
         } else{
 
             if (!(contrato.getStatus().equals("FINALIZADO"))) {
