@@ -8,7 +8,7 @@ import entidades.Fornecedor;
 import entidades.Item;
 import facade.SistemaFacade;
 
-
+@SuppressWarnings("java:S106")
 public class MenuItens {
 
     private SistemaFacade sistema;
