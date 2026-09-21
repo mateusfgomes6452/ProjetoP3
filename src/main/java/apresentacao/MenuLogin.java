@@ -7,7 +7,8 @@ import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
- 
+
+@SuppressWarnings("java:S106")
 public class MenuLogin {
  
     private SistemaFacade sistema;
@@ -68,9 +69,9 @@ public class MenuLogin {
  
             System.out.println("\nBem-vindo(a), " + usuario.getNome() + "!");
     
-            if (usuario instanceof Cliente) {
+            if (usuario instanceof Cliente cliente) {
     
-                new MenuCliente(sistema, (Cliente) usuario, scanner).exibir();
+                new MenuCliente(sistema, cliente, scanner).exibir();
     
             } else if (usuario instanceof Funcionario) {
     
