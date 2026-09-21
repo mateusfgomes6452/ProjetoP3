@@ -87,7 +87,14 @@
                 <!-- Empacotamento -->
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.4.2</version>
+				    <version>3.4.2</version>
+				    <configuration>
+				        <archive>
+				            <manifest>
+				                <mainClass>main.Main</mainClass>
+				            </manifest>
+				        </archive>
+				    </configuration>
                 </plugin>
 
                 <!-- Instalação -->
