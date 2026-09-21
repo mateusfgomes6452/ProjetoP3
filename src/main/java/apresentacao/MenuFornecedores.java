@@ -9,6 +9,7 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuFornecedores {
 
+    private static final String MENSAGEM_ID_FORNECEDOR = "ID do fornecedor: ";
     private SistemaFacade sistema;
     private Scanner scanner;
 
@@ -96,7 +97,7 @@ public class MenuFornecedores {
 
     public void buscarFornecedor() {
 
-        System.out.print("ID do fornecedor: ");
+        System.out.print(MENSAGEM_ID_FORNECEDOR);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Fornecedor fornecedor = sistema.buscarFornecedor(id);
@@ -130,7 +131,7 @@ public class MenuFornecedores {
 
     public void atualizarFornecedor() {
 
-        System.out.print("ID do fornecedor: ");
+        System.out.print(MENSAGEM_ID_FORNECEDOR);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Fornecedor fornecedor = sistema.buscarFornecedor(id);
@@ -164,7 +165,7 @@ public class MenuFornecedores {
 
     private void desativarFornecedor() {
 
-        System.out.print("ID do fornecedor: ");
+        System.out.print(MENSAGEM_ID_FORNECEDOR);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Fornecedor fornecedor = sistema.buscarFornecedor(id);
