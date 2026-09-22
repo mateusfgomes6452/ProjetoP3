@@ -63,25 +63,23 @@ public class ValidaEntrada {
     
     public static String lerCpf(Scanner scanner) {
     	Pattern padraoCpf = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}");
-    	
-    	boolean continuar = true;
-    	
-    	while (continuar) {
-    		String entrada = scanner.nextLine().trim();
-    		
-    		if (entrada.isEmpty()) {
-                return "";
-            }
-    		
-    		Matcher matcher = padraoCpf.matcher(entrada);
-    		
-    		if (matcher.matches()) {
-    			return entrada;
-    		}
-    		System.out.print("Formato inválido. Use 000.000.000-00: ");
+
+    	while (true) {
+        String entrada = scanner.nextLine().trim();
+
+        	if (entrada.isEmpty()) {
+            	return "";
+        	}
+
+        	Matcher matcher = padraoCpf.matcher(entrada);
+
+        	if (matcher.matches()) {
+            	return entrada;
+        	}
+
+        	System.out.print("Formato inválido. Use 000.000.000-00: ");
     	}
-    	return "";
-    }
+	}
     
     public static String lerCnpj(Scanner scanner) {
     	Pattern padraoCnpjAntigo = Pattern.compile("[0-9]{2}\\.[0-9]{3}\\.[0-9]{3}/[0-9]{4}\\-[0-9]{2}");
