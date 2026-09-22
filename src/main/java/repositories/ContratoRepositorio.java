@@ -57,9 +57,7 @@ public class ContratoRepositorio implements IContratoRepositorio {
                 Usuario usuario = usuarioRepositorio.buscarPorId(idCliente);
                 Item item = itemRepositorio.buscarPorId(idItem);
 
-                if (usuario instanceof Cliente && item != null) {
-                    
-                    Cliente cliente = (Cliente) usuario;
+                if (usuario instanceof Cliente cliente&& item != null) {
 
                     ContratoAluguel contrato = new ContratoAluguel(id, cliente, item, dataRetirada, dataPrevista, valorTotal);
 
