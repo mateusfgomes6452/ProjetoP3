@@ -13,6 +13,7 @@ import facade.SistemaFacade;
 public class MenuUsuarios {
 
     private static final String CPF_B = "CPF: ";
+    private static final String EMAIL_B = "Email: ";
     private SistemaFacade sistema;
     private Scanner scanner;
     private boolean acessoTotal;
@@ -108,7 +109,7 @@ public class MenuUsuarios {
         System.out.print("Nome: ");
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(EMAIL_B);
         String email = ValidaEntrada.lerEmail(scanner);
 
         System.out.print(CPF_B);
@@ -135,7 +136,7 @@ public class MenuUsuarios {
         System.out.print("Nome: ");
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(EMAIL_B);
         String email = ValidaEntrada.lerEmail(scanner);
 
         System.out.print(CPF_B);
@@ -162,7 +163,7 @@ public class MenuUsuarios {
         System.out.print("Nome: ");
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(EMAIL_B);
         String email = ValidaEntrada.lerEmail(scanner);
 
         System.out.print(CPF_B);
