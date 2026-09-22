@@ -5,6 +5,7 @@ import java.util.Scanner;
 import entidades.Administrador;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuPrincipalAdministrador {
 
     private SistemaFacade sistema;
