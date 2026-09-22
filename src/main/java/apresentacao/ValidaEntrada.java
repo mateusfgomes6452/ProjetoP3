@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher; 
 
-
+@SuppressWarnings("java:S106")
 public class ValidaEntrada {
 
     public static int lerInteiro(Scanner scanner) {
