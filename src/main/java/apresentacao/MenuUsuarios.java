@@ -14,6 +14,7 @@ public class MenuUsuarios {
 
     private static final String CPF_B = "CPF: ";
     private static final String EMAIL_B = "Email: ";
+    private static final String NOME_B = "Nome: ";
     private SistemaFacade sistema;
     private Scanner scanner;
     private boolean acessoTotal;
@@ -106,7 +107,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print("NOME_B: ");
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
@@ -133,7 +134,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print("NOME_B: ");
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
@@ -160,7 +161,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print("NOME_B: ");
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
