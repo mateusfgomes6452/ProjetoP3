@@ -105,7 +105,8 @@ public class ValidaEntrada {
     
     public static String lerTelefone(Scanner scanner) {
     	Pattern padraoTelefoneCelular = Pattern.compile("\\(\\d{2}\\) 9 \\d{4}-\\d{4}");
-    	Pattern padraoTelefoneFixo = Pattern.compile("\\(\\d{2}\\) \\d{4}-\\d{4}");
+    	
+		Pattern padraoTelefoneFixo = Pattern.compile("\\(\\d{2}\\) \\d{4}-\\d{4}");
 
     	while (true) {
         	String entrada = scanner.nextLine().trim();
