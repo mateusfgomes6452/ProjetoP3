@@ -12,6 +12,7 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuUsuarios {
 
+    private static final String CPF_B = "CPF: ";
     private SistemaFacade sistema;
     private Scanner scanner;
     private boolean acessoTotal;
@@ -106,7 +107,7 @@ public class MenuUsuarios {
         System.out.print("Email: ");
         String email = ValidaEntrada.lerEmail(scanner);
 
-        System.out.print("CPF: ");
+        System.out.print(CPF_B);
         String cpf = ValidaEntrada.lerCpf(scanner);
 
         System.out.print("Senha: ");
@@ -133,7 +134,7 @@ public class MenuUsuarios {
         System.out.print("Email: ");
         String email = ValidaEntrada.lerEmail(scanner);
 
-        System.out.print("CPF: ");
+        System.out.print(CPF_B);
         String cpf = ValidaEntrada.lerCpf(scanner);
 
         System.out.print("Senha: ");
@@ -160,7 +161,7 @@ public class MenuUsuarios {
         System.out.print("Email: ");
         String email = ValidaEntrada.lerEmail(scanner);
 
-        System.out.print("CPF: ");
+        System.out.print(CPF_B);
         String cpf = ValidaEntrada.lerCpf(scanner);
 
         System.out.print("Senha: ");
