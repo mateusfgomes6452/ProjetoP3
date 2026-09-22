@@ -8,15 +8,13 @@ import java.util.regex.Matcher;
 public class ValidaEntrada {
 
     public static int lerInteiro(Scanner scanner) {
-		boolean continuar = true;
-        while (continuar) {
+        while (true) {
             try {
                 return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.print("Digite apenas números: ");
             }
         }
-		return -1;
     }
 
 	public static double lerDouble(Scanner scanner) {
@@ -32,15 +30,13 @@ public class ValidaEntrada {
 	}
 
     public static String lerData(Scanner scanner) {
-        boolean continuar = true;
-        while (continuar) {
+        while (true) {
             String entrada = scanner.nextLine().trim();
             if (entrada.matches("\\d{4}-\\d{2}-\\d{2}")) {
                 return entrada;
             }
             System.out.print("Formato inválido. Use AAAA-MM-DD: ");
         }
-        return "";
     }
     
     public static String lerEmail(Scanner scanner) {	
@@ -83,9 +79,8 @@ public class ValidaEntrada {
     	Pattern padraoCnpjAntigo = Pattern.compile("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}\\-\\d{2}");
     	Pattern padraoCnpjNovo = Pattern.compile("[A-Z 0-9]{2}\\.[A-Z 0-9]{3}\\.[A-Z 0-9]{3}/[A-Z 0-9]{4}\\-[A-Z 0-9]{2}");
     	
-    	boolean continuar = true;
     	
-    	while (continuar) {
+    	while (true) {
     		String entrada = scanner.nextLine().trim();
     		
     		if (entrada.isEmpty()) {
@@ -100,7 +95,6 @@ public class ValidaEntrada {
     		}
     		System.out.print("Formato inválido. Use 00.000.000/0000-00 ou XX.XXX.XXX/XXXX-XX: ");
     	}
-    	return "";
     }
     
     public static String lerTelefone(Scanner scanner) {
