@@ -9,7 +9,7 @@ public abstract class Usuario {
     private String senha;
     private boolean ativo;
 
-    public Usuario(int id, String nome, String email, String cpf, String senha) {
+    protected Usuario(int id, String nome, String email, String cpf, String senha) {
         this.id = id;
         this.nome = nome;
         this.email = email;
