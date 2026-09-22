@@ -44,9 +44,8 @@ public class ValidaEntrada {
     }
     
     public static String lerEmail(Scanner scanner) {	
-    	boolean continuar = true;
     	
-    	while (continuar) {
+    	while (true) {
     		String entrada = scanner.nextLine().trim();
     		
     		if (entrada.isEmpty()) {
