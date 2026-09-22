@@ -8,7 +8,8 @@ import facade.SistemaFacade;
 
 @SuppressWarnings("java:S106")
 public class MenuCategorias {
-
+	private String MensagemIdCategoria = "Id da Categoria: ";
+	
     private SistemaFacade sistema;
     private Scanner scanner;
 
@@ -90,7 +91,7 @@ public class MenuCategorias {
 
     public void buscarCategoria() {
 
-        System.out.print("ID da categoria: ");
+        System.out.print(MensagemIdCategoria);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
@@ -125,7 +126,7 @@ public class MenuCategorias {
 
     public void atualizarCategoria() {
 
-        System.out.print("ID da categoria: ");
+        System.out.print(MensagemIdCategoria);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
@@ -159,7 +160,7 @@ public class MenuCategorias {
 
     public void desativarCategoria() {
 
-        System.out.print("ID da categoria: ");
+        System.out.print(MensagemIdCategoria);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
