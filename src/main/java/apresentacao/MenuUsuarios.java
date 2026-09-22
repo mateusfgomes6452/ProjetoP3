@@ -9,6 +9,7 @@ import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuUsuarios {
 
     private SistemaFacade sistema;
