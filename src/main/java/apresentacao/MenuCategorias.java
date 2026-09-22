@@ -91,7 +91,7 @@ public class MenuCategorias {
 
     public void buscarCategoria() {
 
-        System.out.print(MensagemIdCategoria);
+        System.out.print(MENSAGEM_ID_CATEGORIA);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
@@ -126,7 +126,7 @@ public class MenuCategorias {
 
     public void atualizarCategoria() {
 
-        System.out.print(MensagemIdCategoria);
+        System.out.print(MENSAGEM_ID_CATEGORIA);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
@@ -160,7 +160,7 @@ public class MenuCategorias {
 
     public void desativarCategoria() {
 
-        System.out.print(MensagemIdCategoria);
+        System.out.print(MENSAGEM_ID_CATEGORIA);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
