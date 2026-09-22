@@ -8,7 +8,7 @@ import facade.SistemaFacade;
 
 @SuppressWarnings("java:S106")
 public class MenuCategorias {
-	private String MensagemIdCategoria = "Id da Categoria: ";
+	private static final String MENSAGEM_ID_CATEGORIA = "Id da categoria: ";
 	
     private SistemaFacade sistema;
     private Scanner scanner;
