@@ -19,17 +19,17 @@ public class ValidaEntrada {
 		return -1;
     }
 
-    public static double lerDouble(Scanner scanner) {
-        boolean continuar = true;
-        while (continuar) {
-            try {
-                return Double.parseDouble(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
-                System.out.print("Digite um valor numérico válido: ");
-            }
-        }
-        return -1;
-    }
+	public static double lerDouble(Scanner scanner) {
+
+    	while (true) {
+
+        	try {
+            	return Double.parseDouble(scanner.nextLine().trim());
+        	} catch (NumberFormatException e) {
+            	System.out.print("Digite um valor numérico válido: ");
+        	}
+    	}
+	}
 
     public static String lerData(Scanner scanner) {
         boolean continuar = true;
