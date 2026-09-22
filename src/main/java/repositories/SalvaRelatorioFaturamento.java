@@ -8,6 +8,7 @@ import java.util.List;
 
 import entidades.ContratoAluguel;
 
+@SuppressWarnings("java:S106")
 public class SalvaRelatorioFaturamento {
 
     public void salvar(List<ContratoAluguel> contratos,String dataInicial,String dataFinal) {
