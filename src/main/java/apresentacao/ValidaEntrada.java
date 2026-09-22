@@ -61,25 +61,23 @@ public class ValidaEntrada {
     
     public static String lerCpf(Scanner scanner) {
     	Pattern padraoCpf = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}");
-    	
-    	boolean continuar = true;
-    	
-    	while (continuar) {
-    		String entrada = scanner.nextLine().trim();
-    		
-    		if (entrada.isEmpty()) {
-                return "";
-            }
-    		
-    		Matcher matcher = padraoCpf.matcher(entrada);
-    		
-    		if (matcher.matches()) {
-    			return entrada;
-    		}
-    		System.out.print("Formato inválido. Use 000.000.000-00: ");
+
+    	while (true) {
+        String entrada = scanner.nextLine().trim();
+
+        	if (entrada.isEmpty()) {
+            	return "";
+        	}
+
+        	Matcher matcher = padraoCpf.matcher(entrada);
+
+        	if (matcher.matches()) {
+            	return entrada;
+        	}
+
+        	System.out.print("Formato inválido. Use 000.000.000-00: ");
     	}
-    	return "";
-    }
+	}
     
     public static String lerCnpj(Scanner scanner) {
     	Pattern padraoCnpjAntigo = Pattern.compile("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}\\-\\d{2}");
@@ -108,24 +106,22 @@ public class ValidaEntrada {
     public static String lerTelefone(Scanner scanner) {
     	Pattern padraoTelefoneCelular = Pattern.compile("\\([0-9]{2}\\) 9 [0-9]{4}\\-[0-9]{4}");
     	Pattern padraoTelefoneFixo = Pattern.compile("\\([0-9]{2}\\) [0-9]{4}\\-[0-9]{4}");
-    	
-    	boolean continuar = true;
-    	
-    	while (continuar) {
-    		String entrada = scanner.nextLine().trim();
-    		
-    		if (entrada.isEmpty()) {
-                return "";
-            }
-    		
-    		Matcher matcherCelular = padraoTelefoneCelular.matcher(entrada);
-    		Matcher matcherFixo = padraoTelefoneFixo.matcher(entrada);
-    		
-    		if (matcherCelular.matches() || matcherFixo.matches()) {
-    			return entrada;
-    		}
-    		System.out.print("Formato inválido. Use (DDD) 9 0000-0000 ou (DDD) 0000-0000: ");
+
+    	while (true) {
+        	String entrada = scanner.nextLine().trim();
+
+        	if (entrada.isEmpty()) {
+            	return "";
+        	}
+
+        	Matcher matcherCelular = padraoTelefoneCelular.matcher(entrada);
+        	Matcher matcherFixo = padraoTelefoneFixo.matcher(entrada);
+
+        	if (matcherCelular.matches() || matcherFixo.matches()) {
+            	return entrada;
+        	}
+
+        	System.out.print("Formato inválido. Use (DDD) 9 0000-0000 ou (DDD) 0000-0000: ");
     	}
-    	return "";
-    }
+	}
 }
