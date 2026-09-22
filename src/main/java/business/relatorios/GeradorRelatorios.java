@@ -15,6 +15,7 @@ import repositories.SalvaRelatorioHistoricoCliente;
 import repositories.SalvaRelatorioItensAlugados;
 import repositories.SalvaRelatorioItensDisponiveis;
 
+@SuppressWarnings("java:S106")
 public class GeradorRelatorios implements IRelatorios {
 
     private IGerenciamentoItens gerenciamentoItens;

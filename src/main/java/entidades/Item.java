@@ -1,7 +1,11 @@
 package entidades;
 
 public class Item {
-
+	
+	private static final String STATUS_DISPONIVEL = "DISPONIVEL";
+	private static final String STATUS_ALUGADO = "ALUGADO";
+	private static final String STATUS_MANUTENCAO = "MANUTENCAO";
+	
     private int id;
     private String nome;
     private String descricao;
@@ -25,7 +29,7 @@ public class Item {
         this.valorReposicao = valorReposicao;
         this.categoria = categoria;
         this.fornecedor = fornecedor;
-        this.status = "DISPONIVEL";
+        this.status = STATUS_DISPONIVEL;
         this.ativo = true;
     }
 
@@ -110,26 +114,26 @@ public class Item {
     }
 
     public boolean estaDisponivel() {
-    	return ativo && status.equals("DISPONIVEL");
+    	return ativo && status.equals(STATUS_DISPONIVEL);
     }
 
     public boolean estaAlugado() {
-        return status.equals("ALUGADO");
+        return status.equals(STATUS_ALUGADO);
     }
 
     public boolean estaEmManutencao() {
-        return status.equals("MANUTENCAO");
+        return status.equals(STATUS_MANUTENCAO);
     }
 
     public void alugar() {
-        this.status = "ALUGADO";
+        this.status = STATUS_ALUGADO;
     }
 
     public void devolver() {
-        this.status = "DISPONIVEL";
+        this.status = STATUS_DISPONIVEL;
     }
 
     public void enviarParaManutencao() {
-        this.status = "MANUTENCAO";
+        this.status = STATUS_MANUTENCAO;
     }
 }
