@@ -14,6 +14,9 @@ public class MenuUsuarios {
 
     private static final String CPF_B = "CPF: ";
     private static final String EMAIL_B = "Email: ";
+    private static final String NOME_B = "Nome: ";
+    private static final String ERRO_CADASTRO = "Erro: CPF ou e-mail já cadastrado";
+    private static final String ID_USUARIO_B = "ID do usuário: ";
     private SistemaFacade sistema;
     private Scanner scanner;
     private boolean acessoTotal;
@@ -106,7 +109,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print("NOME_B: ");
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
@@ -123,7 +126,7 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(cliente)) {
             System.out.println("Cliente cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(ERRO_CADASTRO);
         }
     }
 
@@ -133,7 +136,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print("NOME_B: ");
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
@@ -150,7 +153,7 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(funcionario)) {
             System.out.println("Funcionário cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(ERRO_CADASTRO);
         }
     }
 
@@ -160,7 +163,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print("NOME_B: ");
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
@@ -177,13 +180,13 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(administrador)) {
             System.out.println("Administrador cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(ERRO_CADASTRO);
         }
     }
 
     public void buscarUsuario() {
 
-        System.out.print("ID do usuário: ");
+        System.out.print(ID_USUARIO_B);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Usuario usuario = sistema.buscarUsuario(id);
@@ -224,7 +227,7 @@ public class MenuUsuarios {
 
     public void atualizarUsuario() {
 
-        System.out.print("ID do usuário: ");
+        System.out.print(ID_USUARIO_B);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Usuario usuario = sistema.buscarUsuario(id);
@@ -258,7 +261,7 @@ public class MenuUsuarios {
 
     public void desativarUsuario() {
 
-        System.out.print("ID do usuário: ");
+        System.out.print(ID_USUARIO_B);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         if (sistema.desativaUsuario(id)) {
