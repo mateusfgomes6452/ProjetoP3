@@ -62,7 +62,7 @@ public class ValidaEntrada {
     }
     
     public static String lerCpf(Scanner scanner) {
-    	Pattern padraoCpf = Pattern.compile("[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\-[0-9]{2}");
+    	Pattern padraoCpf = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}");
     	
     	boolean continuar = true;
     	
