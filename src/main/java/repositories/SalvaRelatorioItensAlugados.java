@@ -28,7 +28,7 @@ public class SalvaRelatorioItensAlugados {
 
             escritor.newLine();
 
-            LocalDate hoje = LocalDate.now();
+            LocalDate hoje = LocalDate.now(java.time.ZoneId.of("America/Recife"));
 
             for (ContratoAluguel contrato : contratos) {
 
