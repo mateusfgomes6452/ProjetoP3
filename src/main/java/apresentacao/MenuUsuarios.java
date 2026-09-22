@@ -13,6 +13,7 @@ import facade.SistemaFacade;
 public class MenuUsuarios {
 
     private static final String CPF_B = "CPF: ";
+    private static final String EMAIL_B = "Email: ";
     private SistemaFacade sistema;
     private Scanner scanner;
     private boolean acessoTotal;
@@ -28,71 +29,75 @@ public class MenuUsuarios {
         int opcao;
 
         do {
-
-            System.out.println("\n===== GERENCIAR USUÁRIOS =====");
-            System.out.println("1 - Cadastrar Cliente");
-
-            if (acessoTotal) {
-                System.out.println("2 - Cadastrar Funcionário");
-                System.out.println("3 - Cadastrar Administrador");
-            }
-
-            System.out.println("4 - Buscar Usuário por ID");
-            System.out.println("5 - Listar todos os Usuários");
-
-            if (acessoTotal) {
-                System.out.println("6 - Atualizar Usuário");
-                System.out.println("7 - Desativar Usuário");
-            }
-
-            System.out.println("0 - Voltar");
-            System.out.print("Opção: ");
-
+            imprimirMenu();
             opcao = ValidaEntrada.lerInteiro(scanner);
-
-            switch (opcao) {
-
-                case 1:
-                    cadastrarCliente();
-                    break;
-
-                case 2:
-                    if (acessoTotal) cadastrarFuncionario();
-                    else System.out.println("Acesso negado.");
-                    break;
-
-                case 3:
-                    if (acessoTotal) cadastrarAdministrador();
-                    else System.out.println("Acesso negado.");
-                    break;
-
-                case 4:
-                    buscarUsuario();
-                    break;
-
-                case 5:
-                    listarUsuarios();
-                    break;
-
-                case 6:
-                    if (acessoTotal) atualizarUsuario();
-                    else System.out.println("Acesso negado");
-                    break;
-
-                case 7:
-                    if (acessoTotal) desativarUsuario();
-                    else System.out.println("Acesso negado");
-                    break;
-
-                case 0:
-                    System.out.println("Retornando...");
-                    break;
-
-                default:
-                    System.out.println("Opção inválida");
-            }
-
+            processarOpcao(opcao);
         } while (opcao != 0);
+    }
+    
+    public void imprimirMenu() {
+    	System.out.println("\n===== GERENCIAR USUÁRIOS =====");
+        System.out.println("1 - Cadastrar Cliente");
+
+        if (acessoTotal) {
+            System.out.println("2 - Cadastrar Funcionário");
+            System.out.println("3 - Cadastrar Administrador");
+        }
+
+        System.out.println("4 - Buscar Usuário por ID");
+        System.out.println("5 - Listar todos os Usuários");
+
+        if (acessoTotal) {
+            System.out.println("6 - Atualizar Usuário");
+            System.out.println("7 - Desativar Usuário");
+        }
+
+        System.out.println("0 - Voltar");
+        System.out.print("Opção: ");
+    }
+    
+    public void processarOpcao(int opcao) {
+    	switch (opcao) {
+
+        case 1:
+            cadastrarCliente();
+            break;
+
+        case 2:
+            if (acessoTotal) cadastrarFuncionario();
+            else System.out.println("Acesso negado.");
+            break;
+
+        case 3:
+            if (acessoTotal) cadastrarAdministrador();
+            else System.out.println("Acesso negado.");
+            break;
+
+        case 4:
+            buscarUsuario();
+            break;
+
+        case 5:
+            listarUsuarios();
+            break;
+
+        case 6:
+            if (acessoTotal) atualizarUsuario();
+            else System.out.println("Acesso negado");
+            break;
+
+        case 7:
+            if (acessoTotal) desativarUsuario();
+            else System.out.println("Acesso negado");
+            break;
+
+        case 0:
+            System.out.println("Retornando...");
+            break;
+
+        default:
+            System.out.println("Opção inválida");
+    }
     }
 
     public void cadastrarCliente() {
@@ -104,7 +109,7 @@ public class MenuUsuarios {
         System.out.print("Nome: ");
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(EMAIL_B);
         String email = ValidaEntrada.lerEmail(scanner);
 
         System.out.print(CPF_B);
@@ -131,7 +136,7 @@ public class MenuUsuarios {
         System.out.print("Nome: ");
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(EMAIL_B);
         String email = ValidaEntrada.lerEmail(scanner);
 
         System.out.print(CPF_B);
@@ -158,7 +163,7 @@ public class MenuUsuarios {
         System.out.print("Nome: ");
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(EMAIL_B);
         String email = ValidaEntrada.lerEmail(scanner);
 
         System.out.print(CPF_B);
