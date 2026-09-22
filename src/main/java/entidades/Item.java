@@ -110,10 +110,7 @@ public class Item {
     }
 
     public boolean estaDisponivel() {
-        if (ativo && status.equals("DISPONIVEL")){
-            return true;
-        }
-        return false;
+    	return ativo && status.equals("DISPONIVEL");
     }
 
     public boolean estaAlugado() {

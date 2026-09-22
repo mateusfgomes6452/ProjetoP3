@@ -6,6 +6,7 @@ import java.util.Scanner;
 import entidades.Multa;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuMultas {
 
     private SistemaFacade sistema;
@@ -99,7 +100,7 @@ public class MenuMultas {
             System.out.print("Valor (R$): ");
             double valor = ValidaEntrada.lerDouble(scanner);
 
-            String hoje = java.time.LocalDate.now().toString();
+            String hoje = java.time.LocalDate.now(java.time.ZoneId.of("America/Recife")).toString();
 
             int id = sistema.gerarProximoIdMulta();
 
