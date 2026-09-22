@@ -57,11 +57,10 @@ public class ValidaEntrada {
     		}
     		System.out.print("Email inválido. O email cadastrado deve ser o próprio da loja (@loja.com): ");
     	}
-    	return "";
     }
     
     public static String lerCpf(Scanner scanner) {
-    	Pattern padraoCpf = Pattern.compile("[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\-[0-9]{2}");
+    	Pattern padraoCpf = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}");
     	
     	boolean continuar = true;
     	
@@ -83,7 +82,7 @@ public class ValidaEntrada {
     }
     
     public static String lerCnpj(Scanner scanner) {
-    	Pattern padraoCnpjAntigo = Pattern.compile("[0-9]{2}\\.[0-9]{3}\\.[0-9]{3}/[0-9]{4}\\-[0-9]{2}");
+    	Pattern padraoCnpjAntigo = Pattern.compile("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}\\-\\d{2}");
     	Pattern padraoCnpjNovo = Pattern.compile("[A-Z 0-9]{2}\\.[A-Z 0-9]{3}\\.[A-Z 0-9]{3}/[A-Z 0-9]{4}\\-[A-Z 0-9]{2}");
     	
     	boolean continuar = true;
