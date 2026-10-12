@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="850.0" style="-fx-background-color: #F9FAAF;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <VBox alignment="CENTER" prefHeight="700.0" prefWidth="294.0" spacing="10.0" style="-fx-background-color: #55ACD4;" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="TOP_LEFT" maxWidth="250.0" style="-fx-text-fill: #FFFFFF;" text="Usuários">
+               <font>
+                  <Font name="Monospaced Regular" size="16.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutX="32.0" layoutY="352.0" maxWidth="250.0" style="-fx-text-fill: #FFFFFF;" text="Itens">
+               <font>
+                  <Font name="Monospaced Regular" size="16.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutX="32.0" layoutY="365.0" maxWidth="250.0" style="-fx-text-fill: #FFFFFF;" text="Categorias">
+               <font>
+                  <Font name="Monospaced Regular" size="16.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutX="32.0" layoutY="379.0" maxWidth="250.0" style="-fx-text-fill: #FFFFFF;" text="Fornecedores">
+               <font>
+                  <Font name="Monospaced Regular" size="16.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutX="32.0" layoutY="392.0" maxWidth="250.0" style="-fx-text-fill: #FFFFFF;" text="Contratos e aluguéis">
+               <font>
+                  <Font name="Monospaced Regular" size="16.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutX="32.0" layoutY="404.0" maxWidth="250.0" style="-fx-text-fill: #FFFFFF;" text="Multas">
+               <font>
+                  <Font name="Monospaced Regular" size="16.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutX="32.0" layoutY="418.0" maxWidth="250.0" style="-fx-text-fill: #FFFFFF;" text="Relatórios">
+               <font>
+                  <Font name="Monospaced Regular" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <Label opacity="0.49" text="Selecione uma das opções ao lado" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Monospaced Regular" size="24.0" />
+         </font>
+      </Label>
+   </center>
+</BorderPane>
