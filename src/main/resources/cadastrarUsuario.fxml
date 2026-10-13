@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="CENTER" layoutX="30.0" layoutY="250.0" maxWidth="500.0" text="Preencha os campos abaixo" textAlignment="CENTER">
+         <font>
+            <Font name="Monospaced Regular" size="22.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="80.0" />
+         </VBox.margin>
+      </Label>
+      <Label maxWidth="400.0" text="Nome">
+         <font>
+            <Font name="Monospaced Regular" size="16.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="20.0" />
+         </VBox.margin>
+      </Label>
+      <TextField fx:id="login" maxWidth="480.0" prefHeight="26.0" prefWidth="500.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </TextField>
+      <Label maxWidth="400.0" text="Email">
+         <font>
+            <Font name="Monospaced Regular" size="16.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="20.0" top="20.0" />
+         </VBox.margin>
+      </Label>
+      <TextField fx:id="login1" maxWidth="480.0" prefHeight="26.0" prefWidth="500.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </TextField>
+      <Label maxWidth="400.0" text="CPF">
+         <font>
+            <Font name="Monospaced Regular" size="16.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="20.0" />
+         </VBox.margin>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </Label>
+      <TextField fx:id="login11" maxWidth="480.0" prefHeight="26.0" prefWidth="500.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </TextField>
+      <Label maxWidth="400.0" text="Senha">
+         <font>
+            <Font name="Monospaced Regular" size="16.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="20.0" top="20.0" />
+         </VBox.margin>
+      </Label>
+      <PasswordField maxWidth="480.0" prefHeight="26.0" prefWidth="500.0">
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+         <font>
+            <Font size="14.0" />
+         </font>
+      </PasswordField>
+   </children>
+</VBox>
