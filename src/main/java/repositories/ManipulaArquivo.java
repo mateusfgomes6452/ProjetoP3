@@ -62,13 +62,15 @@ public class ManipulaArquivo {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
 
-            reader.readLine();
+        String cabecalho = reader.readLine();
 
-            String linha;
+        if (cabecalho != null) {
 
-            while ((linha = reader.readLine()) != null) {
+        String linha;
 
-                linhas.add(linha.split(";", -1));
+        while ((linha = reader.readLine()) != null) {
+
+            linhas.add(linha.split(";", -1));
 
             }
 
