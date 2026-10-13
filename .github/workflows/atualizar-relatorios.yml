@@ -223,7 +223,7 @@ jobs:
           ' report.json >> wiki/Relatorio-Projeto.md
 
       - name: Publicar relatório na Wiki
-        uses: docker://decathlon/wiki-page-creator-action:latest
+        uses: docker://decathlon/wiki-page-creator-action@sha256:HASH_SHA256_DA_IMAGEM
         env:
           GH_PAT: ${{ secrets.WIKI_TOKEN }}
           ACTION_MAIL: ${{ secrets.WIKI_EMAIL }}
