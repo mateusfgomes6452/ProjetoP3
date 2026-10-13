@@ -104,7 +104,7 @@
 				    <configuration>
 				        <archive>
 				            <manifest>
-				                <mainClass>main.MainJavaFX</mainClass>
+				                <mainClass>main.Main</mainClass>
 				            </manifest>
 				        </archive>
 				    </configuration>
