@@ -1,0 +1,235 @@
+name: Atualizar relatório do Project
+
+on:
+  # Atualiza quando uma Issue é fechada
+  issues:
+    types: [closed]
+
+  # Permite executar manualmente
+  workflow_dispatch:
+
+  # Atualização automática diária às 08:00 UTC
+  schedule:
+    - cron: "0 8 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  gerar-relatorio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Consultar GitHub Project
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        run: |
+          mkdir -p wiki
+
+          cat > query.graphql <<'EOF'
+          query($login: String!, $projectNumber: Int!, $cursor: String) {
+            user(login: $login) {
+              projectV2(number: $projectNumber) {
+                title
+                url
+                items(first: 100, after: $cursor) {
+                  nodes {
+                    type
+                    content {
+                      ... on Issue {
+                        number
+                        title
+                        state
+                        url
+                        assignees(first: 20) {
+                          nodes {
+                            login
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                  pageInfo {
+                    hasNextPage
+                    endCursor
+                  }
+                }
+              }
+            }
+          }
+          EOF
+
+          echo '{"contributors":{}}' > report.json
+
+          cursor=""
+
+          while true; do
+
+            if [ -z "$cursor" ]; then
+              RESPONSE=$(gh api graphql \
+                -F login="mateusfgomes6452" \
+                -F projectNumber=2 \
+                -f query="$(cat query.graphql)")
+            else
+              RESPONSE=$(gh api graphql \
+                -F login="mateusfgomes6452" \
+                -F projectNumber=2 \
+                -F cursor="$cursor" \
+                -f query="$(cat query.graphql)")
+            fi
+
+            echo "$RESPONSE" > response.json
+
+            # Verifica erros da API
+            if jq -e '.errors' response.json > /dev/null; then
+              echo "Erro ao consultar o GitHub Project:"
+              jq '.errors' response.json
+              exit 1
+            fi
+
+            # Processa cada Issue
+            jq -c '
+              .data.user.projectV2.items.nodes[]
+              | select(.type == "ISSUE")
+              | select(.content != null)
+            ' response.json | while read -r item; do
+
+              number=$(echo "$item" | jq -r '.content.number')
+              title=$(echo "$item" | jq -r '.content.title')
+              state=$(echo "$item" | jq -r '.content.state')
+              url=$(echo "$item" | jq -r '.content.url')
+
+              echo "$item" | jq -c '.content.assignees.nodes[]' | while read -r assignee; do
+
+                login=$(echo "$assignee" | jq -r '.login')
+                name=$(echo "$assignee" | jq -r '.name // .login')
+
+                # Cria o contributor caso ainda não exista
+                jq \
+                  --arg login "$login" \
+                  --arg name "$name" \
+                  '
+                  .contributors[$login] //=
+                  {
+                    name: $name,
+                    assigned: [],
+                    resolved: [],
+                    pending: []
+                  }
+                  ' report.json > report.tmp
+
+                mv report.tmp report.json
+
+                issue=$(jq -n \
+                  --arg number "$number" \
+                  --arg title "$title" \
+                  --arg url "$url" \
+                  '{
+                    number: ($number | tonumber),
+                    title: $title,
+                    url: $url
+                  }')
+
+                if [ "$state" = "CLOSED" ]; then
+                  jq \
+                    --arg login "$login" \
+                    --argjson issue "$issue" \
+                    '.contributors[$login].assigned += [$issue] |
+                     .contributors[$login].resolved += [$issue]' \
+                    report.json > report.tmp
+                else
+                  jq \
+                    --arg login "$login" \
+                    --argjson issue "$issue" \
+                    '.contributors[$login].assigned += [$issue] |
+                     .contributors[$login].pending += [$issue]' \
+                    report.json > report.tmp
+                fi
+
+                mv report.tmp report.json
+
+              done
+            done
+
+            has_next=$(jq -r '.data.user.projectV2.items.pageInfo.hasNextPage' response.json)
+
+            if [ "$has_next" != "true" ]; then
+              break
+            fi
+
+            cursor=$(jq -r '.data.user.projectV2.items.pageInfo.endCursor' response.json)
+          done
+
+      - name: Gerar Markdown
+        run: |
+          TITLE=$(jq -r '.data.user.projectV2.title' response.json)
+          URL=$(jq -r '.data.user.projectV2.url' response.json)
+
+          cat > wiki/Relatorio-Projeto.md <<EOF
+          # Relatório do Projeto
+
+          **Project:** [$TITLE]($URL)
+
+          **Última atualização:** $(date -u '+%d/%m/%Y %H:%M UTC')
+
+          ---
+
+          EOF
+
+          jq -r '
+            .contributors
+            | to_entries[]
+            | .key as $login
+            | .value
+            | "## \(.name) (@\($login))\n\n" +
+              "**Issues atribuídas:** \(.assigned | length)  \n" +
+              "**Issues resolvidas:** \(.resolved | length)  \n" +
+              "**Issues pendentes:** \(.pending | length)  \n\n" +
+
+              if (.resolved | length) > 0 then
+                "### Issues resolvidas\n\n" +
+                (
+                  .resolved
+                  | sort_by(.number)
+                  | map("- [#\(.number) — \(.title)](\(.url))")
+                  | join("\n")
+                ) +
+                "\n\n"
+              else
+                ""
+              end +
+
+              if (.pending | length) > 0 then
+                "### Issues pendentes\n\n" +
+                (
+                  .pending
+                  | sort_by(.number)
+                  | map("- [#\(.number) — \(.title)](\(.url))")
+                  | join("\n")
+                ) +
+                "\n\n"
+              else
+                ""
+              end +
+
+              "---\n"
+          ' report.json >> wiki/Relatorio-Projeto.md
+
+      - name: Publicar relatório na Wiki
+        uses: docker://decathlon/wiki-page-creator-action:latest
+        env:
+          GH_PAT: ${{ secrets.WIKI_TOKEN }}
+          ACTION_MAIL: ${{ secrets.WIKI_EMAIL }}
+          ACTION_NAME: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          MD_FOLDER: wiki
+          SKIP_MD: README.md
+          WIKI_PUSH_MESSAGE: "Atualizar relatório do Project"
