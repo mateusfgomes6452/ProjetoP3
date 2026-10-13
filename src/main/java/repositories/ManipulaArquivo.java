@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("java:S106")
 public class ManipulaArquivo {
 
     private String caminhoArquivo;
