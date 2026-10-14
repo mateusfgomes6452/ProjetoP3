@@ -34,7 +34,7 @@ jobs:
 
       - name: Coletar dados de Commits e GitHub Projects
         env:
-          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p wiki
 
