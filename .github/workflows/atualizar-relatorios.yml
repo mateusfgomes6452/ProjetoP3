@@ -5,10 +5,6 @@ on:
   issues:
     types: [closed]
 
-  # Atualiza quando novos commits são enviados para main ou develop
-  push:
-    branches: [main, develop]
-
   # Permite executar manualmente
   workflow_dispatch:
 
@@ -24,24 +20,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout com histórico completo de commits
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Instalar jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Coletar dados de Commits e GitHub Projects
+      - name: Consultar GitHub Project
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p wiki
 
-          # 1. Contagem de commits por autor via Git
-          git shortlog -sn --no-merges --all > commits_summary.txt
-
-          # 2. Definição da consulta GraphQL do GitHub Projects
           cat > query.graphql <<'EOF'
           query($login: String!, $projectNumber: Int!, $cursor: String) {
             user(login: $login) {
@@ -77,9 +67,11 @@ jobs:
           EOF
 
           echo '{"contributors":{}}' > report.json
+
           cursor=""
 
           while true; do
+
             if [ -z "$cursor" ]; then
               RESPONSE=$(gh api graphql \
                 -F login="mateusfgomes6452" \
@@ -95,12 +87,14 @@ jobs:
 
             echo "$RESPONSE" > response.json
 
+            # Verifica erros da API
             if jq -e '.errors' response.json > /dev/null; then
               echo "Erro ao consultar o GitHub Project:"
               jq '.errors' response.json
               exit 1
             fi
 
+            # Processa cada Issue
             jq -c '
               .data.user.projectV2.items.nodes[]
               | select(.type == "ISSUE")
@@ -113,9 +107,11 @@ jobs:
               url=$(echo "$item" | jq -r '.content.url')
 
               echo "$item" | jq -c '.content.assignees.nodes[]' | while read -r assignee; do
+
                 login=$(echo "$assignee" | jq -r '.login')
                 name=$(echo "$assignee" | jq -r '.name // .login')
 
+                # Cria o contributor caso ainda não exista
                 jq \
                   --arg login "$login" \
                   --arg name "$name" \
@@ -127,7 +123,9 @@ jobs:
                     resolved: [],
                     pending: []
                   }
-                  ' report.json > report.tmp && mv report.tmp report.json
+                  ' report.json > report.tmp
+
+                mv report.tmp report.json
 
                 issue=$(jq -n \
                   --arg number "$number" \
@@ -154,45 +152,34 @@ jobs:
                      .contributors[$login].pending += [$issue]' \
                     report.json > report.tmp
                 fi
+
                 mv report.tmp report.json
+
               done
             done
 
             has_next=$(jq -r '.data.user.projectV2.items.pageInfo.hasNextPage' response.json)
-            if [ "$has_next" != "true" ]; then break; fi
+
+            if [ "$has_next" != "true" ]; then
+              break
+            fi
+
             cursor=$(jq -r '.data.user.projectV2.items.pageInfo.endCursor' response.json)
           done
 
-      - name: Gerar Ficheiro Markdown
+      - name: Gerar Markdown
         run: |
-          TITLE=$(jq -r '.data.user.projectV2.title // "Projeto"' response.json)
-          URL=$(jq -r '.data.user.projectV2.url // "#"' response.json)
+          TITLE=$(jq -r '.data.user.projectV2.title' response.json)
+          URL=$(jq -r '.data.user.projectV2.url' response.json)
 
           cat > wiki/Relatorio-Projeto.md <<EOF
-          # Relatório do Projeto e Contribuições
+          # Relatório do Projeto
 
-          **Project:** [$TITLE]($URL)  
+          **Project:** [$TITLE]($URL)
+
           **Última atualização:** $(date -u '+%d/%m/%Y %H:%M UTC')
 
           ---
-
-          ## Tabela de Commits por Contribuidor
-
-          | Contribuidor | Total de Commits |
-          | :--- | :--- |
-          EOF
-
-          while read -r line; do
-            commits=$(echo "$line" | awk '{print $1}')
-            author=$(echo "$line" | cut -f2-)
-            echo "| $author | $commits |" >> wiki/Relatorio-Projeto.md
-          done < commits_summary.txt
-
-          cat >> wiki/Relatorio-Projeto.md <<EOF
-
-          ---
-
-          ## Detalhamento de Issues por Membro
 
           EOF
 
@@ -201,50 +188,48 @@ jobs:
             | to_entries[]
             | .key as $login
             | .value
-            | "### \(.name) (@\($login))\n\n" +
-              " - **Issues atribuídas:** \(.assigned | length)\n" +
-              " - **Issues resolvidas:** \(.resolved | length)\n" +
-              " - **Issues pendentes:** \(.pending | length)\n\n" +
+            | "## \(.name) (@\($login))\n\n" +
+              "**Issues atribuídas:** \(.assigned | length)  \n" +
+              "**Issues resolvidas:** \(.resolved | length)  \n" +
+              "**Issues pendentes:** \(.pending | length)  \n\n" +
 
               if (.resolved | length) > 0 then
-                "#### Issues resolvidas\n\n" +
+                "### Issues resolvidas\n\n" +
                 (
                   .resolved
                   | sort_by(.number)
                   | map("- [#\(.number) — \(.title)](\(.url))")
                   | join("\n")
-                ) + "\n\n"
-              else "" end +
+                ) +
+                "\n\n"
+              else
+                ""
+              end +
 
               if (.pending | length) > 0 then
-                "#### Issues pendentes\n\n" +
+                "### Issues pendentes\n\n" +
                 (
                   .pending
                   | sort_by(.number)
                   | map("- [#\(.number) — \(.title)](\(.url))")
                   | join("\n")
-                ) + "\n\n"
-              else "" end +
+                ) +
+                "\n\n"
+              else
+                ""
+              end +
+
               "---\n"
           ' report.json >> wiki/Relatorio-Projeto.md
 
-      - name: Publicar diretamente na Wiki do GitHub
+      - name: Publicar relatório na Wiki
+        uses: docker://decathlon/wiki-page-creator-action@sha256:HASH_SHA256_DA_IMAGEM
         env:
-          WIKI_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Clona o repositório da Wiki oficial do projeto
-          git clone https://x-access-token:${WIKI_TOKEN}@github.com/${{ github.repository }}.wiki.git wiki_repo
-          
-          cp wiki/Relatorio-Projeto.md wiki_repo/Relatorio-Projeto.md
-          
-          cd wiki_repo
-          git add Relatorio-Projeto.md
-          if git diff --staged --quiet; then
-            echo "Nenhuma alteração no relatório."
-          else
-            git commit -m "docs: atualiza relatorio do projeto e estatisticas de commits"
-            git push
-          fi
+          GH_PAT: ${{ secrets.WIKI_TOKEN }}
+          ACTION_MAIL: ${{ secrets.WIKI_EMAIL }}
+          ACTION_NAME: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          MD_FOLDER: wiki
+          SKIP_MD: README.md
+          WIKI_PUSH_MESSAGE: "Atualizar relatório do Project"
