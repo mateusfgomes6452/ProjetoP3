@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<BorderPane fx:id="raiz" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="apresentacao.controllers.FornecedoresController" prefWidth="1280" prefHeight="800" styleClass="app-root">
+  <stylesheets><URL value="@../css/identidade.css"/></stylesheets>
+  <left><VBox prefWidth="225" minWidth="225" spacing="19" styleClass="sidebar">
+      <padding><Insets top="27" bottom="22" left="16" right="16"/></padding>
+      <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../images/logo-loja.png"/></image></ImageView>
+      <VBox spacing="5">
+        <Label fx:id="lblPerfil" text="ADMINISTRADOR" styleClass="role-label"/>
+        <Region prefHeight="8"/>
+        <Label text="Contratos" styleClass="nav-item" maxWidth="Infinity"/><Label text="Itens" styleClass="nav-item" maxWidth="Infinity"/><Label text="Categorias" styleClass="nav-item" maxWidth="Infinity"/><Button text="Fornecedores" onAction="#abrirFornecedores" maxWidth="Infinity" styleClass="nav-item, nav-selected" /><Label text="Usuários" styleClass="nav-item" maxWidth="Infinity" /><Button text="Multas" onAction="#abrirMultas" maxWidth="Infinity" styleClass="nav-item" /><Label text="Relatórios" styleClass="nav-item" maxWidth="Infinity" />
+      </VBox>
+      <Region VBox.vgrow="ALWAYS" />
+      <Separator/>
+      <HBox spacing="9" alignment="CENTER_LEFT">
+        <Label fx:id="lblAvatar" text="U" styleClass="avatar" />
+        <VBox spacing="2">
+           <Label fx:id="lblNomeUsuario" text="Usuário autenticado" styleClass="user-name"/>
+           <Label text="Sessão ativa" styleClass="user-role" />
+        </VBox>
+      </HBox>
+      <Button text="Sair da conta" onAction="#encerrarSessao" styleClass="secondary-button" maxWidth="Infinity"/>
+    </VBox></left>
+  <center><ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
+      <content><VBox spacing="22" styleClass="content-area">
+        <padding><Insets top="32" bottom="34" left="35" right="35"/></padding>
+        <HBox alignment="CENTER_LEFT" spacing="12">
+          <VBox spacing="4"><Label text="Gestão de fornecedores" styleClass="page-title" />
+          <Label text="Cadastre, consulte e acompanhe os fornecedores da loja." styleClass="page-subtitle"/></VBox>
+          <Region HBox.hgrow="ALWAYS" />
+          <Button text="+ Novo fornecedor" onAction="#novo" styleClass="primary-button"/>
+          </HBox><VBox fx:id="formulario" managed="false" visible="false" spacing="17" styleClass="panel-card">
+       <Label fx:id="tituloFormulario" text="Cadastrar fornecedor" styleClass="section-title" />
+       <GridPane hgap="16" vgap="10">
+         <columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints>
+         <Label text="Razão social *" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label"/>
+         <Label text="CNPJ *" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="field-label"/>
+         <TextField fx:id="razao" promptText="Ex.: Fornecedora LTDA" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="input-field"/>
+         <TextField fx:id="cnpj" promptText="00.000.000/0000-00" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="input-field"/>
+         <Label text="E-mail *" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="field-label"/>
+         <Label text="Telefone *" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="field-label"/>
+         <TextField fx:id="email" promptText="contato@empresa.com.br" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="input-field"/>
+         <TextField fx:id="telefone" promptText="(81) 9 9999-9999" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="input-field"/>
+       </GridPane>
+       <HBox spacing="9" alignment="CENTER_RIGHT">
+        <Button text="Cancelar" onAction="#cancelar" styleClass="secondary-button" />
+        <Button fx:id="btnSalvar" text="Salvar fornecedor" onAction="#salvar" styleClass="primary-button"/>
+       </HBox>
+       </VBox><HBox spacing="14"><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label text="FORNECEDORES CADASTRADOS" styleClass="stat-caption" />
+        <Label fx:id="lblTotal" text="0" styleClass="stat-value" />
+        </VBox><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label text="FORNECEDORES ATIVOS" styleClass="stat-caption" />
+        <Label fx:id="lblAtivos" text="0" styleClass="stat-value" />
+        </VBox><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label text="FORNECEDORES INATIVOS" styleClass="stat-caption" />
+        <Label fx:id="lblInativos" text="0" styleClass="stat-value" />
+        </VBox></HBox><VBox spacing="13" styleClass="panel-card">
+       <HBox spacing="12" alignment="CENTER_LEFT">
+        <VBox spacing="3"><Label text="Fornecedores cadastrados" styleClass="section-title" />
+        <Label text="Selecione um fornecedor para editar ou desativar." styleClass="minor-text" /></VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Atualizar lista" onAction="#atualizar" styleClass="secondary-button" />
+       </HBox>
+       <TextField fx:id="busca" promptText="Buscar por ID, razão social, CNPJ, e-mail ou telefone..." styleClass="input-field"/>
+       <HBox alignment="CENTER_LEFT" spacing="9">
+       <Button fx:id="btnTodos" text="Todos" onAction="#todos" styleClass="filter-button" /><Button fx:id="btnAtivos" text="Ativos" onAction="#ativos" styleClass="filter-button" /><Button fx:id="btnInativos" text="Inativos" onAction="#inativos" styleClass="filter-button" />
+       <Region HBox.hgrow="ALWAYS" />
+       <Label fx:id="lblResultado" text="Exibindo 0 de 0" styleClass="minor-text"/>
+       </HBox>
+       <TableView fx:id="tabela" prefHeight="335" styleClass="data-table">
+        <columns>
+         <TableColumn fx:id="colId" text="ID" prefWidth="55"/>
+         <TableColumn fx:id="colRazao" text="RAZÃO SOCIAL" prefWidth="180"/>
+         <TableColumn fx:id="colCnpj" text="CNPJ" prefWidth="155"/>
+         <TableColumn fx:id="colEmail" text="E-MAIL" prefWidth="180"/>
+         <TableColumn fx:id="colTelefone" text="TELEFONE" prefWidth="140"/>
+         <TableColumn fx:id="colStatus" text="STATUS" prefWidth="100"/>
+        </columns>
+       </TableView>
+       <HBox alignment="CENTER_RIGHT" spacing="10">
+         <Button fx:id="btnEditar" text="Editar selecionado" onAction="#editar" styleClass="secondary-button" />
+         <Button fx:id="btnDesativar" text="Desativar selecionado" onAction="#desativar" styleClass="danger-button"/>
+       </HBox>
+       </VBox>
+      </VBox></content>
+  </ScrollPane></center>
+</BorderPane>
