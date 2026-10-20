@@ -34,7 +34,7 @@ jobs:
 
       - name: Coletar dados de Commits e GitHub Projects
         env:
-          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN_WIKI_ACTION }}
         run: |
           mkdir -p wiki
 
@@ -230,7 +230,7 @@ jobs:
 
       - name: Publicar diretamente na Wiki do GitHub
         env:
-          WIKI_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+          WIKI_TOKEN: ${{ secrets.PROJECTS_TOKEN_WIKI_ACTION}}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
