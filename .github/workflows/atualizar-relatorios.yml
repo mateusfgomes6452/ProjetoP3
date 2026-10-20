@@ -41,7 +41,7 @@ jobs:
           # 1. Contagem oficial de commits por autor via Git
           git shortlog -sn --no-merges --all > commits_summary.txt
 
-          # 2. Definição da consulta GraphQL simples do GitHub Projects
+          # 2. Definição da consulta GraphQL do GitHub Projects
           cat > query.graphql <<'EOF'
           query($login: String!, $projectNumber: Int!, $cursor: String) {
             user(login: $login) {
@@ -116,18 +116,13 @@ jobs:
                 login=$(echo "$assignee" | jq -r '.login')
                 name=$(echo "$assignee" | jq -r '.name // .login')
 
-                # Verifica se o membro possui commits registrados no Git
-                has_commits=$(grep -i -c "$login\|$name" commits_summary.txt || true)
-
                 jq \
                   --arg login "$login" \
                   --arg name "$name" \
-                  --argjson has_commits "$has_commits" \
                   '
                   .contributors[$login] //=
                   {
                     name: $name,
-                    has_commits: ($has_commits > 0),
                     assigned: [],
                     resolved: [],
                     pending: []
@@ -172,6 +167,18 @@ jobs:
           TITLE=$(jq -r '.data.user.projectV2.title // "Projeto"' response.json)
           URL=$(jq -r '.data.user.projectV2.url // "#"' response.json)
 
+          # Calcula a contagem exata de commits via git log para cada membro
+          for login in $(jq -r '.contributors | keys[]' report.json); do
+            name=$(jq -r ".contributors[\"$login\"].name" report.json)
+            first_name=$(echo "$name" | awk '{print $1}')
+            
+            # Conta os commits no Git associados ao login, nome completo ou primeiro nome
+            count=$(git log --all --no-merges --author="$login" --author="$name" --author="$first_name" --oneline 2>/dev/null | wc -l | tr -d ' ')
+            
+            jq --arg login "$login" --argjson count "$count" \
+              '.contributors[$login].commits_count = $count' report.json > report.tmp && mv report.tmp report.json
+          done
+
           cat > wiki/Relatorio-Projeto.md <<EOF
           # Relatório do Projeto e Contribuições
 
@@ -180,7 +187,7 @@ jobs:
 
           ---
 
-          ## Tabela de Commits por Contribuidor (Git)
+          ## Tabela Geral de Commits (Git)
 
           | Contribuidor | Total de Commits |
           | :--- | :--- |
@@ -196,7 +203,7 @@ jobs:
 
           ---
 
-          ## Detalhamento de Issues por Membro
+          ## Detalhamento por Membro
 
           EOF
 
@@ -206,7 +213,8 @@ jobs:
             | .key as $login
             | .value
             | "### \(.name) (@\($login))\n\n" +
-              (if .has_commits then "" else "⚠️ *Aviso: Este membro não possui commits registrados no repositório.*\n\n" end) +
+              " - **Total de Commits no Git:** \(.commits_count // 0)\n" +
+              (if (.commits_count // 0) == 0 then "⚠️ *Aviso: Nenhum commit no repositório foi associado ao login/nome deste membro.*\n\n" else "" end) +
               " - **Issues atribuídas:** \(.assigned | unique_by(.number) | length)\n" +
               " - **Issues concluídas:** \(.resolved | unique_by(.number) | length)\n" +
               " - **Issues pendentes:** \(.pending | unique_by(.number) | length)\n\n" +
