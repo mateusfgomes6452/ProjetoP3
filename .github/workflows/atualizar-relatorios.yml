@@ -163,19 +163,30 @@ jobs:
           done
 
       - name: Gerar Ficheiro Markdown
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN_WIKI_ACTION }}
         run: |
           TITLE=$(jq -r '.data.user.projectV2.title // "Projeto"' response.json)
           URL=$(jq -r '.data.user.projectV2.url // "#"' response.json)
 
-          # Calcula a contagem exata de commits via git log para cada membro
+          # Identifica commits combinando API do GitHub + Git Log
           for login in $(jq -r '.contributors | keys[]' report.json); do
             name=$(jq -r ".contributors[\"$login\"].name" report.json)
             first_name=$(echo "$name" | awk '{print $1}')
             
-            # Conta os commits no Git associados ao login, nome completo ou primeiro nome
-            count=$(git log --all --no-merges --author="$login" --author="$name" --author="$first_name" --oneline 2>/dev/null | wc -l | tr -d ' ')
+            # 1. Checa via API do GitHub se a conta possui commits vinculados
+            api_has_commits=$(gh api "repos/${{ github.repository }}/commits?author=$login&per_page=1" --jq '. | length' 2>/dev/null || echo "0")
             
-            jq --arg login "$login" --argjson count "$count" \
+            # 2. Checa no git local por login, nome e primeiro nome
+            git_count=$(git log --all --no-merges --author="$login" --author="$name" --author="$first_name" --oneline 2>/dev/null | wc -l | tr -d ' ')
+            
+            if [ "$api_has_commits" -gt 0 ] || [ "$git_count" -gt 0 ]; then
+              total_commits=$(( git_count > api_has_commits ? git_count : api_has_commits ))
+            else
+              total_commits=0
+            fi
+            
+            jq --arg login "$login" --argjson count "$total_commits" \
               '.contributors[$login].commits_count = $count' report.json > report.tmp && mv report.tmp report.json
           done
 
@@ -214,7 +225,7 @@ jobs:
             | .value
             | "### \(.name) (@\($login))\n\n" +
               " - **Total de Commits no Git:** \(.commits_count // 0)\n" +
-              (if (.commits_count // 0) == 0 then "⚠️ *Aviso: Nenhum commit no repositório foi associado ao login/nome deste membro.*\n\n" else "" end) +
+              (if (.commits_count // 0) == 0 then "⚠️ *Aviso: Nenhum commit registrado no repositório por este membro.*\n\n" else "" end) +
               " - **Issues atribuídas:** \(.assigned | unique_by(.number) | length)\n" +
               " - **Issues concluídas:** \(.resolved | unique_by(.number) | length)\n" +
               " - **Issues pendentes:** \(.pending | unique_by(.number) | length)\n\n" +
