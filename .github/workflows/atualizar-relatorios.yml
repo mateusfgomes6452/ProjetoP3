@@ -32,16 +32,16 @@ jobs:
       - name: Instalar jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Coletar dados de Commits e GitHub Projects (com rastreamento de quem fechou)
+      - name: Coletar dados de Commits e GitHub Projects
         env:
           GH_TOKEN: ${{ secrets.PROJECTS_TOKEN_WIKI_ACTION }}
         run: |
           mkdir -p wiki
 
-          # 1. Contagem de commits por autor via Git
+          # 1. Contagem oficial de commits por autor via Git
           git shortlog -sn --no-merges --all > commits_summary.txt
 
-          # 2. Definição da consulta GraphQL do GitHub Projects rastreando o ClosedEvent
+          # 2. Definição da consulta GraphQL simples do GitHub Projects
           cat > query.graphql <<'EOF'
           query($login: String!, $projectNumber: Int!, $cursor: String) {
             user(login: $login) {
@@ -61,18 +61,6 @@ jobs:
                           nodes {
                             login
                             name
-                          }
-                        }
-                        timelineItems(last: 1, itemTypes: CLOSED_EVENT) {
-                          nodes {
-                            ... on ClosedEvent {
-                              actor {
-                                ... on User {
-                                  login
-                                  name
-                                }
-                              }
-                            }
                           }
                         }
                       }
@@ -124,41 +112,24 @@ jobs:
               state=$(echo "$item" | jq -r '.content.state')
               url=$(echo "$item" | jq -r '.content.url')
 
-              closed_by_login=$(echo "$item" | jq -r '.content.timelineItems.nodes[0].actor.login // empty')
-              closed_by_name=$(echo "$item" | jq -r '.content.timelineItems.nodes[0].actor.name // .content.timelineItems.nodes[0].actor.login // empty')
-
-              # Garante entrada para o usuário que fechou
-              if [ -n "$closed_by_login" ]; then
-                jq \
-                  --arg login "$closed_by_login" \
-                  --arg name "$closed_by_name" \
-                  '
-                  .contributors[$login] //=
-                  {
-                    name: $name,
-                    assigned: [],
-                    resolved: [],
-                    resolved_by_others: [],
-                    pending: []
-                  }
-                  ' report.json > report.tmp && mv report.tmp report.json
-              fi
-
-              # Processa cada responsável atribuído
               echo "$item" | jq -c '.content.assignees.nodes[]?' | while read -r assignee; do
                 login=$(echo "$assignee" | jq -r '.login')
                 name=$(echo "$assignee" | jq -r '.name // .login')
 
+                # Verifica se o membro possui commits registrados no Git
+                has_commits=$(grep -i -c "$login\|$name" commits_summary.txt || true)
+
                 jq \
                   --arg login "$login" \
                   --arg name "$name" \
+                  --argjson has_commits "$has_commits" \
                   '
                   .contributors[$login] //=
                   {
                     name: $name,
+                    has_commits: ($has_commits > 0),
                     assigned: [],
                     resolved: [],
-                    resolved_by_others: [],
                     pending: []
                   }
                   ' report.json > report.tmp && mv report.tmp report.json
@@ -167,69 +138,28 @@ jobs:
                   --arg number "$number" \
                   --arg title "$title" \
                   --arg url "$url" \
-                  --arg closed_by "${closed_by_login:-desconhecido}" \
                   '{
                     number: ($number | tonumber),
                     title: $title,
-                    url: $url,
-                    closed_by: $closed_by
+                    url: $url
                   }')
 
-                # Adiciona às atribuídas
-                jq \
-                  --arg login "$login" \
-                  --argjson issue "$issue" \
-                  '.contributors[$login].assigned += [$issue]' \
-                  report.json > report.tmp && mv report.tmp report.json
-
                 if [ "$state" = "CLOSED" ]; then
-                  if [ -n "$closed_by_login" ] && [ "$closed_by_login" != "$login" ]; then
-                    # Fechado por outra pessoa
-                    jq \
-                      --arg login "$login" \
-                      --argjson issue "$issue" \
-                      '.contributors[$login].resolved_by_others += [$issue]' \
-                      report.json > report.tmp && mv report.tmp report.json
-                  else
-                    # Resolvido pelo próprio membro
-                    jq \
-                      --arg login "$login" \
-                      --argjson issue "$issue" \
-                      '.contributors[$login].resolved += [$issue]' \
-                      report.json > report.tmp && mv report.tmp report.json
-                  fi
-                else
-                  # Issue pendente
                   jq \
                     --arg login "$login" \
                     --argjson issue "$issue" \
-                    '.contributors[$login].pending += [$issue]' \
+                    '.contributors[$login].assigned += [$issue] |
+                     .contributors[$login].resolved += [$issue]' \
+                    report.json > report.tmp && mv report.tmp report.json
+                else
+                  jq \
+                    --arg login "$login" \
+                    --argjson issue "$issue" \
+                    '.contributors[$login].assigned += [$issue] |
+                     .contributors[$login].pending += [$issue]' \
                     report.json > report.tmp && mv report.tmp report.json
                 fi
               done
-
-              # Se a Issue foi fechada por alguém que NÃO era assignee, atribui a resolução a essa pessoa
-              if [ "$state" = "CLOSED" ] && [ -n "$closed_by_login" ]; then
-                is_assignee=$(echo "$item" | jq -r --arg cbl "$closed_by_login" '.content.assignees.nodes[]? | select(.login == $cbl) | .login')
-                if [ -z "$is_assignee" ]; then
-                  issue=$(jq -n \
-                    --arg number "$number" \
-                    --arg title "$title" \
-                    --arg url "$url" \
-                    --arg closed_by "$closed_by_login" \
-                    '{
-                      number: ($number | tonumber),
-                      title: $title,
-                      url: $url,
-                      closed_by: $closed_by
-                    }')
-                  jq \
-                    --arg login "$closed_by_login" \
-                    --argjson issue "$issue" \
-                    '.contributors[$login].resolved += [$issue]' \
-                    report.json > report.tmp && mv report.tmp report.json
-                fi
-              fi
             done
 
             has_next=$(jq -r '.data.user.projectV2.items.pageInfo.hasNextPage' response.json)
@@ -250,7 +180,7 @@ jobs:
 
           ---
 
-          ## Tabela de Commits por Contribuidor
+          ## Tabela de Commits por Contribuidor (Git)
 
           | Contribuidor | Total de Commits |
           | :--- | :--- |
@@ -276,29 +206,18 @@ jobs:
             | .key as $login
             | .value
             | "### \(.name) (@\($login))\n\n" +
+              (if .has_commits then "" else "⚠️ *Aviso: Este membro não possui commits registrados no repositório.*\n\n" end) +
               " - **Issues atribuídas:** \(.assigned | unique_by(.number) | length)\n" +
-              " - **Issues resolvidas diretamente:** \(.resolved | unique_by(.number) | length)\n" +
-              " - **Issues encerradas por outros membros:** \(.resolved_by_others | unique_by(.number) | length)\n" +
+              " - **Issues concluídas:** \(.resolved | unique_by(.number) | length)\n" +
               " - **Issues pendentes:** \(.pending | unique_by(.number) | length)\n\n" +
 
               if (.resolved | unique_by(.number) | length) > 0 then
-                "#### Issues resolvidas diretamente\n\n" +
+                "#### Issues concluídas\n\n" +
                 (
                   .resolved
                   | unique_by(.number)
                   | sort_by(.number)
                   | map("- [#\(.number) — \(.title)](\(.url))")
-                  | join("\n")
-                ) + "\n\n"
-              else "" end +
-
-              if (.resolved_by_others | unique_by(.number) | length) > 0 then
-                "#### Issues encerradas por outros membros\n\n" +
-                (
-                  .resolved_by_others
-                  | unique_by(.number)
-                  | sort_by(.number)
-                  | map("- [#\(.number) — \(.title)](\(.url)) *(Encerrada por @\(.closed_by))*")
                   | join("\n")
                 ) + "\n\n"
               else "" end +
@@ -332,6 +251,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Nenhuma alteração no relatório."
           else
-            git commit -m "docs: atualiza relatorio do projeto com rastreamento preciso de resolucao"
+            git commit -m "docs: atualiza relatorio do projeto e tabela de commits"
             git push
           fi
