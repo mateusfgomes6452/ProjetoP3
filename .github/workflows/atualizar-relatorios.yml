@@ -34,7 +34,7 @@ jobs:
 
       - name: Coletar dados de Commits e GitHub Projects
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
         run: |
           mkdir -p wiki
 
@@ -235,7 +235,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Clona o repositório da Wiki oficial do projeto
           git clone https://x-access-token:${WIKI_TOKEN}@github.com/${{ github.repository }}.wiki.git wiki_repo
           
           cp wiki/Relatorio-Projeto.md wiki_repo/Relatorio-Projeto.md
