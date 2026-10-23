@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox spacing="22" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="apresentacao.controllers.ItensAlugadosController">
+  <HBox spacing="14">
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="ITENS ALUGADOS" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalAlugados" text="0" styleClass="stat-value"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="EM DIA" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalEmDia" text="0" styleClass="stat-value, stat-green"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="DEVOLUÇÕES ATRASADAS" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalAtrasados" text="0" styleClass="stat-value, stat-red"/>
+    </VBox>
+  </HBox>
+  <VBox spacing="13" styleClass="panel-card">
+    <HBox spacing="12" alignment="CENTER_LEFT">
+      <VBox spacing="3">
+        <Label text="Itens alugados no momento" styleClass="section-title"/>
+        <Label text="Contratos ativos, com destaque para as devoluções atrasadas." styleClass="minor-text"/>
+      </VBox>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button text="Atualizar lista" onAction="#atualizar" styleClass="secondary-button"/>
+      <Button fx:id="btnExportar" text="Exportar CSV" onAction="#exportar" styleClass="primary-button"/>
+    </HBox>
+    <Label fx:id="lblAviso" text="" styleClass="texto-sucesso"/>
+    <HBox alignment="CENTER_LEFT" spacing="9">
+      <Button fx:id="btnTodos" text="Todos" onAction="#filtrarTodos" styleClass="filter-button, filter-active"/>
+      <Button fx:id="btnEmDia" text="Em dia" onAction="#filtrarEmDia" styleClass="filter-button"/>
+      <Button fx:id="btnAtrasados" text="Atrasados" onAction="#filtrarAtrasados" styleClass="filter-button"/>
+    </HBox>
+    <TableView fx:id="tabela" prefHeight="335" styleClass="data-table">
+      <columns>
+        <TableColumn fx:id="colId" text="Nº" prefWidth="55"/>
+        <TableColumn fx:id="colCliente" text="CLIENTE" prefWidth="180"/>
+        <TableColumn fx:id="colItem" text="ITEM" prefWidth="190"/>
+        <TableColumn fx:id="colRetirada" text="RETIRADA" prefWidth="105"/>
+        <TableColumn fx:id="colPrevista" text="DEVOLUÇÃO PREVISTA" prefWidth="160"/>
+        <TableColumn fx:id="colSituacao" text="SITUAÇÃO" prefWidth="105"/>
+        <TableColumn fx:id="colAtraso" text="ATRASO" prefWidth="85"/>
+      </columns>
+    </TableView>
+  </VBox>
+</VBox>
