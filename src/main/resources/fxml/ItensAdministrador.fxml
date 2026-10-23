@@ -17,9 +17,10 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.ItensController">
+<BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.CategoriasController">
   <stylesheets><URL value="@../css/identidade.css" /></stylesheets>
   <left>
     <VBox minWidth="225" prefWidth="225" spacing="19" styleClass="sidebar">
@@ -92,16 +93,6 @@
               <ComboBox fx:id="comboFornecedor" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
               <Label styleClass="field-label" text="Valor de reposição *" GridPane.columnIndex="0" GridPane.rowIndex="6" />
               <TextField fx:id="campoReposicao" promptText="Ex.: 300.00" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
             </GridPane>
             <HBox alignment="CENTER_RIGHT" spacing="9">
               <Button onAction="#cancelar" styleClass="secondary-button" text="Cancelar" />
@@ -118,7 +109,7 @@
               <Region HBox.hgrow="ALWAYS" />
               <Button onAction="#atualizar" styleClass="secondary-button" text="Atualizar lista" />
             </HBox>
-            <TextField fx:id="busca" promptText="Buscar por ID ou nome..." styleClass="input-field" />
+            <TextField fx:id="busca" promptText="Buscar por ID, nome, taxa diária, estado de conservação ou valor de reposição..." styleClass="input-field" />
             <HBox alignment="CENTER_LEFT" spacing="9">
               <Button fx:id="btnTodos" onAction="#todos" styleClass="filter-button" text="Todos" />
               <Button fx:id="btnAtivos" onAction="#ativos" styleClass="filter-button" text="Ativos" />
@@ -131,10 +122,10 @@
                 <TableColumn fx:id="colId" prefWidth="55" text="ID" />
                 <TableColumn fx:id="colNome" prefWidth="126.4" text="NOME" />
                 <TableColumn fx:id="colDescricao" prefWidth="250.4" text="DESCRIÇÃO" />
-                <TableColumn fx:id="colTaxa" prefWidth="130.0" text="TAXA DIÁRIA" />
-                <TableColumn fx:id="colEstado" prefWidth="194.4" text="ESTADO DE CONSERVAÇÃO" />
-                <TableColumn fx:id="colValorRep" minWidth="0.0" prefWidth="164.0" text="VALOR DE REPOSIÇÃO" />
-                <TableColumn fx:id="colStatus" prefWidth="100" text="STATUS" />
+                <TableColumn fx:id="colTaxa" prefWidth="129.60003662109375" text="TAXA DIÁRIA" />
+                <TableColumn fx:id="colEstado" prefWidth="164.0" text="ESTADO DE CONSERVAÇÃO" />
+                <TableColumn fx:id="colValorRep" minWidth="0.0" prefWidth="149.60003662109375" text="VALOR DE REPOSIÇÃO" />
+                <TableColumn fx:id="colStatus" prefWidth="152.0" text="STATUS" />
               </columns>
             </TableView>
             <HBox alignment="CENTER_RIGHT" spacing="10">
