@@ -1,5 +1,6 @@
 package facade;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import business.interfaces.IGerenciamentoCategoria;
@@ -260,5 +261,43 @@ public class SistemaFacade {
 
     public void gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
         geradorRelatorios.gerarRelatorioFaturamento(dataInicial, dataFinal);
+    }
+
+    // Dados dos relatórios (telas JavaFX)
+
+    public List<Item> listarItensDisponiveis() {
+        return geradorRelatorios.listarItensDisponiveis();
+    }
+
+    public List<ContratoAluguel> listarHistoricoCliente(int idCliente) {
+        return geradorRelatorios.listarHistoricoCliente(idCliente);
+    }
+
+    public List<ContratoAluguel> listarContratosAtivos() {
+        return geradorRelatorios.listarContratosAtivos();
+    }
+
+    public List<ContratoAluguel> listarContratosPorPeriodo(LocalDate inicio, LocalDate fim) {
+        return geradorRelatorios.listarContratosPorPeriodo(inicio, fim);
+    }
+
+    public boolean contratoEstaAtrasado(ContratoAluguel contrato) {
+        return geradorRelatorios.estaAtrasado(contrato);
+    }
+
+    public void exportarItensDisponiveis(List<Item> itens) {
+        geradorRelatorios.exportarItensDisponiveis(itens);
+    }
+
+    public void exportarHistoricoCliente(List<ContratoAluguel> historico) {
+        geradorRelatorios.exportarHistoricoCliente(historico);
+    }
+
+    public void exportarItensAlugados(List<ContratoAluguel> contratosAtivos) {
+        geradorRelatorios.exportarItensAlugados(contratosAtivos);
+    }
+
+    public void exportarFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal) {
+        geradorRelatorios.exportarFaturamento(contratos, dataInicial, dataFinal);
     }
 }

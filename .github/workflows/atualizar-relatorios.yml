@@ -1,0 +1,262 @@
+name: Atualizar relatório do Project
+
+on:
+  issues:
+    types: [closed]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  gerar-relatorio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout com histórico completo de commits
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Instalar jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Coletar dados de Commits e GitHub Projects
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN_WIKI_ACTION }}
+        run: |
+          mkdir -p wiki
+
+          git shortlog -sn --no-merges --all > commits_summary.txt
+
+          cat > query.graphql <<'EOF'
+          query($login: String!, $projectNumber: Int!, $cursor: String) {
+            user(login: $login) {
+              projectV2(number: $projectNumber) {
+                title
+                url
+                items(first: 100, after: $cursor) {
+                  nodes {
+                    type
+                    content {
+                      ... on Issue {
+                        number
+                        title
+                        state
+                        url
+                        assignees(first: 20) {
+                          nodes {
+                            login
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                  pageInfo {
+                    hasNextPage
+                    endCursor
+                  }
+                }
+              }
+            }
+          }
+          EOF
+
+          echo '{"contributors":{}}' > report.json
+          cursor=""
+
+          while true; do
+            if [ -z "$cursor" ]; then
+              RESPONSE=$(gh api graphql \
+                -F login="mateusfgomes6452" \
+                -F projectNumber=2 \
+                -f query="$(cat query.graphql)")
+            else
+              RESPONSE=$(gh api graphql \
+                -F login="mateusfgomes6452" \
+                -F projectNumber=2 \
+                -F cursor="$cursor" \
+                -f query="$(cat query.graphql)")
+            fi
+
+            echo "$RESPONSE" > response.json
+
+            if jq -e '.errors' response.json > /dev/null; then
+              echo "Erro ao consultar o GitHub Project:"
+              jq '.errors' response.json
+              exit 1
+            fi
+
+            jq -c '
+              .data.user.projectV2.items.nodes[]
+              | select(.type == "ISSUE")
+              | select(.content != null)
+            ' response.json | while read -r item; do
+
+              number=$(echo "$item" | jq -r '.content.number')
+              title=$(echo "$item" | jq -r '.content.title')
+              state=$(echo "$item" | jq -r '.content.state')
+              url=$(echo "$item" | jq -r '.content.url')
+
+              echo "$item" | jq -c '.content.assignees.nodes[]?' | while read -r assignee; do
+                login=$(echo "$assignee" | jq -r '.login')
+                name=$(echo "$assignee" | jq -r '.name // .login')
+
+                jq \
+                  --arg login "$login" \
+                  --arg name "$name" \
+                  '
+                  .contributors[$login] //=
+                  {
+                    name: $name,
+                    assigned: [],
+                    resolved: [],
+                    pending: []
+                  }
+                  ' report.json > report.tmp && mv report.tmp report.json
+
+                issue=$(jq -n \
+                  --arg number "$number" \
+                  --arg title "$title" \
+                  --arg url "$url" \
+                  '{
+                    number: ($number | tonumber),
+                    title: $title,
+                    url: $url
+                  }')
+
+                if [ "$state" = "CLOSED" ]; then
+                  jq \
+                    --arg login "$login" \
+                    --argjson issue "$issue" \
+                    '.contributors[$login].assigned += [$issue] |
+                     .contributors[$login].resolved += [$issue]' \
+                    report.json > report.tmp && mv report.tmp report.json
+                else
+                  jq \
+                    --arg login "$login" \
+                    --argjson issue "$issue" \
+                    '.contributors[$login].assigned += [$issue] |
+                     .contributors[$login].pending += [$issue]' \
+                    report.json > report.tmp && mv report.tmp report.json
+                fi
+              done
+            done
+
+            has_next=$(jq -r '.data.user.projectV2.items.pageInfo.hasNextPage' response.json)
+            if [ "$has_next" != "true" ]; then break; fi
+            cursor=$(jq -r '.data.user.projectV2.items.pageInfo.endCursor' response.json)
+          done
+
+      - name: Gerar Ficheiro Markdown
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN_WIKI_ACTION }}
+        run: |
+          TITLE=$(jq -r '.data.user.projectV2.title // "Projeto"' response.json)
+          URL=$(jq -r '.data.user.projectV2.url // "#"' response.json)
+
+          for login in $(jq -r '.contributors | keys[]' report.json); do
+            name=$(jq -r ".contributors[\"$login\"].name" report.json)
+            first_name=$(echo "$name" | awk '{print $1}')
+            
+            api_has_commits=$(gh api "repos/${{ github.repository }}/commits?author=$login&per_page=1" --jq '. | length' 2>/dev/null || echo "0")
+            git_count=$(git log --all --no-merges --author="$login" --author="$name" --author="$first_name" --oneline 2>/dev/null | wc -l | tr -d ' ')
+            
+            if [ "$api_has_commits" -gt 0 ] || [ "$git_count" -gt 0 ]; then
+              total_commits=$(( git_count > api_has_commits ? git_count : api_has_commits ))
+            else
+              total_commits=0
+            fi
+            
+            jq --arg login "$login" --argjson count "$total_commits" \
+              '.contributors[$login].commits_count = $count' report.json > report.tmp && mv report.tmp report.json
+          done
+
+          cat > wiki/Relatorio-Projeto.md <<EOF
+          # Relatório do Projeto e Contribuições
+
+          **Project:** [$TITLE]($URL)  
+          **Última atualização:** $(date -u '+%d/%m/%Y %H:%M UTC')
+
+          ---
+
+          ## Tabela Geral de Commits (Git)
+
+          | Contribuidor | Total de Commits |
+          | :--- | :--- |
+          EOF
+
+          while read -r line; do
+            commits=$(echo "$line" | awk '{print $1}')
+            author=$(echo "$line" | cut -f2-)
+            echo "| $author | $commits |" >> wiki/Relatorio-Projeto.md
+          done < commits_summary.txt
+
+          cat >> wiki/Relatorio-Projeto.md <<EOF
+
+          ---
+
+          ## Detalhamento por Membro
+
+          EOF
+
+          jq -r '
+            .contributors
+            | to_entries[]
+            | .key as $login
+            | .value
+            | "### \(.name) (@\($login))\n\n" +
+              " - **Total de Commits no Git:** \(.commits_count // 0)\n" +
+              (if (.commits_count // 0) == 0 then "⚠️ *Aviso: Nenhum commit registrado no repositório por este membro.*\n\n" else "" end) +
+              " - **Issues atribuídas:** \(.assigned | unique_by(.number) | length)\n" +
+              " - **Issues concluídas:** \(.resolved | unique_by(.number) | length)\n" +
+              " - **Issues pendentes:** \(.pending | unique_by(.number) | length)\n\n" +
+
+              if (.resolved | unique_by(.number) | length) > 0 then
+                "#### Issues concluídas\n\n" +
+                (
+                  .resolved
+                  | unique_by(.number)
+                  | sort_by(.number)
+                  | map("- [#\(.number) — \(.title)](\(.url))")
+                  | join("\n")
+                ) + "\n\n"
+              else "" end +
+
+              if (.pending | unique_by(.number) | length) > 0 then
+                "#### Issues pendentes\n\n" +
+                (
+                  .pending
+                  | unique_by(.number)
+                  | sort_by(.number)
+                  | map("- [#\(.number) — \(.title)](\(.url))")
+                  | join("\n")
+                ) + "\n\n"
+              else "" end +
+              "---\n"
+          ' report.json >> wiki/Relatorio-Projeto.md
+
+      - name: Publicar diretamente na Wiki do GitHub
+        env:
+          WIKI_TOKEN: ${{ secrets.PROJECTS_TOKEN_WIKI_ACTION }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git clone https://x-access-token:${WIKI_TOKEN}@github.com/${{ github.repository }}.wiki.git wiki_repo
+          
+          cp wiki/Relatorio-Projeto.md wiki_repo/Relatorio-Projeto.md
+          
+          cd wiki_repo
+          git add Relatorio-Projeto.md
+          if git diff --staged --quiet; then
+            echo "Nenhuma alteração no relatório."
+          else
+            git commit -m "docs: atualiza relatorio do projeto e tabela de commits"
+            git push
+          fi
