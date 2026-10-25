@@ -233,7 +233,6 @@ public class ItensController {
         confirmacao.setHeaderText(null);
 
         if (confirmacao.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            // AJUSTE: confira se o "desativar" do terminal usa excluirItem
             sistema.excluirItem(selecionado.getId());
             atualizar();
         }

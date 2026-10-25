@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.ItensController">
+<BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.CategoriasController">
   <stylesheets><URL value="@../css/identidade.css" /></stylesheets>
   <left>
     <VBox minWidth="225" prefWidth="225" spacing="19" styleClass="sidebar">
@@ -29,13 +29,13 @@
       <VBox spacing="5">
         <Label fx:id="lblPerfil" styleClass="role-label" text="ADMINISTRADOR" />
         <Region prefHeight="8" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Contratos" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Itens" />
-        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item, nav-selected" text="Categorias" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Fornecedores" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Usuários" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Multas" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Relatórios" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Contratos" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Itens" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item, nav-selected" text="Categorias" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Fornecedores" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Usuários" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Multas" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Relatórios" />
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />
@@ -80,29 +80,9 @@
                 <ColumnConstraints percentWidth="50" />
               </columnConstraints>
               <Label styleClass="field-label" text="Nome *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-              <Label styleClass="field-label" text="Taxa diária *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
               <TextField fx:id="campoNome" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-              <TextField fx:id="campoTaxa" promptText="Ex.: 25.00" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
               <Label styleClass="field-label" text="Descrição *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-              <Label styleClass="field-label" text="Estado de conservação *" GridPane.columnIndex="1" GridPane.rowIndex="2" />
               <TextField fx:id="campoDescricao" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-              <ComboBox fx:id="comboEstado" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-              <Label styleClass="field-label" text="Categoria *" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-              <Label styleClass="field-label" text="Fornecedor *" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-              <ComboBox fx:id="comboCategoria" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-              <ComboBox fx:id="comboFornecedor" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-              <Label styleClass="field-label" text="Valor de reposição *" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-              <TextField fx:id="campoReposicao" promptText="Ex.: 300.00" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
             </GridPane>
             <HBox alignment="CENTER_RIGHT" spacing="9">
               <Button onAction="#cancelar" styleClass="secondary-button" text="Cancelar" />
@@ -116,7 +96,6 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
               <VBox spacing="3">
                 <Label styleClass="section-title" text="Categorias cadastradas" />
-                <Label styleClass="minor-text" text="Selecione um item para editar ou desativar." />
               </VBox>
               <Region HBox.hgrow="ALWAYS" />
               <Button onAction="#atualizar" styleClass="secondary-button" text="Atualizar lista" />
@@ -134,7 +113,7 @@
                 <TableColumn fx:id="colId" prefWidth="55" text="ID" />
                 <TableColumn fx:id="colNome" prefWidth="195.19998168945312" text="NOME" />
                 <TableColumn fx:id="colDescricao" prefWidth="604.7999877929688" text="DESCRIÇÃO" />
-                        <TableColumn fx:id="colDescricao1" prefWidth="152.0" text="STATUS" />
+                <TableColumn fx:id="colStatus" prefWidth="152.0" text="STATUS" />
               </columns>
             </TableView>
             <HBox alignment="CENTER_RIGHT" spacing="10">

@@ -10,7 +10,7 @@ public class MainJavaFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItensAdministrador.fxml"));
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CategoriasAdministrador.fxml"));
         Parent root = loader.load();
 
         stage.setTitle("A loja que aluga tudo");
