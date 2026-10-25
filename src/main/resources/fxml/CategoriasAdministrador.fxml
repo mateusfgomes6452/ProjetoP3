@@ -73,7 +73,7 @@
           </HBox>
 
           <VBox fx:id="formulario" managed="false" spacing="17" styleClass="panel-card" visible="false">
-            <Label fx:id="tituloFormulario" styleClass="section-title" text="Cadastrar item" />
+            <Label fx:id="tituloFormulario" styleClass="section-title" text="Cadastrar categoria" />
             <GridPane hgap="16" vgap="10">
               <columnConstraints>
                 <ColumnConstraints percentWidth="50" />
@@ -86,7 +86,7 @@
             </GridPane>
             <HBox alignment="CENTER_RIGHT" spacing="9">
               <Button onAction="#cancelar" styleClass="secondary-button" text="Cancelar" />
-              <Button fx:id="btnSalvar" onAction="#salvar" styleClass="primary-button" text="Salvar item" />
+              <Button fx:id="btnSalvar" onAction="#salvar" styleClass="primary-button" text="Salvar categoria" />
             </HBox>
           </VBox>
 
