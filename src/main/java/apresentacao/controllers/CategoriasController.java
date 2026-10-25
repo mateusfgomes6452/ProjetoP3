@@ -10,14 +10,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
 
 public class CategoriasController {
 
@@ -51,7 +49,9 @@ public class CategoriasController {
 
     private FilteredList<Categoria> listaFiltrada;
     private Categoria categoriaEmEdicao;
-    private String filtroStatus = "TODOS";
+    
+    private static final String TODOS = "TODOS";
+    private String filtroStatus = TODOS;
 
     @FXML
     private void initialize() {
@@ -75,7 +75,7 @@ public class CategoriasController {
         String texto = busca.getText() == null ? "" : busca.getText().trim().toLowerCase();
 
         listaFiltrada.setPredicate(categoria -> {
-            boolean passaStatus = filtroStatus.equals("TODOS")
+            boolean passaStatus = filtroStatus.equals(TODOS)
                     || (filtroStatus.equals("ATIVOS") && categoria.isAtiva())
                     || (filtroStatus.equals("INATIVOS") && !categoria.isAtiva());
 
@@ -94,7 +94,7 @@ public class CategoriasController {
         lblResultado.setText("Exibindo " + listaFiltrada.size() + " de " + total);
     }
 
-    @FXML private void todos()    { trocarFiltro("TODOS", btnTodos); }
+    @FXML private void todos()    { trocarFiltro(TODOS, btnTodos); }
     @FXML private void ativos()   { trocarFiltro("ATIVOS", btnAtivos); }
     @FXML private void inativos() { trocarFiltro("INATIVOS", btnInativos); }
 

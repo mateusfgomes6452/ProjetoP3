@@ -61,7 +61,9 @@ public class ItensController {
 
     private FilteredList<Item> listaFiltrada;
     private Item itemEmEdicao;
-    private String filtroStatus = "TODOS";
+    
+    private static final String TODOS = "TODOS";
+    private String filtroStatus = TODOS;
 
     @FXML
     private void initialize() {
@@ -99,7 +101,7 @@ public class ItensController {
         String texto = busca.getText() == null ? "" : busca.getText().trim().toLowerCase();
 
         listaFiltrada.setPredicate(item -> {
-            boolean passaStatus = filtroStatus.equals("TODOS")
+            boolean passaStatus = filtroStatus.equals(TODOS)
                     || (filtroStatus.equals("ATIVOS") && item.isAtivo())
                     || (filtroStatus.equals("INATIVOS") && !item.isAtivo());
 
@@ -118,7 +120,7 @@ public class ItensController {
         lblResultado.setText("Exibindo " + listaFiltrada.size() + " de " + total);
     }
 
-    @FXML private void todos()    { trocarFiltro("TODOS", btnTodos); }
+    @FXML private void todos()    { trocarFiltro(TODOS, btnTodos); }
     @FXML private void ativos()   { trocarFiltro("ATIVOS", btnAtivos); }
     @FXML private void inativos() { trocarFiltro("INATIVOS", btnInativos); }
 
