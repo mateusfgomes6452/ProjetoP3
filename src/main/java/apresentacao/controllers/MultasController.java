@@ -36,16 +36,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Versão gráfica de MenuMultas (operadores) e de consultarMultas/pagarMulta
- * de MenuCliente. Usa apenas SistemaFacade, sem nova camada business.
- */
+
 public final class MultasController {
     private static final Logger LOG = Logger.getLogger(MultasController.class.getName());
     private static final ZoneId ZONA_LOJA = ZoneId.of("America/Recife");
+    private static final String TIPO_AVARIA = "AVARIA";
+    private static final String TIPO_OUTRO = "OUTRO";
     private enum Filtro { TODAS, PENDENTES, PAGAS }
 
-    /** M- = registro manual (entidades.Multa); C- = multa armazenada no contrato. */
+
     public record LinhaMulta(String referencia, int idContrato, String tipo,
                              String descricao, double valor, String data, boolean paga,
                              Integer idMulta, boolean doContrato) { }
@@ -58,13 +57,30 @@ public final class MultasController {
     private List<LinhaMulta> todas = List.of();
 
     @FXML private TableView<LinhaMulta> tabela;
-    @FXML private TableColumn<LinhaMulta, String> colRef, colContrato, colTipo, colDescricao, colValor, colData, colStatus;
-    @FXML private TextField busca, campoContrato, campoValor;
+    @FXML private TableColumn<LinhaMulta, String> colRef;
+    @FXML private TableColumn<LinhaMulta, String> colContrato;
+    @FXML private TableColumn<LinhaMulta, String> colTipo;
+    @FXML private TableColumn<LinhaMulta, String> colDescricao;
+    @FXML private TableColumn<LinhaMulta, String> colValor;
+    @FXML private TableColumn<LinhaMulta, String> colData;
+    @FXML private TableColumn<LinhaMulta, String> colStatus;
+    @FXML private TextField busca;
+    @FXML private TextField campoContrato;
+    @FXML private TextField campoValor;
     @FXML private ComboBox<String> campoTipo;
     @FXML private TextArea campoDescricao;
     @FXML private VBox formulario;
-    @FXML private Label lblTotal, lblPendentes, lblValorPendente, lblResultado, lblPerfil, lblNomeUsuario, lblAvatar;
-    @FXML private Button btnQuitar, btnTodas, btnPendentes, btnPagas;
+    @FXML private Label lblTotal;
+    @FXML private Label lblPendentes;
+    @FXML private Label lblValorPendente;
+    @FXML private Label lblResultado;
+    @FXML private Label lblPerfil;
+    @FXML private Label lblNomeUsuario;
+    @FXML private Label lblAvatar;
+    @FXML private Button btnQuitar;
+    @FXML private Button btnTodas;
+    @FXML private Button btnPendentes;
+    @FXML private Button btnPagas;
 
     @FXML private void initialize() {
         colRef.setCellValueFactory(x -> propriedade(x.getValue().referencia()));
@@ -79,27 +95,24 @@ public final class MultasController {
         tabela.getSelectionModel().selectedItemProperty().addListener((obs, anterior, atual) -> ajustarAcoes());
         busca.textProperty().addListener((obs, anterior, atual) -> filtrar());
         if (campoTipo != null) {
-            campoTipo.getItems().setAll("AVARIA", "OUTRO");
-            campoTipo.setValue("AVARIA");
+            campoTipo.getItems().setAll(TIPO_AVARIA, TIPO_OUTRO);
+            campoTipo.setValue(TIPO_AVARIA);
         }
         destacarFiltro();
         ajustarAcoes();
     }
 
     private ReadOnlyStringWrapper propriedade(String s) { return new ReadOnlyStringWrapper(s == null ? "" : s); }
-    private String moeda(double valor) { return String.format(new Locale("pt", "BR"), "R$ %,.2f", valor); }
+    private String moeda(double valor) { return String.format(Locale.forLanguageTag("pt-BR"), "R$ %,.2f", valor); }
 
-    /**
-     * Chamar após FXMLLoader.load(), com o MESMO SistemaFacade e o usuário
-     * retornado pelo login. A tela de cliente nunca pode usar FXML de operador.
-     */
+
     public void configurar(SistemaFacade sistema, Usuario usuario, Consumer<String> navegacao, Runnable sair) {
         this.sistema = Objects.requireNonNull(sistema, "SistemaFacade é obrigatório");
         this.usuario = Objects.requireNonNull(usuario, "Usuário autenticado é obrigatório");
         this.navegacao = Objects.requireNonNull(navegacao, "Callback de navegação é obrigatório");
         this.sair = Objects.requireNonNull(sair, "Callback de saída é obrigatório");
         exigirSessao();
-        // Confere o perfil esperado pelo layout, e não apenas botões visíveis.
+        // Confere o perfil esperado pelo layout, e não apenas botões visíveis
         if ((usuario instanceof Cliente) != (formulario == null)) {
             throw new SecurityException("Layout incompatível com o perfil autenticado.");
         }
@@ -126,37 +139,56 @@ public final class MultasController {
         executar("consultar multas", () -> {
             exigirSessao();
             List<ContratoAluguel> contratos = new ArrayList<>(sistema.listarContratos());
-            Map<Integer, ContratoAluguel> porId = contratos.stream()
-                    .collect(Collectors.toMap(ContratoAluguel::getId, Function.identity(), (a, b) -> a));
-            List<LinhaMulta> linhas = new ArrayList<>();
-
-            // Registros de multas manuais: corresponde a MenuMultas.listarMultas().
-            for (Multa multa : sistema.listarMultas()) {
-                ContratoAluguel contrato = porId.get(multa.getIdContrato());
-                if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) continue;
-                linhas.add(new LinhaMulta("M-" + multa.getId(), multa.getIdContrato(),
-                        multa.getTipo(), multa.getDescricao(), multa.getValor(), multa.getDataCriacao(),
-                        multa.isPaga(), multa.getId(), false));
-            }
-
-            // Multas vinculadas ao próprio contrato: como em MenuCliente.
-            for (ContratoAluguel contrato : contratos) {
-                if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) continue;
-                if (contrato.getValorMulta() > 0) {
-                    linhas.add(new LinhaMulta("C-" + contrato.getId(), contrato.getId(), "CONTRATO",
-                            "Multa do contrato" + (contrato.getItem() == null ? "" : " - " + contrato.getItem().getNome()),
-                            contrato.getValorMulta(), "-", contrato.isMultaPaga(), null, true));
-                }
-            }
+            List<LinhaMulta> linhas = carregarLinhas(contratos);
             linhas.sort(Comparator.comparing(LinhaMulta::referencia));
             todas = List.copyOf(linhas);
-            lblTotal.setText(String.valueOf(todas.size()));
-            long pendentes = todas.stream().filter(x -> !x.paga()).count();
-            lblPendentes.setText(String.valueOf(pendentes));
-            double total = todas.stream().filter(x -> !x.paga()).mapToDouble(LinhaMulta::valor).sum();
-            lblValorPendente.setText(moeda(total));
+            atualizarIndicadores();
             filtrar();
         });
+    }
+
+    private List<LinhaMulta> carregarLinhas(List<ContratoAluguel> contratos) {
+        Map<Integer, ContratoAluguel> porId = contratos.stream()
+                .collect(Collectors.toMap(ContratoAluguel::getId, Function.identity(), (a, b) -> a));
+        List<LinhaMulta> linhas = new ArrayList<>();
+        adicionarMultasManuais(linhas, porId);
+        adicionarMultasContratuais(linhas, contratos);
+        return linhas;
+    }
+
+    private void adicionarMultasManuais(List<LinhaMulta> linhas, Map<Integer, ContratoAluguel> porId) {
+        // Registros manuais: mesma fonte utilizada por MenuMultas.listarMultas()
+        for (Multa multa : sistema.listarMultas()) {
+            ContratoAluguel contrato = porId.get(multa.getIdContrato());
+            if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
+                continue;
+            }
+            linhas.add(new LinhaMulta("M-" + multa.getId(), multa.getIdContrato(),
+                    multa.getTipo(), multa.getDescricao(), multa.getValor(), multa.getDataCriacao(),
+                    multa.isPaga(), multa.getId(), false));
+        }
+    }
+
+    private void adicionarMultasContratuais(List<LinhaMulta> linhas, List<ContratoAluguel> contratos) {
+        // Multas armazenadas no contrato, conforme MenuCliente
+        for (ContratoAluguel contrato : contratos) {
+            if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
+                continue;
+            }
+            if (contrato.getValorMulta() > 0) {
+                linhas.add(new LinhaMulta("C-" + contrato.getId(), contrato.getId(), "CONTRATO",
+                        "Multa do contrato" + (contrato.getItem() == null ? "" : " - " + contrato.getItem().getNome()),
+                        contrato.getValorMulta(), "-", contrato.isMultaPaga(), null, true));
+            }
+        }
+    }
+
+    private void atualizarIndicadores() {
+        lblTotal.setText(String.valueOf(todas.size()));
+        long pendentes = todas.stream().filter(x -> !x.paga()).count();
+        lblPendentes.setText(String.valueOf(pendentes));
+        double total = todas.stream().filter(x -> !x.paga()).mapToDouble(LinhaMulta::valor).sum();
+        lblValorPendente.setText(moeda(total));
     }
 
     private boolean pertenceAoCliente(ContratoAluguel contrato) {
@@ -199,7 +231,7 @@ public final class MultasController {
         executar("abrir registro", () -> {
             exigirOperador();
             if (formulario == null) throw new SecurityException("Tela não possui cadastro de multas.");
-            campoContrato.clear(); campoDescricao.clear(); campoValor.clear(); campoTipo.setValue("AVARIA");
+            campoContrato.clear(); campoDescricao.clear(); campoValor.clear(); campoTipo.setValue(TIPO_AVARIA);
             exibirFormulario(true);
         });
     }
@@ -216,7 +248,7 @@ public final class MultasController {
             if (sistema.buscarContrato(idContrato) == null)
                 throw new IllegalArgumentException("Contrato não encontrado.");
             String tipo = campoTipo.getValue();
-            if (!"AVARIA".equals(tipo) && !"OUTRO".equals(tipo))
+            if (!TIPO_AVARIA.equals(tipo) && !TIPO_OUTRO.equals(tipo))
                 throw new IllegalArgumentException("Selecione AVARIA ou OUTRO.");
             String descricao = textoObrigatorio(campoDescricao.getText(), "Descrição");
             double valor = valorPositivo(campoValor.getText());
@@ -231,31 +263,58 @@ public final class MultasController {
     }
 
     @FXML private void quitar() {
-        executar("quitar multa", () -> {
-            exigirSessao();
-            LinhaMulta linha = tabela.getSelectionModel().getSelectedItem();
-            if (linha == null) throw new IllegalArgumentException("Selecione uma multa.");
-            // Revalida o contrato e a titularidade antes de enviar a operação à fachada.
-            ContratoAluguel contrato = sistema.buscarContrato(linha.idContrato());
-            if (usuario instanceof Cliente && !pertenceAoCliente(contrato))
-                throw new SecurityException("Você só pode quitar suas próprias multas.");
-            if (!confirmar("Confirmar quitação", "Marcar " + linha.referencia()
-                    + " como quitada? Esta ação não processa pagamento bancário.")) return;
-            boolean sucesso;
-            if (linha.doContrato()) {
-                if (contrato == null || contrato.getValorMulta() <= 0 || contrato.isMultaPaga())
-                    throw new IllegalArgumentException("Essa multa contratual não está pendente.");
-                sucesso = sistema.quitarMultaContrato(linha.idContrato());
-            } else {
-                Multa registro = sistema.buscarMulta(linha.idMulta());
-                if (registro == null || registro.isPaga() || registro.getIdContrato() != linha.idContrato())
-                    throw new IllegalArgumentException("Essa multa não está mais pendente.");
-                sucesso = sistema.quitarMulta(linha.idMulta());
-            }
-            if (!sucesso) throw new IllegalArgumentException("A quitação não foi confirmada pelo sistema.");
-            atualizar();
-            alerta(Alert.AlertType.INFORMATION, "Concluído", "Multa marcada como quitada.");
-        });
+        executar("quitar multa", this::processarQuitacao);
+    }
+
+    private void processarQuitacao() {
+        exigirSessao();
+        LinhaMulta linha = obterMultaSelecionada();
+        ContratoAluguel contrato = sistema.buscarContrato(linha.idContrato());
+        validarTitularidade(contrato);
+
+        if (!confirmar("Confirmar quitação", "Marcar " + linha.referencia()
+                + " como quitada? Esta ação não processa pagamento bancário.")) {
+            return;
+        }
+
+        boolean sucesso = linha.doContrato()
+                ? quitarMultaContratual(linha, contrato)
+                : quitarMultaManual(linha);
+        if (!sucesso) {
+            throw new IllegalArgumentException("A quitação não foi confirmada pelo sistema.");
+        }
+        atualizar();
+        alerta(Alert.AlertType.INFORMATION, "Concluído", "Multa marcada como quitada.");
+    }
+
+    private LinhaMulta obterMultaSelecionada() {
+        LinhaMulta linha = tabela.getSelectionModel().getSelectedItem();
+        if (linha == null) {
+            throw new IllegalArgumentException("Selecione uma multa.");
+        }
+        return linha;
+    }
+
+    private void validarTitularidade(ContratoAluguel contrato) {
+        // Revalida a titularidade antes de solicitar a operação à fachada.
+        if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
+            throw new SecurityException("Você só pode quitar suas próprias multas.");
+        }
+    }
+
+    private boolean quitarMultaContratual(LinhaMulta linha, ContratoAluguel contrato) {
+        if (contrato == null || contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
+            throw new IllegalArgumentException("Essa multa contratual não está pendente.");
+        }
+        return sistema.quitarMultaContrato(linha.idContrato());
+    }
+
+    private boolean quitarMultaManual(LinhaMulta linha) {
+        Multa registro = sistema.buscarMulta(linha.idMulta());
+        if (registro == null || registro.isPaga() || registro.getIdContrato() != linha.idContrato()) {
+            throw new IllegalArgumentException("Essa multa não está mais pendente.");
+        }
+        return sistema.quitarMulta(linha.idMulta());
     }
 
     private int inteiroPositivo(String texto, String campo) {
@@ -295,7 +354,7 @@ public final class MultasController {
         try { bloco.run(); }
         catch (IllegalArgumentException | SecurityException e) { alerta(Alert.AlertType.WARNING, "Atenção", e.getMessage()); }
         catch (RuntimeException e) {
-            LOG.log(Level.SEVERE, "Falha ao " + acao, e);
+            LOG.log(Level.SEVERE, e, () -> "Falha ao " + acao);
             alerta(Alert.AlertType.ERROR, "Erro", "Não foi possível " + acao + ". Consulte os logs.");
         }
     }
