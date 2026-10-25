@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox spacing="22" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="apresentacao.controllers.HistoricoClienteController">
+  <HBox spacing="14">
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="CONTRATOS DO CLIENTE" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalContratos" text="0" styleClass="stat-value"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="TOTAL EM ALUGUÉIS" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalAlugueis" text="R$ 0,00" styleClass="stat-value"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="TOTAL EM MULTAS" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalMultas" text="R$ 0,00" styleClass="stat-value, stat-amber"/>
+    </VBox>
+  </HBox>
+  <VBox spacing="13" styleClass="panel-card">
+    <HBox spacing="12" alignment="CENTER_LEFT">
+      <VBox spacing="3">
+        <Label text="Histórico de aluguéis do cliente" styleClass="section-title"/>
+        <Label text="Escolha um cliente para ver todos os contratos dele." styleClass="minor-text"/>
+      </VBox>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button fx:id="btnExportar" text="Exportar CSV" onAction="#exportar" styleClass="primary-button"/>
+    </HBox>
+    <Label fx:id="lblAviso" text="" styleClass="texto-sucesso"/>
+    <VBox spacing="6">
+      <Label text="Cliente" styleClass="field-label"/>
+      <ComboBox fx:id="cbCliente" promptText="Selecione o cliente" prefWidth="360" styleClass="input-field"/>
+    </VBox>
+    <TableView fx:id="tabela" prefHeight="335" styleClass="data-table">
+      <columns>
+        <TableColumn fx:id="colId" text="Nº" prefWidth="70"/>
+        <TableColumn fx:id="colItem" text="ITEM" prefWidth="220"/>
+        <TableColumn fx:id="colRetirada" text="RETIRADA" prefWidth="105"/>
+        <TableColumn fx:id="colPrevista" text="DEVOLUÇÃO PREVISTA" prefWidth="165"/>
+        <TableColumn fx:id="colStatus" text="STATUS" prefWidth="105"/>
+        <TableColumn fx:id="colValor" text="VALOR" prefWidth="115"/>
+        <TableColumn fx:id="colMulta" text="MULTA" prefWidth="105"/>
+      </columns>
+    </TableView>
+  </VBox>
+</VBox>

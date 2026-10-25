@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<BorderPane fx:id="raiz" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="apresentacao.controllers.MultasController" prefWidth="1280" prefHeight="800" styleClass="app-root">
+  <stylesheets><URL value="@../css/identidade.css"/></stylesheets>
+  <left><VBox prefWidth="225" minWidth="225" spacing="19" styleClass="sidebar">
+      <padding><Insets top="27" bottom="22" left="16" right="16"/></padding>
+      <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png"/></image></ImageView>
+      <VBox spacing="5">
+        <Label fx:id="lblPerfil" text="ADMINISTRADOR" styleClass="role-label"/>
+        <Region prefHeight="8"/>
+        <Label text="Contratos" styleClass="nav-item" maxWidth="Infinity"/><Label text="Itens" styleClass="nav-item" maxWidth="Infinity"/><Label text="Categorias" styleClass="nav-item" maxWidth="Infinity"/><Button text="Fornecedores" onAction="#abrirFornecedores" maxWidth="Infinity" styleClass="nav-item" /><Label text="Usuários" styleClass="nav-item" maxWidth="Infinity" /><Button text="Multas" onAction="#abrirMultas" maxWidth="Infinity" styleClass="nav-item, nav-selected" /><Label text="Relatórios" styleClass="nav-item" maxWidth="Infinity" />
+      </VBox>
+      <Region VBox.vgrow="ALWAYS" />
+      <Separator/>
+      <HBox spacing="9" alignment="CENTER_LEFT">
+        <Label fx:id="lblAvatar" text="U" styleClass="avatar" />
+        <VBox spacing="2">
+           <Label fx:id="lblNomeUsuario" text="Usuário autenticado" styleClass="user-name"/>
+           <Label text="Sessão ativa" styleClass="user-role" />
+        </VBox>
+      </HBox>
+      <Button text="Sair da conta" onAction="#encerrarSessao" styleClass="secondary-button" maxWidth="Infinity"/>
+    </VBox></left>
+  <center><ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
+      <content><VBox spacing="22" styleClass="content-area">
+        <padding><Insets top="32" bottom="34" left="35" right="35"/></padding>
+        <HBox alignment="CENTER_LEFT" spacing="12"><VBox spacing="4">
+          <Label text="Gestão de multas" styleClass="page-title" />
+          <Label text="Consulte, registre e quite multas de avaria ou atraso." styleClass="page-subtitle" /></VBox>
+          <Region HBox.hgrow="ALWAYS" /><Button text="+ Registrar multa" onAction="#mostrarFormulario" styleClass="primary-button" /></HBox><VBox fx:id="formulario" managed="false" visible="false" spacing="16" styleClass="panel-card">
+      <Label text="Registrar nova multa manual" styleClass="section-title"/>
+      <Label text="As multas por atraso são geradas pela lógica de contratos; aqui registre AVARIA ou OUTRO." styleClass="minor-text"/>
+      <GridPane hgap="16" vgap="10">
+       <columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints>
+       <Label text="ID do contrato *" styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+       <Label text="Tipo *" styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+       <TextField fx:id="campoContrato" promptText="Ex.: 1042" styleClass="input-field" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+       <ComboBox fx:id="campoTipo" maxWidth="Infinity" styleClass="input-field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+       <Label text="Valor (R$) *" styleClass="field-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+       <TextField fx:id="campoValor" promptText="Ex.: 45,90" styleClass="input-field" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+      </GridPane>
+      <Label text="Descrição *" styleClass="field-label" />
+      <TextArea fx:id="campoDescricao" promptText="Descreva o motivo da multa..." prefRowCount="3" wrapText="true" styleClass="input-field" />
+      <HBox alignment="CENTER_RIGHT" spacing="9">
+       <Button text="Cancelar" onAction="#cancelarFormulario" styleClass="secondary-button" />
+       <Button text="Registrar multa" onAction="#registrar" styleClass="primary-button" />
+      </HBox>
+      </VBox><HBox spacing="14"><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label text="TOTAL DE MULTAS" styleClass="stat-caption" />
+        <Label fx:id="lblTotal" text="0" styleClass="stat-value" />
+        </VBox><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label text="MULTAS PENDENTES" styleClass="stat-caption" />
+        <Label fx:id="lblPendentes" text="0" styleClass="stat-value" />
+        </VBox><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label text="VALOR PENDENTE (R$)" styleClass="stat-caption" />
+        <Label fx:id="lblValorPendente" text="0" styleClass="stat-value" />
+        </VBox></HBox><VBox spacing="13" styleClass="panel-card">
+      <HBox alignment="CENTER_LEFT" spacing="12"><VBox spacing="4">
+       <Label text="Multas registradas" styleClass="section-title" />
+       <Label text="Inclui multas manuais (M-) e multas de contratos (C-)." styleClass="minor-text" />
+       </VBox><Region HBox.hgrow="ALWAYS"/>
+       <Button text="Atualizar lista" onAction="#atualizar" styleClass="secondary-button" />
+      </HBox>
+      <TextField fx:id="busca" promptText="Buscar por referência, contrato, tipo ou descrição..." styleClass="input-field"/>
+      <HBox alignment="CENTER_LEFT" spacing="9">
+       <Button fx:id="btnTodas" text="Todas" onAction="#filtrarTodas" styleClass="filter-button" /><Button fx:id="btnPendentes" text="Pendentes" onAction="#filtrarPendentes" styleClass="filter-button" /><Button fx:id="btnPagas" text="Pagas" onAction="#filtrarPagas" styleClass="filter-button" />
+       <Region HBox.hgrow="ALWAYS" />
+       <Label fx:id="lblResultado" text="Exibindo 0 de 0" styleClass="minor-text"/>
+       </HBox>
+      <TableView fx:id="tabela" prefHeight="345" styleClass="data-table">
+       <columns>
+        <TableColumn fx:id="colRef" text="REF." prefWidth="75" />
+        <TableColumn fx:id="colContrato" text="CONTRATO" prefWidth="85" />
+        <TableColumn fx:id="colTipo" text="TIPO" prefWidth="100" />
+        <TableColumn fx:id="colDescricao" text="DESCRIÇÃO" prefWidth="225" />
+        <TableColumn fx:id="colValor" text="VALOR" prefWidth="120" />
+        <TableColumn fx:id="colData" text="DATA" prefWidth="105" />
+        <TableColumn fx:id="colStatus" text="STATUS" prefWidth="90" />
+       </columns>
+      </TableView>
+      <Label text="Quitação registra o pagamento no sistema; não realiza transação bancária." styleClass="minor-text"/>
+      <HBox alignment="CENTER_RIGHT"><Button fx:id="btnQuitar" text="Marcar multa como quitada" onAction="#quitar" styleClass="primary-button"/></HBox>
+      </VBox>
+      </VBox></content>
+  </ScrollPane></center>
+</BorderPane>

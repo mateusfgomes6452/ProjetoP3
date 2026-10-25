@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox spacing="22" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="apresentacao.controllers.ItensDisponiveisController">
+  <HBox spacing="14">
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="ITENS DISPONÍVEIS" styleClass="stat-caption"/>
+      <Label fx:id="lblTotal" text="0" styleClass="stat-value"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="CATEGORIAS" styleClass="stat-caption"/>
+      <Label fx:id="lblCategorias" text="0" styleClass="stat-value"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="TAXA MÉDIA POR DIA" styleClass="stat-caption"/>
+      <Label fx:id="lblTaxaMedia" text="R$ 0,00" styleClass="stat-value"/>
+    </VBox>
+  </HBox>
+  <VBox spacing="13" styleClass="panel-card">
+    <HBox spacing="12" alignment="CENTER_LEFT">
+      <VBox spacing="3">
+        <Label text="Itens disponíveis por categoria" styleClass="section-title"/>
+        <Label text="Itens com status DISPONÍVEL, agrupados pela categoria." styleClass="minor-text"/>
+      </VBox>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button text="Atualizar lista" onAction="#atualizar" styleClass="secondary-button"/>
+      <Button text="Exportar CSV" onAction="#exportar" styleClass="primary-button"/>
+    </HBox>
+    <Label fx:id="lblAviso" text="" styleClass="texto-sucesso"/>
+    <TextField fx:id="busca" promptText="Buscar item pelo nome..." styleClass="input-field"/>
+    <HBox alignment="CENTER_LEFT" spacing="9">
+      <FlowPane fx:id="filtrosCategoria" hgap="9" vgap="9" HBox.hgrow="ALWAYS"/>
+      <Label fx:id="lblResultado" text="Exibindo 0 de 0" styleClass="minor-text"/>
+    </HBox>
+    <TableView fx:id="tabela" prefHeight="335" styleClass="data-table">
+      <columns>
+        <TableColumn fx:id="colCategoria" text="CATEGORIA" prefWidth="210"/>
+        <TableColumn fx:id="colId" text="Nº" prefWidth="80"/>
+        <TableColumn fx:id="colNome" text="ITEM" prefWidth="370"/>
+        <TableColumn fx:id="colTaxa" text="TAXA POR DIA" prefWidth="210"/>
+      </columns>
+    </TableView>
+  </VBox>
+</VBox>

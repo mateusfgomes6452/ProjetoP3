@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox spacing="22" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="apresentacao.controllers.FaturamentoController">
+  <HBox spacing="14">
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="CONTRATOS NO PERÍODO" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalContratos" text="0" styleClass="stat-value"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="TOTAL DE ALUGUÉIS" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalAlugueis" text="R$ 0,00" styleClass="stat-value"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="TOTAL DE MULTAS" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalMultas" text="R$ 0,00" styleClass="stat-value, stat-amber"/>
+    </VBox>
+    <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+      <Label text="TOTAL GERAL" styleClass="stat-caption"/>
+      <Label fx:id="lblTotalGeral" text="R$ 0,00" styleClass="stat-value, stat-green"/>
+    </VBox>
+  </HBox>
+  <VBox spacing="13" styleClass="panel-card">
+    <HBox spacing="12" alignment="CENTER_LEFT">
+      <VBox spacing="3">
+        <Label text="Faturamento por período" styleClass="section-title"/>
+        <Label text="Contratos retirados entre as datas escolhidas." styleClass="minor-text"/>
+      </VBox>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button fx:id="btnExportar" text="Exportar CSV" onAction="#exportar" styleClass="primary-button"/>
+    </HBox>
+    <Label fx:id="lblAviso" text="" styleClass="texto-sucesso"/>
+    <HBox spacing="14" alignment="BOTTOM_LEFT">
+      <VBox spacing="6">
+        <Label text="Data inicial" styleClass="field-label"/>
+        <DatePicker fx:id="dataInicial" prefWidth="190" styleClass="input-field"/>
+      </VBox>
+      <VBox spacing="6">
+        <Label text="Data final" styleClass="field-label"/>
+        <DatePicker fx:id="dataFinal" prefWidth="190" styleClass="input-field"/>
+      </VBox>
+      <Button text="Gerar relatório" onAction="#gerar" styleClass="secondary-button"/>
+    </HBox>
+    <Label fx:id="lblErro" text="" styleClass="texto-erro"/>
+    <TableView fx:id="tabela" prefHeight="335" styleClass="data-table">
+      <columns>
+        <TableColumn fx:id="colId" text="Nº" prefWidth="55"/>
+        <TableColumn fx:id="colCliente" text="CLIENTE" prefWidth="180"/>
+        <TableColumn fx:id="colItem" text="ITEM" prefWidth="205"/>
+        <TableColumn fx:id="colRetirada" text="RETIRADA" prefWidth="105"/>
+        <TableColumn fx:id="colAluguel" text="ALUGUEL" prefWidth="115"/>
+        <TableColumn fx:id="colMulta" text="MULTA" prefWidth="105"/>
+        <TableColumn fx:id="colTotal" text="TOTAL" prefWidth="105"/>
+      </columns>
+    </TableView>
+  </VBox>
+</VBox>
