@@ -1,6 +1,5 @@
 package apresentacao.controllers;
 
-import apresentacao.Navegador;
 import entidades.Categoria;
 import facade.SistemaFacade;
 import facade.SistemaJavaFX;
@@ -182,11 +181,6 @@ public class CategoriasController {
     private void abrirCategorias() {
         mostrarFormulario(false);
         atualizar();
-    }
-
-    @FXML
-    private void encerrarSessao() {
-        Navegador.trocarTela(raiz, "/telaLogin.fxml");
     }
 
     private void limparFormulario() {

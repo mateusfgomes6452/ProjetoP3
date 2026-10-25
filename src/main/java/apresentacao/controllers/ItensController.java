@@ -1,6 +1,5 @@
 package apresentacao.controllers;
 
-import apresentacao.Navegador;
 import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
@@ -242,11 +241,6 @@ public class ItensController {
     private void abrirItens() {
         mostrarFormulario(false);
         atualizar();
-    }
-
-    @FXML
-    private void encerrarSessao() {
-        Navegador.trocarTela(raiz, "/telaLogin.fxml");
     }
 
     private void carregarCombos() {
