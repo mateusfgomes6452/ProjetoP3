@@ -1,5 +1,7 @@
 package apresentacao.controllers;
 
+import java.util.List;
+
 import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
@@ -7,29 +9,14 @@ import facade.SistemaFacade;
 import facade.SistemaJavaFX;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
-public class ItensController {
+public class ItensController extends BaseControllersCRUD<Item> {
 
-    @FXML private BorderPane raiz;
-    @FXML private Label lblPerfil;
-    @FXML private Label lblAvatar;
-    @FXML private Label lblNomeUsuario;
-
-    @FXML private VBox formulario;
-    @FXML private Label tituloFormulario;
     @FXML private TextField campoNome;
     @FXML private TextField campoTaxa;
     @FXML private TextField campoDescricao;
@@ -37,18 +24,7 @@ public class ItensController {
     @FXML private ComboBox<String> comboEstado;
     @FXML private ComboBox<Categoria> comboCategoria;
     @FXML private ComboBox<Fornecedor> comboFornecedor;
-    @FXML private Button btnSalvar;
 
-    @FXML private Label lblTotal;
-    @FXML private Label lblAtivos;
-    @FXML private Label lblInativos;
-    @FXML private Label lblResultado;
-    @FXML private TextField busca;
-    @FXML private Button btnTodos;
-    @FXML private Button btnAtivos;
-    @FXML private Button btnInativos;
-
-    @FXML private TableView<Item> tabela;
     @FXML private TableColumn<Item, String> colId;
     @FXML private TableColumn<Item, String> colNome;
     @FXML private TableColumn<Item, String> colDescricao;
@@ -58,12 +34,7 @@ public class ItensController {
     @FXML private TableColumn<Item, String> colStatus;
 
     private final SistemaFacade sistema = SistemaJavaFX.getSistema();
-
-    private FilteredList<Item> listaFiltrada;
     private Item itemEmEdicao;
-    
-    private static final String TODOS = "TODOS";
-    private String filtroStatus = TODOS;
 
     @FXML
     private void initialize() {
@@ -86,73 +57,49 @@ public class ItensController {
             @Override public Fornecedor fromString(String s) { return null; }
         });
 
-        busca.textProperty().addListener((obs, antigo, novo) -> aplicarFiltro());
-        atualizar();
-    }
-    
-    @FXML
-    private void atualizar() {
-        listaFiltrada = new FilteredList<>(FXCollections.observableArrayList(sistema.listarItens()), i -> true);
-        tabela.setItems(listaFiltrada);
-        aplicarFiltro();
+        iniciarBase();
     }
 
-    private void aplicarFiltro() {
-        String texto = busca.getText() == null ? "" : busca.getText().trim().toLowerCase();
-
-        listaFiltrada.setPredicate(item -> {
-            boolean passaStatus = filtroStatus.equals(TODOS)
-                    || (filtroStatus.equals("ATIVOS") && item.isAtivo())
-                    || (filtroStatus.equals("INATIVOS") && !item.isAtivo());
-
-            boolean passaBusca = texto.isEmpty()
-                    || String.valueOf(item.getId()).equals(texto)
-                    || item.getNome().toLowerCase().contains(texto);
-
-            return passaStatus && passaBusca;
-        });
-
-        int total = listaFiltrada.getSource().size();
-        long ativos = listaFiltrada.getSource().stream().filter(Item::isAtivo).count();
-        lblTotal.setText(String.valueOf(total));
-        lblAtivos.setText(String.valueOf(ativos));
-        lblInativos.setText(String.valueOf(total - ativos));
-        lblResultado.setText("Exibindo " + listaFiltrada.size() + " de " + total);
+    @Override
+    protected List<Item> listar() {
+        return sistema.listarItens();
     }
 
-    @FXML private void todos()    { trocarFiltro(TODOS, btnTodos); }
-    @FXML private void ativos()   { trocarFiltro("ATIVOS", btnAtivos); }
-    @FXML private void inativos() { trocarFiltro("INATIVOS", btnInativos); }
+    @Override
+    protected boolean estaAtivo(Item i) {
+        return i.isAtivo();
+    }
 
-    private void trocarFiltro(String filtro, Button botao) {
-        filtroStatus = filtro;
-        for (Button b : new Button[] { btnTodos, btnAtivos, btnInativos }) {
-            b.getStyleClass().remove("filter-active");
-        }
-        botao.getStyleClass().add("filter-active");
-        aplicarFiltro();
+    @Override
+    protected boolean combinaComBusca(Item i, String texto) {
+        return String.valueOf(i.getId()).equals(texto) || i.getNome().toLowerCase().contains(texto);
+    }
+
+    @Override
+    protected String nomeDe(Item i) {
+        return "o item " + i.getNome();
+    }
+
+    @Override
+    protected void desativarRegistro(Item i) {
+        sistema.excluirItem(i.getId());
     }
 
     @FXML
     private void novo() {
         itemEmEdicao = null;
-        tituloFormulario.setText("Cadastrar item");
-        btnSalvar.setText("Salvar item");
         limparFormulario();
         carregarCombos();
-        mostrarFormulario(true);
+        abrirFormulario("Cadastrar item", "Salvar item");
     }
 
     @FXML
     private void editar() {
-        Item selecionado = tabela.getSelectionModel().getSelectedItem();
+        Item selecionado = selecionado("Selecione um item na tabela.");
         if (selecionado == null) {
-            aviso("Selecione um item na tabela.");
             return;
         }
         itemEmEdicao = selecionado;
-        tituloFormulario.setText("Editar item");
-        btnSalvar.setText("Salvar alterações");
         carregarCombos();
 
         campoNome.setText(selecionado.getNome());
@@ -162,12 +109,7 @@ public class ItensController {
         comboEstado.setValue(selecionado.getEstadoConservacao());
         comboCategoria.setValue(selecionado.getCategoria());
         comboFornecedor.setValue(selecionado.getFornecedor());
-        mostrarFormulario(true);
-    }
-
-    @FXML
-    private void cancelar() {
-        mostrarFormulario(false);
+        abrirFormulario("Editar item", "Salvar alterações");
     }
 
     @FXML
@@ -200,9 +142,8 @@ public class ItensController {
 
         boolean ok;
         if (itemEmEdicao == null) {
-            Item novoItem = new Item(sistema.gerarProximoIdItem(), nome, descricao,
-                    taxa, estado, reposicao, categoria, fornecedor);
-            ok = sistema.cadastrarItem(novoItem);
+            ok = sistema.cadastrarItem(new Item(sistema.gerarProximoIdItem(), nome, descricao,
+                    taxa, estado, reposicao, categoria, fornecedor));
         } else {
             itemEmEdicao.setNome(nome);
             itemEmEdicao.setDescricao(descricao);
@@ -218,31 +159,12 @@ public class ItensController {
             aviso("Não foi possível salvar o item.");
             return;
         }
-        mostrarFormulario(false);
-        atualizar();
-    }
-
-    @FXML
-    private void desativar() {
-        Item selecionado = tabela.getSelectionModel().getSelectedItem();
-        if (selecionado == null) {
-            aviso("Selecione um item na tabela.");
-            return;
-        }
-        Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION,
-                "Desativar o item " + selecionado.getNome() + "?", ButtonType.YES, ButtonType.NO);
-        confirmacao.setHeaderText(null);
-
-        if (confirmacao.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            sistema.excluirItem(selecionado.getId());
-            atualizar();
-        }
+        voltarParaLista();
     }
 
     @FXML
     private void abrirItens() {
-        mostrarFormulario(false);
-        atualizar();
+        voltarParaLista();
     }
 
     private void carregarCombos() {
@@ -258,17 +180,5 @@ public class ItensController {
         comboEstado.setValue(null);
         comboCategoria.setValue(null);
         comboFornecedor.setValue(null);
-    }
-
-    private void mostrarFormulario(boolean mostrar) {
-        formulario.setVisible(mostrar);
-        formulario.setManaged(mostrar);
-    }
-
-    private void aviso(String texto) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setHeaderText(null);
-        alerta.setContentText(texto);
-        alerta.showAndWait();
     }
 }
