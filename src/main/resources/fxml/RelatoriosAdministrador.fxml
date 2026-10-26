@@ -23,15 +23,15 @@
       <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
       <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
       <VBox spacing="5">
-        <Label fx:id="lblPerfil" styleClass="role-label" text="ADMINISTRADOR" />
-        <Region prefHeight="8" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Contratos" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Itens" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Categorias" />
-        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" />
-        <Label maxWidth="Infinity" styleClass="nav-item" text="Usuários" />
-        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />
-        <Button alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item, nav-selected" text="Relatórios" />
+        <Label fx:id="lblPerfil" text="ADMINISTRADOR" styleClass="role-label"/>
+        <Region prefHeight="8"/>
+        <Label text="Contratos" styleClass="nav-item" maxWidth="Infinity"/>
+        <Label text="Itens" styleClass="nav-item" maxWidth="Infinity"/>
+        <Label text="Categorias" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Fornecedores" onAction="#abrirFornecedores" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="nav-item"/>
+        <Label text="Usuários" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Multas" onAction="#abrirMultas" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="nav-item"/>
+        <Button text="Relatórios" onAction="#abrirRelatorios" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="nav-item, nav-selected"/>
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />

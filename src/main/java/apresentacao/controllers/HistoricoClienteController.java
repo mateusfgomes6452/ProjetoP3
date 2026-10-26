@@ -2,8 +2,8 @@ package apresentacao.controllers;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import apresentacao.base.BaseControllersRelatorios;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Usuario;
@@ -20,10 +20,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
-import main.ConfiguracaoSistema;
 
 /** Aba "Histórico do cliente" (RelatorioHistoricoCliente.fxml): todos os contratos de um cliente. */
-public class HistoricoClienteController {
+public final class HistoricoClienteController extends BaseControllersRelatorios {
 
     @FXML private ComboBox<Usuario> cbCliente;
     @FXML private Button btnExportar;
@@ -80,33 +79,48 @@ public class HistoricoClienteController {
         });
 
         tabela.setItems(contratos);
+        tabela.setPlaceholder(new Label("Selecione um cliente para ver o histórico."));
         Mensagens.esconder(lblAviso);
+    }
+
+    /** Chamado por RelatoriosController.configurar: guarda a sessão e carrega os dados. */
+    public void configurar(SistemaFacade sistema, Usuario usuario) {
+        iniciarSessao(sistema, usuario);
         atualizar();
     }
 
     /** Recarrega a lista de clientes e o histórico do cliente selecionado. */
     @FXML
     public void atualizar() {
-        Usuario anterior = cbCliente.getValue();
+        executar("consultar histórico do cliente", () -> {
+            exigirSessao();
+            Usuario anterior = cbCliente.getValue();
 
-        List<Usuario> clientes = ConfiguracaoSistema.getSistema().listarUsuarios().stream()
-                .filter(u -> u instanceof Cliente)
-                .sorted(Comparator.comparing(Usuario::getNome, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
-        cbCliente.setItems(FXCollections.observableArrayList(clientes));
+            List<Usuario> clientes = sistema.listarUsuarios().stream()
+                    .filter(Cliente.class::isInstance)
+                    .sorted(Comparator.comparing(Usuario::getNome, String.CASE_INSENSITIVE_ORDER))
+                    .toList();
+            cbCliente.setItems(FXCollections.observableArrayList(clientes));
 
-        // mantém o cliente escolhido (se ainda existir)
-        Usuario mantido = anterior == null ? null
-                : clientes.stream().filter(c -> c.getId() == anterior.getId()).findFirst().orElse(null);
-        cbCliente.setValue(mantido);
-        carregarHistorico(mantido);
-        Mensagens.esconder(lblAviso);
+            // mantém o cliente escolhido (se ainda existir)
+            Usuario mantido = anterior == null ? null
+                    : clientes.stream().filter(c -> c.getId() == anterior.getId()).findFirst().orElse(null);
+            cbCliente.setValue(mantido);
+            carregarHistorico(mantido);
+            Mensagens.esconder(lblAviso);
+        });
     }
 
     @FXML
     private void exportar() {
-        ConfiguracaoSistema.getSistema().exportarHistoricoCliente(List.copyOf(contratos));
-        Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/historico_cliente.csv");
+        executar("exportar histórico do cliente", () -> {
+            exigirSessao();
+            if (contratos.isEmpty()) {
+                throw new IllegalArgumentException("Não há contratos para exportar.");
+            }
+            sistema.exportarHistoricoCliente(List.copyOf(contratos));
+            Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/historico_cliente.csv");
+        });
     }
 
     private void carregarHistorico(Usuario cliente) {
@@ -114,7 +128,7 @@ public class HistoricoClienteController {
             contratos.clear();
             tabela.setPlaceholder(new Label("Selecione um cliente para ver o histórico."));
         } else {
-            contratos.setAll(ConfiguracaoSistema.getSistema().listarHistoricoCliente(cliente.getId()));
+            contratos.setAll(sistema.listarHistoricoCliente(cliente.getId()));
             tabela.setPlaceholder(new Label("Este cliente ainda não possui contratos."));
         }
         btnExportar.setDisable(contratos.isEmpty());
@@ -124,7 +138,6 @@ public class HistoricoClienteController {
     }
 
     private Label pilulaStatus(ContratoAluguel contrato) {
-        SistemaFacade sistema = ConfiguracaoSistema.getSistema();
         if (sistema.contratoEstaAtrasado(contrato)) {
             return Pilulas.perigo("Atrasado");
         }

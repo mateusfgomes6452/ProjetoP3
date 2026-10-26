@@ -42,7 +42,6 @@
       </VBox>
       <Button text="Gerar relatório" onAction="#gerar" styleClass="secondary-button"/>
     </HBox>
-    <Label fx:id="lblErro" text="" styleClass="texto-erro"/>
     <TableView fx:id="tabela" prefHeight="335" styleClass="data-table">
       <columns>
         <TableColumn fx:id="colId" text="Nº" prefWidth="55"/>
