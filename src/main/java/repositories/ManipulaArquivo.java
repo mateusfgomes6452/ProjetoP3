@@ -12,7 +12,7 @@ import java.util.List;
 @SuppressWarnings("java:S106")
 public class ManipulaArquivo {
 
-    private String caminhoArquivo;
+    private final String caminhoArquivo;
 
     public ManipulaArquivo(String caminhoArquivo) {
         this.caminhoArquivo = caminhoArquivo;
