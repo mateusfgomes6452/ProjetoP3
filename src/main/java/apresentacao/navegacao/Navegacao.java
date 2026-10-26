@@ -11,9 +11,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Window;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import apresentacao.base.BaseControllers;
 
 public final class Navegacao {
-
+	
+	private static final Logger LOG = Logger.getLogger(BaseControllers.class.getName());
     private static Usuario usuarioLogado;
 
     public interface ControladorComSessao {
@@ -57,7 +62,7 @@ public final class Navegacao {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+        	LOG.log(Level.SEVERE, e, () -> "Falha ao " + acao);
             Alert aviso = new Alert(AlertType.INFORMATION, "Esta tela ainda não está disponível.");
             aviso.setHeaderText(null);
             aviso.showAndWait();

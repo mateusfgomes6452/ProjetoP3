@@ -25,7 +25,7 @@ public class LoginController {
     @FXML
     private PasswordField senha;
 
-    private SistemaFacade sistema = SistemaFacade.getSistema();
+    private final SistemaFacade sistema = SistemaFacade.getSistema();
 
     @FXML
     private void entrar(ActionEvent event) {

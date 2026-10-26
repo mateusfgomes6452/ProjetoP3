@@ -226,7 +226,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         } catch (IllegalArgumentException | SecurityException e) {
             alerta(Alert.AlertType.WARNING, "Atenção", e.getMessage());
         } catch (RuntimeException e) {
-            LOG.log(Level.SEVERE, "Falha ao " + acao, e);
+            LOG.log(Level.SEVERE, e, () -> "Falha ao " + acao);
             alerta(Alert.AlertType.ERROR, "Erro", "Não foi possível " + acao + ". Consulte o log.");
         }
     }

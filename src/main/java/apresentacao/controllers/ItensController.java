@@ -103,48 +103,48 @@ public class ItensController extends BaseControllers<Item> {
             exigirSessao();
             String nome = validarTexto(campoNome.getText(), "Nome");
             String descricao = validarTexto(campoDescricao.getText(), "Descrição");
+            double taxa = lerNumero(campoTaxa.getText(), "Taxa diária");
+            double reposicao = lerNumero(campoReposicao.getText(), "Valor de reposição");
             String estado = comboEstado.getValue();
             Categoria categoria = comboCategoria.getValue();
             Fornecedor fornecedor = comboFornecedor.getValue();
 
-            if (estado == null || estado.isBlank())
-                throw new IllegalArgumentException("Estado de conservação é obrigatório.");
-            if (categoria == null) throw new IllegalArgumentException("Categoria é obrigatória.");
-            if (fornecedor == null) throw new IllegalArgumentException("Fornecedor é obrigatório.");
+            if (estado == null || categoria == null || fornecedor == null)
+                throw new IllegalArgumentException("Estado, categoria e fornecedor são obrigatórios.");
 
-            double taxa;
-            double reposicao;
-            try {
-                taxa = Double.parseDouble(validarTexto(campoTaxa.getText(), "Taxa diária").replace(",", "."));
-                reposicao = Double.parseDouble(validarTexto(campoReposicao.getText(), "Valor de reposição").replace(",", "."));
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Taxa diária e valor de reposição devem ser números válidos.");
-            }
-            if (taxa <= 0 || reposicao <= 0)
-                throw new IllegalArgumentException("Os valores de taxa e reposição devem ser maiores que zero.");
+            Item item = (idEmEdicao == null)
+                    ? new Item(sistema.gerarProximoIdItem(), nome, descricao, taxa, estado, reposicao, categoria, fornecedor)
+                    : sistema.buscarItem(idEmEdicao);
+            if (item == null) throw new IllegalArgumentException("Item não encontrado.");
 
-            final boolean sucesso;
-            if (idEmEdicao == null) {
-                sucesso = sistema.cadastrarItem(new Item(sistema.gerarProximoIdItem(), nome, descricao,
-                        taxa, estado, reposicao, categoria, fornecedor));
-            } else {
-                Item atual = sistema.buscarItem(idEmEdicao);
-                if (atual == null) throw new IllegalArgumentException("Item não encontrado.");
-                atual.setNome(nome);
-                atual.setDescricao(descricao);
-                atual.setTaxaDiaria(taxa);
-                atual.setEstadoConservacao(estado);
-                atual.setValorReposicao(reposicao);
-                atual.setCategoria(categoria);
-                atual.setFornecedor(fornecedor);
-                sucesso = sistema.atualizarItem(atual);
+            if (idEmEdicao != null) {
+                item.setNome(nome);
+                item.setDescricao(descricao);
+                item.setTaxaDiaria(taxa);
+                item.setEstadoConservacao(estado);
+                item.setValorReposicao(reposicao);
+                item.setCategoria(categoria);
+                item.setFornecedor(fornecedor);
             }
 
-            if (!sucesso) throw new IllegalArgumentException("Operação não realizada. Verifique dados duplicados.");
+            boolean ok = (idEmEdicao == null) ? sistema.cadastrarItem(item) : sistema.atualizarItem(item);
+            if (!ok) throw new IllegalArgumentException("Operação não realizada. Verifique dados duplicados.");
+
             cancelar();
             atualizar();
             alerta(Alert.AlertType.INFORMATION, "Sucesso", "Item salvo com sucesso.");
         });
+    }
+
+    private double lerNumero(String texto, String campo) {
+        double valor;
+        try {
+            valor = Double.parseDouble(validarTexto(texto, campo).replace(",", "."));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(campo + " deve ser um número válido.");
+        }
+        if (valor <= 0) throw new IllegalArgumentException(campo + " deve ser maior que zero.");
+        return valor;
     }
 
     private void carregarCombos() {
