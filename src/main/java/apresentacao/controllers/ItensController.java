@@ -293,9 +293,28 @@ public final class ItensController implements Navegacao.ControladorComSessao {
             throw new IllegalArgumentException(nome + " não pode conter ponto e vírgula ou quebras de linha (CSV).");
         return limpo;
     }
-
+    
+    @FXML private void abrirUsuarios() { 
+        executar("navegar para usuarios", () -> { 
+            exigirSessao(); 
+            if (usuario instanceof entidades.Administrador) {
+                navegacao.accept("UsuariosAdministrador"); 
+            } else {
+                navegacao.accept("UsuariosFuncionario"); 
+            }
+        }); 
+    }
     @FXML private void abrirItens() { atualizar(); }
-    @FXML private void abrirCategorias() { executar("navegar para categorias", () -> { exigirSessao(); navegacao.accept("categorias"); }); }
+    @FXML private void abrirCategorias() { 
+        executar("navegar para categorias", () -> { 
+            exigirSessao(); 
+            if (usuario instanceof entidades.Administrador) {
+                navegacao.accept("CategoriasAdministrador"); 
+            } else {
+                navegacao.accept("CategoriasFuncionario"); 
+            }
+        }); 
+    }
     @FXML private void abrirFornecedores() { 
         executar("navegar para fornecedores", () -> { 
             exigirSessao(); 
