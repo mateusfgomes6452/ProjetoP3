@@ -15,7 +15,7 @@
       <padding><Insets top="27" bottom="22" left="16" right="16"/></padding>
       <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png"/></image></ImageView>
       <VBox spacing="5">
-        <Label fx:id="lblPerfil" text="ADMINISTRADOR" styleClass="role-label"/>
+        <Label fx:id="lblPerfil" text="FUNCIONARIO" styleClass="role-label"/>
         <Region prefHeight="8"/>
         <Label text="Contratos" styleClass="nav-item" maxWidth="Infinity"/>
         <Label text="Itens" styleClass="nav-item" maxWidth="Infinity"/>
@@ -23,7 +23,7 @@
         <Button text="Fornecedores" onAction="#abrirFornecedores" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="nav-item"/>
         <Label text="Usuários" styleClass="nav-item" maxWidth="Infinity"/>
         <Button text="Multas" onAction="#abrirMultas" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="nav-item"/>
-        <Button text="Relatórios" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="nav-item, nav-selected"/>
+        <Button text="Relatórios" onAction="#abrirRelatorios" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="nav-item, nav-selected"/>
       </VBox>
       <Region VBox.vgrow="ALWAYS"/>
       <Separator/>

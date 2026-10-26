@@ -3,9 +3,10 @@ package apresentacao.controllers;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import apresentacao.base.BaseControllersRelatorios;
 import entidades.ContratoAluguel;
+import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -18,10 +19,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import main.ConfiguracaoSistema;
 
 /** Aba "Itens alugados" (RelatorioItensAlugados.fxml): contratos ativos, com destaque para devoluções atrasadas. */
-public class ItensAlugadosController {
+public final class ItensAlugadosController extends BaseControllersRelatorios {
 
     private enum Filtro { TODOS, EM_DIA, ATRASADOS }
 
@@ -54,10 +54,8 @@ public class ItensAlugadosController {
         colRetirada.setCellValueFactory(c -> new ReadOnlyStringWrapper(Formatador.data(c.getValue().getDataRetirada())));
         colPrevista.setCellValueFactory(c ->
                 new ReadOnlyStringWrapper(Formatador.data(c.getValue().getDataDevolucaoPrevista())));
-        colAtraso.setCellValueFactory(c -> {
-            long dias = diasDeAtraso(c.getValue());
-            return new ReadOnlyStringWrapper(dias == 0 ? "—" : dias + (dias == 1 ? " dia" : " dias"));
-        });
+        colAtraso.setCellValueFactory(c ->
+                new ReadOnlyStringWrapper(textoAtraso(diasDeAtraso(c.getValue()))));
 
         colSituacao.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
         colSituacao.setCellFactory(coluna -> new TableCell<ContratoAluguel, ContratoAluguel>() {
@@ -75,21 +73,29 @@ public class ItensAlugadosController {
 
         tabela.setItems(visiveis);
         Mensagens.esconder(lblAviso);
+    }
+
+    /** Chamado por RelatoriosController.configurar: guarda a sessão e carrega os dados. */
+    public void configurar(SistemaFacade sistema, Usuario usuario) {
+        iniciarSessao(sistema, usuario);
         atualizar();
     }
 
     /** Recarrega os contratos ativos do back-end. */
     @FXML
     public void atualizar() {
-        ativos.setAll(ConfiguracaoSistema.getSistema().listarContratosAtivos());
+        executar("consultar itens alugados", () -> {
+            exigirSessao();
+            ativos.setAll(sistema.listarContratosAtivos());
 
-        long atrasados = ativos.stream().filter(this::atrasado).count();
-        lblTotalAlugados.setText(String.valueOf(ativos.size()));
-        lblTotalAtrasados.setText(String.valueOf(atrasados));
-        lblTotalEmDia.setText(String.valueOf(ativos.size() - atrasados));
+            long atrasados = ativos.stream().filter(this::atrasado).count();
+            lblTotalAlugados.setText(String.valueOf(ativos.size()));
+            lblTotalAtrasados.setText(String.valueOf(atrasados));
+            lblTotalEmDia.setText(String.valueOf(ativos.size() - atrasados));
 
-        aplicarFiltro();
-        Mensagens.esconder(lblAviso);
+            aplicarFiltro();
+            Mensagens.esconder(lblAviso);
+        });
     }
 
     @FXML
@@ -109,9 +115,14 @@ public class ItensAlugadosController {
 
     @FXML
     private void exportar() {
-        List<ContratoAluguel> lista = visiveis.stream().collect(Collectors.toList());
-        ConfiguracaoSistema.getSistema().exportarItensAlugados(lista);
-        Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_alugados.csv");
+        executar("exportar itens alugados", () -> {
+            exigirSessao();
+            if (visiveis.isEmpty()) {
+                throw new IllegalArgumentException("Não há contratos para exportar.");
+            }
+            sistema.exportarItensAlugados(visiveis.stream().toList());
+            Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_alugados.csv");
+        });
     }
 
     // ---------- regras de exibição ----------
@@ -142,7 +153,6 @@ public class ItensAlugadosController {
     }
 
     private boolean atrasado(ContratoAluguel contrato) {
-        SistemaFacade sistema = ConfiguracaoSistema.getSistema();
         return sistema.contratoEstaAtrasado(contrato);
     }
 
@@ -151,5 +161,15 @@ public class ItensAlugadosController {
             return 0;
         }
         return ChronoUnit.DAYS.between(LocalDate.parse(contrato.getDataDevolucaoPrevista()), LocalDate.now());
+    }
+
+    private String textoAtraso(long dias) {
+        if (dias == 0) {
+            return "—";
+        }
+        if (dias == 1) {
+            return "1 dia";
+        }
+        return dias + " dias";
     }
 }

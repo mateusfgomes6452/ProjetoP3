@@ -6,7 +6,7 @@ public class Item {
 	private static final String STATUS_ALUGADO = "ALUGADO";
 	private static final String STATUS_MANUTENCAO = "MANUTENCAO";
 	
-    private int id;
+    private final int id;
     private String nome;
     private String descricao;
     private double taxaDiaria;

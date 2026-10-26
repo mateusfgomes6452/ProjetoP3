@@ -10,7 +10,7 @@ import facade.SistemaFacade;
 public class MenuFornecedores {
 
     private static final String MENSAGEM_ID_FORNECEDOR = "ID do fornecedor: ";
-    private SistemaFacade sistema;
+    private final SistemaFacade sistema;
     private Scanner scanner;
 
     public MenuFornecedores(SistemaFacade sistema, Scanner scanner) {

@@ -4,9 +4,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
+import apresentacao.base.BaseControllersRelatorios;
 import entidades.Item;
+import entidades.Usuario;
+import facade.SistemaFacade;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,10 +20,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
-import main.ConfiguracaoSistema;
 
 /** Aba "Itens disponíveis" (RelatorioItensDisponiveis.fxml): itens com status DISPONIVEL, filtrados por categoria. */
-public class ItensDisponiveisController {
+public final class ItensDisponiveisController extends BaseControllersRelatorios {
 
     private static final String TODAS = "Todas";
 
@@ -53,32 +54,41 @@ public class ItensDisponiveisController {
         tabela.setItems(visiveis);
         tabela.setPlaceholder(new Label("Nenhum item disponível no momento."));
         busca.textProperty().addListener((obs, antes, depois) -> aplicarFiltro());
-
         Mensagens.esconder(lblAviso);
+    }
+
+    /** Chamado por RelatoriosController.configurar: guarda a sessão e carrega os dados. */
+    public void configurar(SistemaFacade sistema, Usuario usuario) {
+        iniciarSessao(sistema, usuario);
         atualizar();
     }
 
-    /** Recarrega os itens do back-end (chamado ao abrir a aba e no botão "Atualizar"). */
+    /** Recarrega os itens do back-end (ao abrir a aba e no botão "Atualizar lista"). */
     @FXML
     public void atualizar() {
-        List<Item> itens = ConfiguracaoSistema.getSistema().listarItensDisponiveis().stream()
-                .sorted(Comparator.comparing(this::nomeCategoria, String.CASE_INSENSITIVE_ORDER)
-                        .thenComparing(Item::getNome, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
-        todos.setAll(itens);
-        montarFiltros(itens);
-        aplicarFiltro();
-        Mensagens.esconder(lblAviso);
+        executar("consultar itens disponíveis", () -> {
+            exigirSessao();
+            List<Item> itens = sistema.listarItensDisponiveis().stream()
+                    .sorted(Comparator.comparing(this::nomeCategoria, String.CASE_INSENSITIVE_ORDER)
+                            .thenComparing(Item::getNome, String.CASE_INSENSITIVE_ORDER))
+                    .toList();
+            todos.setAll(itens);
+            montarFiltros(itens);
+            aplicarFiltro();
+            Mensagens.esconder(lblAviso);
+        });
     }
 
     @FXML
     private void exportar() {
-        if (visiveis.isEmpty()) {
-            Mensagens.erro(lblAviso, "Não há itens para exportar.");
-            return;
-        }
-        ConfiguracaoSistema.getSistema().exportarItensDisponiveis(List.copyOf(visiveis));
-        Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_disponiveis.csv");
+        executar("exportar itens disponíveis", () -> {
+            exigirSessao();
+            if (visiveis.isEmpty()) {
+                throw new IllegalArgumentException("Não há itens para exportar.");
+            }
+            sistema.exportarItensDisponiveis(List.copyOf(visiveis));
+            Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_disponiveis.csv");
+        });
     }
 
     // ---------- filtros ----------
