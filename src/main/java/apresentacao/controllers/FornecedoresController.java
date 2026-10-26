@@ -25,7 +25,10 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
     @FXML private TableColumn<Fornecedor, String> colEmail;
     @FXML private TableColumn<Fornecedor, String> colTelefone;
     @FXML private TableColumn<Fornecedor, String> colStatus;
-    @FXML private TextField razao, cnpj, email, telefone;
+    @FXML private TextField razao;
+    @FXML private TextField cCnpj;
+    @FXML private TextField email;
+    @FXML private TextField telefone;
 
     @FXML
     private void initialize() {
@@ -67,9 +70,9 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
             Fornecedor f = selecionado();
             idEmEdicao = f.getId();
             tituloFormulario.setText("Editar fornecedor #" + f.getId());
-            razao.setText(f.getRazaoSocial()); cnpj.setText(f.getCnpj());
+            razao.setText(f.getRazaoSocial()); cCnpj.setText(f.getCnpj());
             email.setText(f.getEmail()); telefone.setText(f.getTelefone());
-            cnpj.setDisable(true);
+            cCnpj.setDisable(true);
             btnSalvar.setText("Salvar alterações");
             exibirFormulario(true);
             razao.requestFocus();
@@ -90,7 +93,7 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
 
             final boolean sucesso;
             if (idEmEdicao == null) {
-                String documento = validarTexto(cnpj.getText(), "CNPJ").toUpperCase(Locale.ROOT);
+                String documento = validarTexto(cCnpj.getText(), "CNPJ").toUpperCase(Locale.ROOT);
                 if (!CNPJ.matcher(documento).matches())
                     throw new IllegalArgumentException("CNPJ: use XX.XXX.XXX/XXXX-XX.");
                 sucesso = sistema.cadastrarFornecedor(

@@ -53,8 +53,6 @@ public class SistemaFacade {
         this.gerenciamentoMultas     = gerenciamentoMultas;
         this.geradorRelatorios       = geradorRelatorios;
         
-        // AUTO-REGISTRO: Salva a instância automaticamente assim que ela é criada!
-        instancia = this;
     }
 
     // =========================================================================

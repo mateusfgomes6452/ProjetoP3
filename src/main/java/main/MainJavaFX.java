@@ -70,8 +70,6 @@ public class MainJavaFX extends Application {
                 "obrigadojackson"
             );
             sistema.cadastrarUsuario(adminPadrao);
-            
-            System.out.println("Usuário padrão criado para testes (JavaFX)");
         }
 
         Parent raiz = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
