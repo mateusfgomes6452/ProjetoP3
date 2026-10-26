@@ -93,16 +93,6 @@
               <ComboBox fx:id="comboFornecedor" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
               <Label styleClass="field-label" text="Valor de reposição *" GridPane.columnIndex="0" GridPane.rowIndex="6" />
               <TextField fx:id="campoReposicao" promptText="Ex.: 300.00" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
             </GridPane>
             <HBox alignment="CENTER_RIGHT" spacing="9">
               <Button onAction="#cancelar" styleClass="secondary-button" text="Cancelar" />

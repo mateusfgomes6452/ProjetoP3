@@ -12,7 +12,7 @@ public class MainJavaFX extends Application {
 
     @Override
     public void start(Stage palco) throws IOException {
-        Parent raiz = FXMLLoader.load(getClass().getResource("/fxml/ItensAdministrador.fxml"));
+        Parent raiz = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
         palco.setTitle("Loja que Aluga de Tudo");
         palco.setScene(new Scene(raiz));
         palco.show();
