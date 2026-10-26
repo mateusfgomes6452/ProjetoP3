@@ -1,4 +1,4 @@
-package apresentacao.controllers;
+package apresentacao.navegacao;
 
 import entidades.Usuario;
 import facade.SistemaFacade;

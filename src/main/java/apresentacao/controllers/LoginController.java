@@ -1,5 +1,6 @@
 package apresentacao.controllers;
 
+import apresentacao.navegacao.Navegacao;
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
