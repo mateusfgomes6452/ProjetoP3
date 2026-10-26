@@ -42,6 +42,15 @@ public abstract class BaseControllersCRUD<T> {
     protected abstract boolean combinaComBusca(T registro, String texto);
     protected abstract String nomeDe(T registro);
     protected abstract void desativarRegistro(T registro);
+    
+    @FXML protected void abrirItens()        { ir("/fxml/ItensAdministrador.fxml"); }
+    @FXML protected void abrirCategorias()   { ir("/fxml/CategoriasAdministrador.fxml"); }
+    @FXML protected void abrirFornecedores() { ir("/fxml/FornecedoresAdministrador.fxml"); }
+    @FXML protected void encerrarSessao() { ir("/fxml/FornecedoresAdministrador.fxml"); }
+
+    private void ir(String arquivo) {
+        Navegacao.irPara(tabela, arquivo); 
+    }
 
     protected void iniciarBase() {
         busca.textProperty().addListener((obs, antigo, novo) -> aplicarFiltro());

@@ -28,7 +28,6 @@ public final class Navegacao {
         }
     }
 
-    /** "Sair da conta": por enquanto fecha o aplicativo (ainda não existe tela de login em JavaFX). */
     public static void sair() {
         Platform.exit();
     }

@@ -110,7 +110,7 @@ public class CategoriasController extends BaseControllersCRUD<Categoria> {
     }
 
     @FXML
-    private void abrirCategorias() {
+    protected void abrirCategorias() {
         voltarParaLista();
     }
 }

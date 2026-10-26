@@ -163,7 +163,7 @@ public class ItensController extends BaseControllersCRUD<Item> {
     }
 
     @FXML
-    private void abrirItens() {
+    protected void abrirItens() {
         voltarParaLista();
     }
 

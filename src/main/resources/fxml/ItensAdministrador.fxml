@@ -31,8 +31,8 @@
         <Region prefHeight="8" />
      	<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Contratos" />
      	<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirItens" styleClass="nav-item, nav-selected" text="Itens" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="#abrirCategorias" text="Categorias" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Fornecedores" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item" text="Categorias" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" />
 		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Usuários" />
 		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Multas" />
 		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Relatórios" />
@@ -56,15 +56,15 @@
           <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
 
           <HBox alignment="CENTER_LEFT">
-            <VBox prefHeight="104.0" prefWidth="224.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="ITENS CADASTRADOS" />
               <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
             </VBox>
-            <VBox prefHeight="104.0" prefWidth="311.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="ITENS ATIVOS" />
               <Label fx:id="lblAtivos" styleClass="stat-value" text="0" />
             </VBox>
-            <VBox prefHeight="104.0" prefWidth="235.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="ITENS INATIVOS" />
               <Label fx:id="lblInativos" styleClass="stat-value" text="0" />
             </VBox>
