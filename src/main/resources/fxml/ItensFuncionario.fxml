@@ -29,13 +29,39 @@
       <VBox spacing="5">
         <Label fx:id="lblPerfil" styleClass="role-label" text="FUNCIONÁRIOS" />
         <Region prefHeight="8" />
-        <Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Usuários" />
-        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirItens" styleClass="nav-item, nav-selected" text="Itens" />
-        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item" text="Categorias" />
-        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" />
-     	<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Contratos" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Multas" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Relatórios" />
+        <Button text="Usuários"
+                disable="true"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Itens"
+                onAction="#abrirItens"
+                maxWidth="Infinity"
+                styleClass="nav-item, nav-selected"/>
+
+        <Button text="Categorias"
+                onAction="#abrirCategorias"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+
+        <Button text="Fornecedores"
+                onAction="#abrirFornecedores"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+
+        <Button text="Contratos"
+                disable="true"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+
+        <Button text="Multas"
+                onAction="#abrirMultas"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+
+        <Button text="Relatórios"
+                onAction="#abrirRelatorios"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />

@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 import apresentacao.base.BaseControllersRelatorios;
 import entidades.Administrador;
+import entidades.Administrador;
 import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.fxml.FXML;
@@ -121,6 +122,29 @@ public final class RelatoriosController extends BaseControllersRelatorios implem
     }
 
     // ---------- menu lateral ----------
+
+    
+    @FXML
+    private void abrirItens() {
+        executar("abrir itens", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "ItensAdministrador"
+                    : "ItensFuncionario");
+        });
+    }
+
+    @FXML
+    private void abrirCategorias() {
+        executar("abrir categorias", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "CategoriasAdministrador"
+                    : "CategoriasFuncionarios");
+        });
+    }
 
     @FXML
     private void abrirRelatorios() {
