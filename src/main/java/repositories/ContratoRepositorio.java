@@ -14,7 +14,7 @@ public class ContratoRepositorio implements IContratoRepositorio {
 
     private List<ContratoAluguel> contratos;
     private IUsuarioRepositorio usuarioRepositorio;
-    private IItemRepositorio itemRepositorio;
+    private final IItemRepositorio itemRepositorio;
     private ManipulaArquivo manipulaArquivo;
 
     public ContratoRepositorio(IUsuarioRepositorio usuarioRepositorio, IItemRepositorio itemRepositorio) {

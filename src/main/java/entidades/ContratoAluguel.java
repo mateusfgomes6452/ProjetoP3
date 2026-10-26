@@ -2,7 +2,7 @@ package entidades;
 public class ContratoAluguel {
 
     private int id;
-    private Cliente cliente;
+    private final Cliente cliente;
     private Item item;
     private String dataRetirada;
     private String dataDevolucaoPrevista;

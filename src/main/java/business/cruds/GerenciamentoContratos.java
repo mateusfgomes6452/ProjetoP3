@@ -8,7 +8,7 @@ import repositories.IContratoRepositorio;
 
 public class GerenciamentoContratos implements IGerenciamentoContratos {
 
-    private IContratoRepositorio repositorio;
+    private final IContratoRepositorio repositorio;
 
     public GerenciamentoContratos(IContratoRepositorio repositorio) {
         this.repositorio = repositorio;

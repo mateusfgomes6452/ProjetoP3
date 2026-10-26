@@ -46,11 +46,30 @@ public final class FornecedoresController {
 
     @FXML private TableView<Fornecedor> tabela;
     @FXML private TableColumn<Fornecedor, Number> colId;
-    @FXML private TableColumn<Fornecedor, String> colRazao, colCnpj, colEmail, colTelefone, colStatus;
-    @FXML private TextField busca, razao, cnpj, email, telefone;
-    @FXML private Label lblTotal, lblAtivos, lblInativos, lblResultado, tituloFormulario;
-    @FXML private Label lblPerfil, lblNomeUsuario, lblAvatar;
-    @FXML private Button btnEditar, btnDesativar, btnTodos, btnAtivos, btnInativos, btnSalvar;
+    @FXML private TableColumn<Fornecedor, String> colRazao;
+    @FXML private TableColumn<Fornecedor, String> colCnpj;
+    @FXML private TableColumn<Fornecedor, String> colEmail;
+    @FXML private TableColumn<Fornecedor, String> colTelefone;
+    @FXML private TableColumn<Fornecedor, String> colStatus;
+    @FXML private TextField busca;
+    @FXML private TextField razao;
+    @FXML private TextField cnpj;
+    @FXML private TextField email;
+    @FXML private TextField telefone;
+    @FXML private Label lblTotal;
+    @FXML private Label lblAtivos;
+    @FXML private Label lblInativos;
+    @FXML private Label lblResultado;
+    @FXML private Label tituloFormulario;
+    @FXML private Label lblPerfil;
+    @FXML private Label lblNomeUsuario;
+    @FXML private Label lblAvatar;
+    @FXML private Button btnEditar;
+    @FXML private Button btnDesativar;
+    @FXML private Button btnTodos;
+    @FXML private Button btnAtivos;
+    @FXML private Button btnInativos;
+    @FXML private Button btnSalvar;
     @FXML private VBox formulario;
 
     @FXML private void initialize() {
