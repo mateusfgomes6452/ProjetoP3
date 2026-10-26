@@ -7,7 +7,6 @@ import apresentacao.controllers.MultasController;
 import apresentacao.controllers.RelatoriosController;
 import entidades.Usuario;
 import facade.SistemaFacade;
-import facade.SistemaJavaFX;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -34,7 +33,7 @@ public class MainRelatorios extends Application {
     @Override
     public void start(Stage palco) {
         this.palco = palco;
-        this.sistema = SistemaJavaFX.getSistema();
+        this.sistema = Main.criarSistema();
         this.usuario = sistema.buscarUsuarioPorEmail(EMAIL_ADMINISTRADOR);
 
         palco.setTitle("Loja que Aluga de Tudo");

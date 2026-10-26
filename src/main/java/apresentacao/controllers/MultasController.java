@@ -1,5 +1,6 @@
 package apresentacao.controllers;
 
+import apresentacao.navegacao.Navegacao;
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
@@ -37,17 +38,27 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
-public final class MultasController {
+public final class MultasController implements Navegacao.ControladorComSessao {
+
     private static final Logger LOG = Logger.getLogger(MultasController.class.getName());
     private static final ZoneId ZONA_LOJA = ZoneId.of("America/Recife");
     private static final String TIPO_AVARIA = "AVARIA";
     private static final String TIPO_OUTRO = "OUTRO";
+
     private enum Filtro { TODAS, PENDENTES, PAGAS }
 
-
-    public record LinhaMulta(String referencia, int idContrato, String tipo,
-                             String descricao, double valor, String data, boolean paga,
-                             Integer idMulta, boolean doContrato) { }
+    // Uma representação visual para as duas origens de multa.
+    public record LinhaMulta(
+            String referencia,
+            int idContrato,
+            String tipo,
+            String descricao,
+            double valor,
+            String data,
+            boolean paga,
+            Integer idMulta,
+            boolean doContrato
+    ) { }
 
     private SistemaFacade sistema;
     private Usuario usuario;
@@ -82,18 +93,23 @@ public final class MultasController {
     @FXML private Button btnPendentes;
     @FXML private Button btnPagas;
 
-    @FXML private void initialize() {
+    @FXML
+    private void initialize() {
         colRef.setCellValueFactory(x -> propriedade(x.getValue().referencia()));
         colContrato.setCellValueFactory(x -> propriedade(String.valueOf(x.getValue().idContrato())));
         colTipo.setCellValueFactory(x -> propriedade(x.getValue().tipo()));
         colDescricao.setCellValueFactory(x -> propriedade(x.getValue().descricao()));
-        colValor.setCellValueFactory(x -> propriedade(moeda(x.getValue().valor())));
-        colData.setCellValueFactory(x -> propriedade(x.getValue().data()));
+        colValor.setCellValueFactory(x -> propriedade(Formatador.moeda(x.getValue().valor())));
+        colData.setCellValueFactory(x -> propriedade(Formatador.data(x.getValue().data())));
         colStatus.setCellValueFactory(x -> propriedade(x.getValue().paga() ? "Paga" : "Pendente"));
+
         tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tabela.setPlaceholder(new Label("Nenhuma multa encontrada."));
-        tabela.getSelectionModel().selectedItemProperty().addListener((obs, anterior, atual) -> ajustarAcoes());
+        tabela.getSelectionModel().selectedItemProperty()
+                .addListener((obs, anterior, atual) -> ajustarAcoes());
         busca.textProperty().addListener((obs, anterior, atual) -> filtrar());
+
+        // Os campos de cadastro não existem no layout do cliente
         if (campoTipo != null) {
             campoTipo.getItems().setAll(TIPO_AVARIA, TIPO_OUTRO);
             campoTipo.setValue(TIPO_AVARIA);
@@ -102,45 +118,57 @@ public final class MultasController {
         ajustarAcoes();
     }
 
-    private ReadOnlyStringWrapper propriedade(String s) { return new ReadOnlyStringWrapper(s == null ? "" : s); }
-    private String moeda(double valor) { return String.format(Locale.forLanguageTag("pt-BR"), "R$ %,.2f", valor); }
+    private ReadOnlyStringWrapper propriedade(String valor) {
+        return new ReadOnlyStringWrapper(valor == null ? "" : valor);
+    }
 
-
-    public void configurar(SistemaFacade sistema, Usuario usuario, Consumer<String> navegacao, Runnable sair) {
+    @Override
+    public void configurar(SistemaFacade sistema, Usuario usuario,
+                           Consumer<String> navegacao, Runnable sair) {
         this.sistema = Objects.requireNonNull(sistema, "SistemaFacade é obrigatório");
         this.usuario = Objects.requireNonNull(usuario, "Usuário autenticado é obrigatório");
         this.navegacao = Objects.requireNonNull(navegacao, "Callback de navegação é obrigatório");
         this.sair = Objects.requireNonNull(sair, "Callback de saída é obrigatório");
+
         exigirSessao();
-        // Confere o perfil esperado pelo layout, e não apenas botões visíveis
-        if ((usuario instanceof Cliente) != (formulario == null)) {
-            throw new SecurityException("Layout incompatível com o perfil autenticado.");
-        }
+        validarLayoutDoPerfil();
         lblPerfil.setText(usuario.getTipo());
         lblNomeUsuario.setText(usuario.getNome());
-        lblAvatar.setText(usuario.getNome().isBlank() ? "U" : usuario.getNome().substring(0, 1).toUpperCase(Locale.ROOT));
+        lblAvatar.setText(usuario.getNome().isBlank()
+                ? "U" : usuario.getNome().substring(0, 1).toUpperCase(Locale.ROOT));
         atualizar();
     }
 
     private void exigirSessao() {
         if (sistema == null || usuario == null || !usuario.isAtivo()
-                || !(usuario instanceof Administrador || usuario instanceof Funcionario || usuario instanceof Cliente)) {
+                || !(usuario instanceof Administrador
+                || usuario instanceof Funcionario || usuario instanceof Cliente)) {
             throw new SecurityException("Sessão ausente ou sem acesso às multas.");
         }
     }
+
     private void exigirOperador() {
         exigirSessao();
         if (!(usuario instanceof Administrador || usuario instanceof Funcionario)) {
-            throw new SecurityException("Clientes não podem registrar multas.");
+            throw new SecurityException("Somente administrador ou funcionário pode registrar multas.");
         }
     }
 
-    @FXML private void atualizar() {
+    private void validarLayoutDoPerfil() {
+        boolean layoutCliente = formulario == null;
+        if ((usuario instanceof Cliente) != layoutCliente) {
+            throw new SecurityException("Layout de multas incompatível com o perfil autenticado.");
+        }
+    }
+
+    @FXML
+    private void atualizar() {
         executar("consultar multas", () -> {
             exigirSessao();
             List<ContratoAluguel> contratos = new ArrayList<>(sistema.listarContratos());
             List<LinhaMulta> linhas = carregarLinhas(contratos);
-            linhas.sort(Comparator.comparing(LinhaMulta::referencia));
+            linhas.sort(Comparator.comparingInt(LinhaMulta::idContrato)
+                    .thenComparing(LinhaMulta::referencia));
             todas = List.copyOf(linhas);
             atualizarIndicadores();
             filtrar();
@@ -148,129 +176,191 @@ public final class MultasController {
     }
 
     private List<LinhaMulta> carregarLinhas(List<ContratoAluguel> contratos) {
-        Map<Integer, ContratoAluguel> porId = contratos.stream()
-                .collect(Collectors.toMap(ContratoAluguel::getId, Function.identity(), (a, b) -> a));
         List<LinhaMulta> linhas = new ArrayList<>();
-        adicionarMultasManuais(linhas, porId);
+
+        // O terminal do cliente consulta/quita multas contratuais.
+        // As multas manuais continuam acessíveis para administração e funcionários.
+        if (!(usuario instanceof Cliente)) {
+            Map<Integer, ContratoAluguel> porId = contratos.stream()
+                    .collect(Collectors.toMap(ContratoAluguel::getId,
+                            Function.identity(), (primeiro, segundo) -> primeiro));
+            adicionarMultasManuais(linhas, porId);
+        }
         adicionarMultasContratuais(linhas, contratos);
         return linhas;
     }
 
-    private void adicionarMultasManuais(List<LinhaMulta> linhas, Map<Integer, ContratoAluguel> porId) {
-        // Registros manuais: mesma fonte utilizada por MenuMultas.listarMultas()
+    private void adicionarMultasManuais(List<LinhaMulta> linhas,
+                                       Map<Integer, ContratoAluguel> contratosPorId) {
         for (Multa multa : sistema.listarMultas()) {
-            ContratoAluguel contrato = porId.get(multa.getIdContrato());
-            if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
-                continue;
+            // A referência ao contrato é mantida mesmo se o contrato não estiver disponível
+            // Só operadores acessam registros manuais, não é expostos a clientes
+            ContratoAluguel contrato = contratosPorId.get(multa.getIdContrato());
+            if (contrato == null) {
+                LOG.warning(() -> "Contrato " + multa.getIdContrato()
+                        + " não encontrado para a multa manual " + multa.getId());
             }
-            linhas.add(new LinhaMulta("M-" + multa.getId(), multa.getIdContrato(),
-                    multa.getTipo(), multa.getDescricao(), multa.getValor(), multa.getDataCriacao(),
+            linhas.add(new LinhaMulta(
+                    "M-" + multa.getId(), multa.getIdContrato(), multa.getTipo(),
+                    multa.getDescricao(), multa.getValor(), multa.getDataCriacao(),
                     multa.isPaga(), multa.getId(), false));
         }
     }
 
-    private void adicionarMultasContratuais(List<LinhaMulta> linhas, List<ContratoAluguel> contratos) {
-        // Multas armazenadas no contrato, conforme MenuCliente
+    private void adicionarMultasContratuais(List<LinhaMulta> linhas,
+                                           List<ContratoAluguel> contratos) {
         for (ContratoAluguel contrato : contratos) {
             if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
                 continue;
             }
-            if (contrato.getValorMulta() > 0) {
-                linhas.add(new LinhaMulta("C-" + contrato.getId(), contrato.getId(), "CONTRATO",
-                        "Multa do contrato" + (contrato.getItem() == null ? "" : " - " + contrato.getItem().getNome()),
-                        contrato.getValorMulta(), "-", contrato.isMultaPaga(), null, true));
+            if (contrato.getValorMulta() <= 0) {
+                continue;
             }
+            String nomeItem = contrato.getItem() == null
+                    ? "" : " - " + contrato.getItem().getNome();
+            linhas.add(new LinhaMulta(
+                    "C-" + contrato.getId(), contrato.getId(), "CONTRATO",
+                    "Multa do contrato" + nomeItem, contrato.getValorMulta(),
+                    null, contrato.isMultaPaga(), null, true));
         }
+    }
+
+    private boolean pertenceAoCliente(ContratoAluguel contrato) {
+        return contrato != null && contrato.getCliente() != null
+                && usuario != null && contrato.getCliente().getId() == usuario.getId();
     }
 
     private void atualizarIndicadores() {
         lblTotal.setText(String.valueOf(todas.size()));
-        long pendentes = todas.stream().filter(x -> !x.paga()).count();
+        long pendentes = todas.stream().filter(multa -> !multa.paga()).count();
         lblPendentes.setText(String.valueOf(pendentes));
-        double total = todas.stream().filter(x -> !x.paga()).mapToDouble(LinhaMulta::valor).sum();
-        lblValorPendente.setText(moeda(total));
-    }
-
-    private boolean pertenceAoCliente(ContratoAluguel contrato) {
-        return contrato != null && contrato.getCliente() != null && contrato.getCliente().getId() == usuario.getId();
+        double totalPendente = todas.stream().filter(multa -> !multa.paga())
+                .mapToDouble(LinhaMulta::valor).sum();
+        lblValorPendente.setText(Formatador.moeda(totalPendente));
     }
 
     private void filtrar() {
-        String termo = busca.getText() == null ? "" : busca.getText().strip().toLowerCase(Locale.ROOT);
-        List<LinhaMulta> linhas = todas.stream()
-                .filter(x -> filtro == Filtro.TODAS || (filtro == Filtro.PAGAS) == x.paga())
-                .filter(x -> termo.isEmpty()
-                        || x.referencia().toLowerCase(Locale.ROOT).contains(termo)
-                        || String.valueOf(x.idContrato()).equals(termo)
-                        || x.tipo().toLowerCase(Locale.ROOT).contains(termo)
-                        || x.descricao().toLowerCase(Locale.ROOT).contains(termo))
+        String termo = busca.getText() == null
+                ? "" : busca.getText().strip().toLowerCase(Locale.ROOT);
+        List<LinhaMulta> filtradas = todas.stream()
+                .filter(multa -> filtro == Filtro.TODAS
+                        || (filtro == Filtro.PAGAS) == multa.paga())
+                .filter(multa -> termo.isEmpty()
+                        || multa.referencia().toLowerCase(Locale.ROOT).contains(termo)
+                        || String.valueOf(multa.idContrato()).equals(termo)
+                        || multa.tipo().toLowerCase(Locale.ROOT).contains(termo)
+                        || multa.descricao().toLowerCase(Locale.ROOT).contains(termo))
                 .toList();
-        tabela.setItems(FXCollections.observableArrayList(linhas));
-        lblResultado.setText("Exibindo " + linhas.size() + " de " + todas.size());
+        tabela.setItems(FXCollections.observableArrayList(filtradas));
+        lblResultado.setText("Exibindo " + filtradas.size() + " de " + todas.size());
         ajustarAcoes();
     }
+
     @FXML private void filtrarTodas() { mudarFiltro(Filtro.TODAS); }
     @FXML private void filtrarPendentes() { mudarFiltro(Filtro.PENDENTES); }
     @FXML private void filtrarPagas() { mudarFiltro(Filtro.PAGAS); }
-    private void mudarFiltro(Filtro novo) { filtro = novo; destacarFiltro(); filtrar(); }
+
+    private void mudarFiltro(Filtro novo) {
+        filtro = novo;
+        destacarFiltro();
+        filtrar();
+    }
+
     private void destacarFiltro() {
         destacar(btnTodas, filtro == Filtro.TODAS);
         destacar(btnPendentes, filtro == Filtro.PENDENTES);
         destacar(btnPagas, filtro == Filtro.PAGAS);
     }
+
     private void destacar(Button botao, boolean ativo) {
+        if (botao == null) {
+            return;
+        }
         botao.getStyleClass().remove("filter-active");
-        if (ativo) botao.getStyleClass().add("filter-active");
-    }
-    private void ajustarAcoes() {
-        LinhaMulta linha = tabela.getSelectionModel().getSelectedItem();
-        btnQuitar.setDisable(linha == null || linha.paga());
+        if (ativo) {
+            botao.getStyleClass().add("filter-active");
+        }
     }
 
-    @FXML private void mostrarFormulario() {
-        executar("abrir registro", () -> {
+    private void ajustarAcoes() {
+        LinhaMulta selecionada = tabela.getSelectionModel().getSelectedItem();
+        btnQuitar.setDisable(selecionada == null || selecionada.paga()
+                || (usuario instanceof Cliente && !selecionada.doContrato()));
+    }
+
+    @FXML
+    private void mostrarFormulario() {
+        executar("abrir cadastro de multa", () -> {
             exigirOperador();
-            if (formulario == null) throw new SecurityException("Tela não possui cadastro de multas.");
-            campoContrato.clear(); campoDescricao.clear(); campoValor.clear(); campoTipo.setValue(TIPO_AVARIA);
+            if (formulario == null) {
+                throw new SecurityException("Este layout não permite registrar multas.");
+            }
+            campoContrato.clear();
+            campoDescricao.clear();
+            campoValor.clear();
+            campoTipo.setValue(TIPO_AVARIA);
             exibirFormulario(true);
         });
     }
+
     @FXML private void cancelarFormulario() { exibirFormulario(false); }
+
     private void exibirFormulario(boolean visivel) {
-        if (formulario == null) return;
-        formulario.setVisible(visivel); formulario.setManaged(visivel);
-        if (visivel) campoContrato.requestFocus();
+        if (formulario != null) {
+            formulario.setVisible(visivel);
+            formulario.setManaged(visivel);
+            if (visivel) {
+                campoContrato.requestFocus();
+            }
+        }
     }
-    @FXML private void registrar() {
+
+    @FXML
+    private void registrar() {
         executar("registrar multa", () -> {
             exigirOperador();
             int idContrato = inteiroPositivo(campoContrato.getText(), "ID do contrato");
-            if (sistema.buscarContrato(idContrato) == null)
+            if (sistema.buscarContrato(idContrato) == null) {
                 throw new IllegalArgumentException("Contrato não encontrado.");
+            }
             String tipo = campoTipo.getValue();
-            if (!TIPO_AVARIA.equals(tipo) && !TIPO_OUTRO.equals(tipo))
+            if (!TIPO_AVARIA.equals(tipo) && !TIPO_OUTRO.equals(tipo)) {
                 throw new IllegalArgumentException("Selecione AVARIA ou OUTRO.");
+            }
             String descricao = textoObrigatorio(campoDescricao.getText(), "Descrição");
             double valor = valorPositivo(campoValor.getText());
-            String hoje = LocalDate.now(ZONA_LOJA).toString(); // igual a MenuMultas
-            Multa multa = new Multa(sistema.gerarProximoIdMulta(), idContrato, tipo, descricao, valor, hoje);
-            if (!sistema.registrarMulta(multa))
-                throw new IllegalArgumentException("Não foi possível registrar a multa (verifique ID duplicado).");
+            String data = LocalDate.now(ZONA_LOJA).toString();
+            Multa multa = new Multa(
+                    sistema.gerarProximoIdMulta(), idContrato, tipo, descricao, valor, data);
+            if (!sistema.registrarMulta(multa)) {
+                throw new IllegalArgumentException("Não foi possível registrar a multa. Verifique o ID.");
+            }
             exibirFormulario(false);
             atualizar();
-            alerta(Alert.AlertType.INFORMATION, "Multa registrada", "Registro M-" + multa.getId() + " criado.");
+            alerta(Alert.AlertType.INFORMATION, "Multa registrada",
+                    "Registro M-" + multa.getId() + " criado.");
         });
     }
 
-    @FXML private void quitar() {
+    @FXML
+    private void quitar() {
         executar("quitar multa", this::processarQuitacao);
     }
 
     private void processarQuitacao() {
         exigirSessao();
         LinhaMulta linha = obterMultaSelecionada();
+        if (linha.paga()) {
+            throw new IllegalArgumentException("Esta multa já está quitada.");
+        }
+        if (usuario instanceof Cliente && !linha.doContrato()) {
+            throw new SecurityException("Clientes só podem quitar suas multas contratuais.");
+        }
+
         ContratoAluguel contrato = sistema.buscarContrato(linha.idContrato());
-        validarTitularidade(contrato);
+        if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
+            throw new SecurityException("Você só pode quitar multas dos seus próprios contratos.");
+        }
 
         if (!confirmar("Confirmar quitação", "Marcar " + linha.referencia()
                 + " como quitada? Esta ação não processa pagamento bancário.")) {
@@ -288,84 +378,117 @@ public final class MultasController {
     }
 
     private LinhaMulta obterMultaSelecionada() {
-        LinhaMulta linha = tabela.getSelectionModel().getSelectedItem();
-        if (linha == null) {
-            throw new IllegalArgumentException("Selecione uma multa.");
+        LinhaMulta selecionada = tabela.getSelectionModel().getSelectedItem();
+        if (selecionada == null) {
+            throw new IllegalArgumentException("Selecione uma multa na tabela.");
         }
-        return linha;
-    }
-
-    private void validarTitularidade(ContratoAluguel contrato) {
-        // Revalida a titularidade antes de solicitar a operação à fachada.
-        if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
-            throw new SecurityException("Você só pode quitar suas próprias multas.");
-        }
+        return selecionada;
     }
 
     private boolean quitarMultaContratual(LinhaMulta linha, ContratoAluguel contrato) {
         if (contrato == null || contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
-            throw new IllegalArgumentException("Essa multa contratual não está pendente.");
+            throw new IllegalArgumentException("Esta multa contratual não está pendente.");
         }
         return sistema.quitarMultaContrato(linha.idContrato());
     }
 
     private boolean quitarMultaManual(LinhaMulta linha) {
+        if (!(usuario instanceof Administrador || usuario instanceof Funcionario)) {
+            throw new SecurityException("A quitação de multas manuais exige perfil de operador.");
+        }
+        if (linha.idMulta() == null) {
+            throw new IllegalArgumentException("Identificador da multa manual inválido.");
+        }
         Multa registro = sistema.buscarMulta(linha.idMulta());
-        if (registro == null || registro.isPaga() || registro.getIdContrato() != linha.idContrato()) {
-            throw new IllegalArgumentException("Essa multa não está mais pendente.");
+        if (registro == null || registro.isPaga()
+                || registro.getIdContrato() != linha.idContrato()) {
+            throw new IllegalArgumentException("Esta multa manual não está mais pendente.");
         }
         return sistema.quitarMulta(linha.idMulta());
     }
 
     private int inteiroPositivo(String texto, String campo) {
         try {
-            int id = Integer.parseInt(texto == null ? "" : texto.strip());
-            if (id > 0) return id;
+            int numero = Integer.parseInt(texto == null ? "" : texto.strip());
+            if (numero > 0) {
+                return numero;
+            }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(campo + " deve ser um número inteiro positivo.", e);
+            throw new IllegalArgumentException(campo + " deve ser um inteiro positivo.", e);
         }
         throw new IllegalArgumentException(campo + " deve ser maior que zero.");
     }
+
     private double valorPositivo(String texto) {
         try {
-            double valor = Double.parseDouble(texto == null ? "" : texto.strip().replace(',', '.'));
-            if (Double.isFinite(valor) && valor > 0) return valor;
+            double valor = Double.parseDouble(
+                    texto == null ? "" : texto.strip().replace(',', '.'));
+            if (Double.isFinite(valor) && valor > 0) {
+                return valor;
+            }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Informe um valor numérico válido (ex.: 45,90).", e);
+            throw new IllegalArgumentException("Valor numérico inválido (ex.: 45,90).", e);
         }
-        throw new IllegalArgumentException("O valor da multa deve ser positivo e finito.");
-    }
-    private String textoObrigatorio(String entrada, String campo) {
-        if (entrada == null || entrada.isBlank()) throw new IllegalArgumentException(campo + " é obrigatória.");
-        String limpa = entrada.strip();
-        if (limpa.contains(";") || limpa.contains("\n") || limpa.contains("\r"))
-            throw new IllegalArgumentException(campo + " não pode conter ponto e vírgula ou quebra de linha (CSV).");
-        return limpa;
-    }
-    @FXML private void abrirMultas() { atualizar(); }
-    @FXML private void abrirFornecedores() {
-        executar("abrir fornecedores", () -> { exigirOperador(); navegacao.accept("fornecedores"); });
-    }
-    @FXML private void encerrarSessao() {
-        executar("encerrar sessão", () -> { exigirSessao(); sair.run(); });
+        throw new IllegalArgumentException("O valor da multa deve ser positivo.");
     }
 
-    private void executar(String acao, Runnable bloco) {
-        try { bloco.run(); }
-        catch (IllegalArgumentException | SecurityException e) { alerta(Alert.AlertType.WARNING, "Atenção", e.getMessage()); }
-        catch (RuntimeException e) {
+    private String textoObrigatorio(String entrada, String campo) {
+        if (entrada == null || entrada.isBlank()) {
+            throw new IllegalArgumentException(campo + " é obrigatória.");
+        }
+        String texto = entrada.strip();
+        if (texto.contains(";") || texto.contains("\n") || texto.contains("\r")) {
+            throw new IllegalArgumentException(
+                    campo + " não pode conter ponto e vírgula ou quebra de linha (CSV).");
+        }
+        return texto;
+    }
+
+    @FXML private void abrirMultas() { atualizar(); }
+
+    @FXML
+    private void abrirFornecedores() {
+        executar("abrir fornecedores", () -> {
+            exigirOperador();
+            navegacao.accept(usuario instanceof Administrador
+                    ? "FornecedoresAdministrador" : "FornecedoresFunccionarios");
+        });
+    }
+
+    @FXML
+    private void encerrarSessao() {
+        executar("encerrar sessão", () -> {
+            exigirSessao();
+            Navegacao.setUsuarioLogado(null);
+            sair.run();
+        });
+    }
+
+    private void executar(String acao, Runnable operacao) {
+        try {
+            operacao.run();
+        } catch (IllegalArgumentException | SecurityException e) {
+            alerta(Alert.AlertType.WARNING, "Atenção", e.getMessage());
+        } catch (RuntimeException e) {
             LOG.log(Level.SEVERE, e, () -> "Falha ao " + acao);
-            alerta(Alert.AlertType.ERROR, "Erro", "Não foi possível " + acao + ". Consulte os logs.");
+            alerta(Alert.AlertType.ERROR, "Erro",
+                    "Não foi possível " + acao + ". Consulte os logs.");
         }
     }
+
     private boolean confirmar(String titulo, String mensagem) {
-        Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION, mensagem, ButtonType.YES, ButtonType.NO);
-        dialogo.setTitle(titulo); dialogo.setHeaderText(null);
+        Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION,
+                mensagem, ButtonType.YES, ButtonType.NO);
+        dialogo.setTitle(titulo);
+        dialogo.setHeaderText(null);
         Optional<ButtonType> resposta = dialogo.showAndWait();
         return resposta.isPresent() && resposta.get() == ButtonType.YES;
     }
-    private void alerta(Alert.AlertType tipo, String titulo, String texto) {
-        Alert alerta = new Alert(tipo, texto, ButtonType.OK);
-        alerta.setTitle(titulo); alerta.setHeaderText(null); alerta.showAndWait();
+
+    private void alerta(Alert.AlertType tipo, String titulo, String mensagem) {
+        Alert aviso = new Alert(tipo, mensagem, ButtonType.OK);
+        aviso.setTitle(titulo);
+        aviso.setHeaderText(null);
+        aviso.showAndWait();
     }
 }
