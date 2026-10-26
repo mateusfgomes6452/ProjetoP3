@@ -19,9 +19,17 @@ import java.util.List;
 public class ItensController extends BaseControllers<Item> {
 
     @FXML private TableColumn<Item, Number> colId;
-    @FXML private TableColumn<Item, String> colNome, colDescricao, colTaxa, colEstado, colValorRep, colStatus;
+    @FXML private TableColumn<Item, String> colNome;
+    @FXML private TableColumn<Item, String> colDescricao;
+    @FXML private TableColumn<Item, String> colTaxa;
+    @FXML private TableColumn<Item, String> colEstado;
+    @FXML private TableColumn<Item, String> colValorRep;
+    @FXML private TableColumn<Item, String> colStatus;
 
-    @FXML private TextField campoNome, campoTaxa, campoDescricao, campoReposicao;
+    @FXML private TextField campoNome;
+    @FXML private TextField campoTaxa;
+    @FXML private TextField campoDescricao;
+    @FXML private TextField campoReposicao;
     @FXML private ComboBox<String> comboEstado;
     @FXML private ComboBox<Categoria> comboCategoria;
     @FXML private ComboBox<Fornecedor> comboFornecedor;

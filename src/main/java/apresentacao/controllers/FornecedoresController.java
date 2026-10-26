@@ -20,7 +20,11 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
     private static final Pattern FIXO = Pattern.compile("\\(\\d{2}\\) \\d{4}-\\d{4}");
 
     @FXML private TableColumn<Fornecedor, Number> colId;
-    @FXML private TableColumn<Fornecedor, String> colRazao, colCnpj, colEmail, colTelefone, colStatus;
+    @FXML private TableColumn<Fornecedor, String> colRazao;
+    @FXML private TableColumn<Fornecedor, String> colCnpj;
+    @FXML private TableColumn<Fornecedor, String> colEmail;
+    @FXML private TableColumn<Fornecedor, String> colTelefone;
+    @FXML private TableColumn<Fornecedor, String> colStatus;
     @FXML private TextField razao, cnpj, email, telefone;
 
     @FXML

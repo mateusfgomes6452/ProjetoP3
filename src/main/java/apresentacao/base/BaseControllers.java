@@ -40,9 +40,20 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
 
     @FXML protected TableView<T> tabela;
     @FXML protected TextField busca;
-    @FXML protected Label lblTotal, lblAtivos, lblInativos, lblResultado, tituloFormulario;
-    @FXML protected Label lblPerfil, lblNomeUsuario, lblAvatar;
-    @FXML protected Button btnEditar, btnDesativar, btnTodos, btnAtivos, btnInativos, btnSalvar;
+    @FXML protected Label lblTotal;
+    @FXML protected Label lblAtivos; 
+    @FXML protected Label lblInativos;
+    @FXML protected Label lblResultado; 
+    @FXML protected Label tituloFormulario;
+    @FXML protected Label lblPerfil;
+    @FXML protected Label lblNomeUsuario;
+    @FXML protected Label lblAvatar;
+    @FXML protected Button btnEditar;
+    @FXML protected Button btnDesativar;
+    @FXML protected Button btnTodos;
+    @FXML protected Button btnAtivos; 
+    @FXML protected Button btnInativos; 
+    @FXML protected Button btnSalvar;
     @FXML protected VBox formulario;
 
     protected abstract List<T> listarRegistros();
