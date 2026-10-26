@@ -1,5 +1,6 @@
 package apresentacao.controllers;
 
+import apresentacao.navegacao.Navegacao;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
