@@ -5,6 +5,8 @@ import entidades.Administrador;
 import entidades.ContratoAluguel;
 import entidades.Funcionario;
 import entidades.Usuario;
+import entidades.Cliente;
+import entidades.Item;
 import facade.SistemaFacade;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -17,6 +19,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.util.StringConverter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,11 +31,16 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 
 public final class ContratosController implements Navegacao.ControladorComSessao {
 
     private static final Logger LOG = Logger.getLogger(ContratosController.class.getName());
+    
+    private static final ZoneId ZONA_LOJA = ZoneId.of("America/Recife");   // mesmo fuso usado em Multas
 
     
     private enum Filtro { TODOS, ATIVOS, FINALIZADOS, CANCELADOS }
@@ -58,8 +68,19 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             colPrevista, colValor, colStatus;
     @FXML private Button btnDetalhes, btnCancelar, btnFinalizar;
     @FXML private VBox painelRegistro;
+    //Registro
+    @FXML private ComboBox<Cliente> comboCliente;
+    @FXML private ComboBox<Item> comboItem;
+    @FXML private DatePicker dataRetirada;
+    @FXML private DatePicker dataDevolucao;
+    @FXML private Label lblDias, lblTaxa, lblValorTotal;
+    @FXML private Button btnConfirmarRegistro;
     @FXML private VBox painelFinalizacao;
     @FXML private VBox painelDetalhes;
+    //Detalhes
+    @FXML private Label lblTituloDetalhes;
+    @FXML private Label detCliente, detItem, detRetirada, detPrevista, detReal,
+            detStatus, detValor, detMulta, detMultaPaga;
 
 
     @FXML
@@ -77,6 +98,8 @@ public final class ContratosController implements Navegacao.ControladorComSessao
 
         tabela.getSelectionModel().selectedItemProperty().addListener((obs, anterior, atual) -> ajustarAcoes());
         busca.textProperty().addListener((obs, anterior, atual) -> filtrar());
+        
+        prepararRegistro();
 
         esconder(painelRegistro);
         esconder(painelFinalizacao);
@@ -194,20 +217,222 @@ public final class ContratosController implements Navegacao.ControladorComSessao
         btnCancelar.setDisable(selecionado == null || selecionado.estaFinalizado() || selecionado.estaCancelado());
     }
 
-    //Ações do fxml pra fazer
+    
+    private void prepararRegistro() {
+        // Como cada cliente/item aparece escrito dentro do ComboBox
+        comboCliente.setConverter(new StringConverter<>() {
+            @Override public String toString(Cliente c) {
+                return c == null ? "" : c.getNome() + " (ID " + c.getId() + ")";
+            }
+            @Override public Cliente fromString(String texto) { return null; }   // não digitamos no ComboBox
+        });
+        comboItem.setConverter(new StringConverter<>() {
+            @Override public String toString(Item i) {
+                return i == null ? "" : i.getNome() + " — " + Formatador.moeda(i.getTaxaDiaria()) + "/dia";
+            }
+            @Override public Item fromString(String texto) { return null; }
+        });
 
-    @FXML private void abrirRegistro()       { emConstrucao(); }
-    @FXML private void registrar()           { emConstrucao(); }
+        // Sempre que o item ou uma das datas mudar, recalcula o resumo na hora
+        comboCliente.valueProperty().addListener((obs, anterior, atual) -> atualizarResumo());
+        comboItem.valueProperty().addListener((obs, anterior, atual) -> atualizarResumo());
+        dataRetirada.valueProperty().addListener((obs, anterior, atual) -> atualizarResumo());
+        dataDevolucao.valueProperty().addListener((obs, anterior, atual) -> atualizarResumo());
+    }
+
+    //Botão Registrar Aluguel
+    @FXML
+    private void abrirRegistro() {
+        executar("abrir registro de aluguel", () -> {
+            exigirSessao();
+
+            List<Cliente> clientes = sistema.listarUsuarios().stream()
+                    .filter(u -> u instanceof Cliente)
+                    .map(u -> (Cliente) u)
+                    .toList();
+            List<Item> disponiveis = sistema.listarItens().stream()
+                    .filter(Item::estaDisponivel)
+                    .toList();
+
+            if (clientes.isEmpty()) {
+                throw new IllegalArgumentException("Não há clientes cadastrados.");
+            }
+            if (disponiveis.isEmpty()) {
+                throw new IllegalArgumentException("Não há itens disponíveis para aluguel.");
+            }
+
+            comboCliente.getItems().setAll(clientes);
+            comboItem.getItems().setAll(disponiveis);
+            comboCliente.setValue(null);
+            comboItem.setValue(null);
+            dataRetirada.setValue(LocalDate.now(ZONA_LOJA));
+            dataDevolucao.setValue(null);
+            atualizarResumo();
+
+            esconder(painelFinalizacao);
+            esconder(painelDetalhes);
+            mostrar(painelRegistro);
+        });
+    }
+
     @FXML private void cancelarRegistro()    { esconder(painelRegistro); }
+
+    private long diasDoPeriodo() {
+        if (dataRetirada.getValue() == null || dataDevolucao.getValue() == null) {
+            return 0;
+        }
+        return ChronoUnit.DAYS.between(dataRetirada.getValue(), dataDevolucao.getValue());
+    }
+
+    private void atualizarResumo() {
+        Item item = comboItem.getValue();
+        long dias = diasDoPeriodo();
+        double taxa = item == null ? 0 : item.getTaxaDiaria();
+        double total = dias > 0 ? dias * taxa : 0;   // mesma conta do terminal: dias × taxa diária
+
+        lblDias.setText(Math.max(dias, 0) + " dia(s)");
+        lblTaxa.setText(Formatador.moeda(taxa));
+        lblValorTotal.setText(Formatador.moeda(total));
+
+        boolean completo = comboCliente.getValue() != null && item != null && dias > 0;
+        btnConfirmarRegistro.setDisable(!completo);
+    }
+
+    /** Botão "Registrar aluguel" do painel: mesmas checagens e mesma sequência do terminal. */
+    @FXML
+    private void registrar() {
+        executar("registrar aluguel", () -> {
+            exigirSessao();
+
+            Cliente cliente = comboCliente.getValue();
+            Item item = comboItem.getValue();
+            if (cliente == null) {
+                throw new IllegalArgumentException("Selecione o cliente.");
+            }
+            if (sistema.clientePossuiMultaPendente(cliente.getId())) {
+                throw new IllegalArgumentException(
+                        "Cliente possui multa pendente e não pode realizar novos aluguéis.");
+            }
+            if (item == null) {
+                throw new IllegalArgumentException("Selecione um item.");
+            }
+            if (!item.estaDisponivel()) {
+                throw new IllegalArgumentException(
+                        "Item indisponível para aluguel. Status atual: " + item.getStatus());
+            }
+            if (dataRetirada.getValue() == null || dataDevolucao.getValue() == null) {
+                throw new IllegalArgumentException("Informe a data de retirada e a de devolução prevista.");
+            }
+            long dias = diasDoPeriodo();
+            if (dias <= 0) {
+                throw new IllegalArgumentException("A data de devolução deve ser posterior à data de retirada.");
+            }
+
+            double valorTotal = dias * item.getTaxaDiaria();
+            int idContrato = sistema.gerarProximoIdContrato();
+            ContratoAluguel contrato = new ContratoAluguel(idContrato, cliente, item,
+                    dataRetirada.getValue().toString(), dataDevolucao.getValue().toString(), valorTotal);
+
+            if (!sistema.cadastrarContrato(contrato)) {
+                throw new IllegalArgumentException("Erro ao registrar aluguel.");
+            }
+            item.alugar(); 
+
+            esconder(painelRegistro);
+            atualizar();
+            alerta(Alert.AlertType.INFORMATION, "Aluguel registrado",
+                    "Contrato #" + idContrato + " registrado com sucesso.\n"
+                    + "Cliente: " + cliente.getNome() + "\n"
+                    + "Item: " + item.getNome() + "\n"
+                    + "Período: " + dias + " dia(s)\n"
+                    + "Valor total: " + Formatador.moeda(valorTotal));
+        });
+    }
+  //Ações do fxml pra fazer
 
     @FXML private void abrirFinalizacao()    { emConstrucao(); }
     @FXML private void finalizar()           { emConstrucao(); }
     @FXML private void cancelarFinalizacao() { esconder(painelFinalizacao); }
 
-    @FXML private void verDetalhes()         { emConstrucao(); }
     @FXML private void fecharDetalhes()      { esconder(painelDetalhes); }
 
-    @FXML private void cancelarContrato()    { emConstrucao(); }
+    // ---------- Ver detalhes (MenuContratos.buscarContrato + exibirDetalhesContrato) ----------
+
+    @FXML
+    private void verDetalhes() {
+        executar("ver detalhes do contrato", () -> {
+            exigirSessao();
+            ContratoAluguel contrato = buscarSelecionadoNoSistema();
+
+            lblTituloDetalhes.setText("Contrato #" + contrato.getId());
+            detCliente.setText(nomeCliente(contrato));
+            detItem.setText(nomeItem(contrato));
+            detRetirada.setText(Formatador.data(contrato.getDataRetirada()));
+            detPrevista.setText(Formatador.data(contrato.getDataDevolucaoPrevista()));
+            detReal.setText(Formatador.data(contrato.getDataDevolucaoReal()));   // vazio vira "—"
+            detStatus.setText(contrato.getStatus());
+            detValor.setText(Formatador.moeda(contrato.getValorTotal()));
+            detMulta.setText(Formatador.moeda(contrato.getValorMulta()));
+            detMultaPaga.setText(textoMultaPaga(contrato));
+
+            esconder(painelRegistro);
+            esconder(painelFinalizacao);
+            mostrar(painelDetalhes);
+        });
+    }
+
+    private String textoMultaPaga(ContratoAluguel contrato) {
+        if (contrato.getValorMulta() <= 0) {
+            return "Sem multa";
+        }
+        return contrato.isMultaPaga() ? "Sim" : "Não";
+    }
+
+
+
+    @FXML
+    private void cancelarContrato() {
+        executar("cancelar contrato", () -> {
+            exigirSessao();
+            ContratoAluguel contrato = buscarSelecionadoNoSistema();
+
+            if (contrato.estaFinalizado()) {
+                throw new IllegalArgumentException("Contrato finalizado não pode ser cancelado.");
+            }
+            if (contrato.estaCancelado()) {
+                throw new IllegalArgumentException("Este contrato já está cancelado.");
+            }
+
+            if (!confirmar("Cancelar contrato", "Cancelar o contrato #" + contrato.getId()
+                    + " de " + nomeCliente(contrato) + "? O item volta para o estoque.")) {
+                return;   // usuário clicou em "Não"
+            }
+
+            if (!sistema.cancelarContrato(contrato.getId())) {
+                throw new IllegalArgumentException("Erro ao cancelar contrato.");
+            }
+            if (contrato.getItem() != null) {
+                contrato.getItem().devolver();
+            }
+
+            esconder(painelDetalhes);
+            atualizar();
+            alerta(Alert.AlertType.INFORMATION, "Contrato cancelado",
+                    "Contrato cancelado. Item devolvido ao estoque.");
+        });
+    }
+
+    private ContratoAluguel buscarSelecionadoNoSistema() {
+        ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
+        if (selecionado == null) {
+            throw new IllegalArgumentException("Selecione um contrato na tabela.");
+        }
+        ContratoAluguel contrato = sistema.buscarContrato(selecionado.getId());
+        if (contrato == null) {
+            throw new IllegalArgumentException("Contrato não encontrado.");
+        }
+        return contrato;
+    }
 
     // ---------- Menu lateral (a navegação entre telas será ligada depois) ----------
     @FXML private void abrirFornecedores()   { emConstrucao(); }
@@ -215,12 +440,17 @@ public final class ContratosController implements Navegacao.ControladorComSessao
     @FXML private void encerrarSessao()      { executar("encerrar sessão", () -> sair.run()); }
 
     
+    private boolean confirmar(String titulo, String mensagem) {
+        Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION, mensagem, ButtonType.YES, ButtonType.NO);
+        dialogo.setTitle(titulo);
+        dialogo.setHeaderText(null);
+        return dialogo.showAndWait().orElse(ButtonType.NO) == ButtonType.YES;
+    }
 
     private ReadOnlyStringWrapper texto(String valor) {
         return new ReadOnlyStringWrapper(valor == null ? "" : valor);
     }
 
-    // Evitam erro caso algum contrato do CSV aponte para um cliente ou item que não existe mais
     private String nomeCliente(ContratoAluguel contrato) {
         return contrato.getCliente() == null ? "-" : contrato.getCliente().getNome();
     }
@@ -230,8 +460,8 @@ public final class ContratosController implements Navegacao.ControladorComSessao
     }
 
     private void mostrar(VBox painel) {
-        painel.setVisible(true);   // aparece
-        painel.setManaged(true);   // e passa a ocupar espaço
+        painel.setVisible(true);
+        painel.setManaged(true);
     }
 
     private void esconder(VBox painel) {
