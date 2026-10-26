@@ -241,6 +241,21 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             }
         });
     }
+
+    
+    @FXML
+    protected void abrirRelatorios() {
+        executar("navegar para relatórios", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("RelatoriosAdministrador");
+            } else {
+                navegacao.accept("RelatoriosFuncionario");
+            }
+        });
+    }
+
     
     @FXML protected void encerrarSessao() {
         executar("encerrar sessão", () -> { exigirSessao(); sair.run(); });
