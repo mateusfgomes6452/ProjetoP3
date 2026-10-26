@@ -1,21 +1,18 @@
-/*package main;
+package main;
+
 import java.util.Scanner;
 
 import apresentacao.MenuLogin;
 import business.cruds.GerenciamentoCategoria;
 import business.cruds.GerenciamentoContratos;
+import business.cruds.GerenciamentoFornecedor;
 import business.cruds.GerenciamentoItens;
 import business.cruds.GerenciamentoMultas;
 import business.cruds.GerenciamentoUsuarios;
-import business.cruds.GerenciamentoFornecedor;
-import business.interfaces.IGerenciamentoCategoria;
 import business.interfaces.IGerenciamentoContratos;
-import business.interfaces.IGerenciamentoFornecedor;
 import business.interfaces.IGerenciamentoItens;
-import business.interfaces.IGerenciamentoMultas;
 import business.interfaces.IGerenciamentoUsuarios;
 import business.relatorios.GeradorRelatorios;
-import business.relatorios.IRelatorios;
 import entidades.Administrador;
 import facade.SistemaFacade;
 import repositories.CategoriaRepositorio;
@@ -25,54 +22,38 @@ import repositories.ItemRepositorio;
 import repositories.MultaRepositorio;
 import repositories.UsuarioRepositorio;
 
-@SuppressWarnings("java:S106")
 public class Main {
 
-    public static void main(String[] args) {
+    private static final String EMAIL_PADRAO = "jacksonmepassaporfavor@loja.com";
 
-        //REPOSITÓRIOS 
+    public static SistemaFacade criarSistema() {
+        UsuarioRepositorio usuarios = new UsuarioRepositorio();
+        CategoriaRepositorio categorias = new CategoriaRepositorio();
+        FornecedorRepositorio fornecedores = new FornecedorRepositorio();
+        ItemRepositorio itens = new ItemRepositorio(categorias, fornecedores);
+        ContratoRepositorio contratos = new ContratoRepositorio(usuarios, itens);
+        MultaRepositorio multas = new MultaRepositorio();
 
-        UsuarioRepositorio    usuarioRepositorio    = new UsuarioRepositorio();
-        CategoriaRepositorio  categoriaRepositorio  = new CategoriaRepositorio();
-        FornecedorRepositorio fornecedorRepositorio = new FornecedorRepositorio();
-        ItemRepositorio       itemRepositorio       = new ItemRepositorio(categoriaRepositorio, fornecedorRepositorio);
-        ContratoRepositorio   contratoRepositorio   = new ContratoRepositorio(usuarioRepositorio, itemRepositorio);
-        MultaRepositorio      multaRepositorio      = new MultaRepositorio();
+        IGerenciamentoContratos gContratos = new GerenciamentoContratos(contratos);
+        IGerenciamentoUsuarios gUsuarios = new GerenciamentoUsuarios(usuarios, gContratos);
+        IGerenciamentoItens gItens = new GerenciamentoItens(itens);
 
-        //CAMADA DE NEGÓCIO
+        SistemaFacade sistema = new SistemaFacade(gUsuarios, gContratos, gItens,
+                new GerenciamentoCategoria(categorias),
+                new GerenciamentoFornecedor(fornecedores),
+                new GerenciamentoMultas(multas),
+                new GeradorRelatorios(gItens, gContratos, gUsuarios));
 
-        IGerenciamentoContratos  gerenciamentoContratos  = new GerenciamentoContratos(contratoRepositorio);
-        IGerenciamentoUsuarios   gerenciamentoUsuarios   = new GerenciamentoUsuarios(usuarioRepositorio, gerenciamentoContratos);
-        IGerenciamentoCategoria  gerenciamentoCategoria  = new GerenciamentoCategoria(categoriaRepositorio);
-        IGerenciamentoFornecedor gerenciamentoFornecedor = new GerenciamentoFornecedor(fornecedorRepositorio);
-        IGerenciamentoItens      gerenciamentoItens      = new GerenciamentoItens(itemRepositorio);
-        IGerenciamentoMultas     gerenciamentoMultas     = new GerenciamentoMultas(multaRepositorio);
-
-        IRelatorios geradorRelatorios = new GeradorRelatorios(gerenciamentoItens, gerenciamentoContratos, gerenciamentoUsuarios);
-
-        //FACADE
-
-        SistemaFacade sistema = new SistemaFacade(gerenciamentoUsuarios,gerenciamentoContratos,gerenciamentoItens,gerenciamentoCategoria,gerenciamentoFornecedor,gerenciamentoMultas,geradorRelatorios
-        );
-
-        if (sistema.buscarUsuarioPorEmail("jacksonmepassaporfavor@loja.com") == null) {
-
-            Administrador adminPadrao = new Administrador(sistema.gerarProximoIdUsuario(),"Jackson-Raniel","jacksonmepassaporfavor@loja.com","000.000.000-00","obrigadojackson");
-
-            sistema.cadastrarUsuario(adminPadrao);
-
-            
-            System.out.println("Usuário padrão criado para testes");
-            System.out.println("Email : jacksonmepassaporfavor@loja.com");
-            System.out.println("Senha : obrigadojackson");
+        if (sistema.buscarUsuarioPorEmail(EMAIL_PADRAO) == null) {
+            sistema.cadastrarUsuario(new Administrador(sistema.gerarProximoIdUsuario(),
+                    "Jackson-Raniel", EMAIL_PADRAO, "000.000.000-00", "obrigadojackson"));
         }
+        return sistema;
+    }
 
-
-        Scanner scanner = new Scanner(System.in);
-
-        new MenuLogin(sistema, scanner).exibir();
-
-        scanner.close();
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            new MenuLogin(criarSistema(), scanner).exibir();
+        }
     }
 }
-*/

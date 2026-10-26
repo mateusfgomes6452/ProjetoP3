@@ -53,6 +53,7 @@ public class SistemaFacade {
         this.gerenciamentoMultas     = gerenciamentoMultas;
         this.geradorRelatorios       = geradorRelatorios;
         
+        instancia = this;
     }
 
     // =========================================================================
