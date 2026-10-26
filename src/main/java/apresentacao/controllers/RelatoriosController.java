@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import apresentacao.base.BaseControllersRelatorios;
+import entidades.Administrador;
 import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.fxml.FXML;
@@ -133,7 +134,7 @@ public final class RelatoriosController extends BaseControllersRelatorios implem
     private void abrirFornecedores() {
         executar("abrir fornecedores", () -> {
             exigirSessao();
-            navegacao.accept("fornecedores");
+            navegacao.accept(usuario instanceof Administrador ? "FornecedoresAdministrador" : "FornecedoresFunccionarios");
         });
     }
 
@@ -141,7 +142,9 @@ public final class RelatoriosController extends BaseControllersRelatorios implem
     private void abrirMultas() {
         executar("abrir multas", () -> {
             exigirSessao();
-            navegacao.accept("multas");
+            navegacao.accept(usuario instanceof Administrador
+                    ? "Multasadministrador"
+                    : "MultasFuncionario");
         });
     }
 
