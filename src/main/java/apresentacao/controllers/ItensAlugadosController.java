@@ -54,10 +54,8 @@ public class ItensAlugadosController {
         colRetirada.setCellValueFactory(c -> new ReadOnlyStringWrapper(Formatador.data(c.getValue().getDataRetirada())));
         colPrevista.setCellValueFactory(c ->
                 new ReadOnlyStringWrapper(Formatador.data(c.getValue().getDataDevolucaoPrevista())));
-        colAtraso.setCellValueFactory(c -> {
-            long dias = diasDeAtraso(c.getValue());
-            return new ReadOnlyStringWrapper(dias == 0 ? "—" : dias + (dias == 1 ? " dia" : " dias"));
-        });
+        colAtraso.setCellValueFactory(c ->
+        new ReadOnlyStringWrapper(textoAtraso(diasDeAtraso(c.getValue()))));
 
         colSituacao.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
         colSituacao.setCellFactory(coluna -> new TableCell<ContratoAluguel, ContratoAluguel>() {
@@ -109,7 +107,7 @@ public class ItensAlugadosController {
 
     @FXML
     private void exportar() {
-        List<ContratoAluguel> lista = visiveis.stream().collect(Collectors.toList());
+        List<ContratoAluguel> lista = visiveis.stream().toList();
         ConfiguracaoSistema.getSistema().exportarItensAlugados(lista);
         Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_alugados.csv");
     }
@@ -144,6 +142,16 @@ public class ItensAlugadosController {
     private boolean atrasado(ContratoAluguel contrato) {
         SistemaFacade sistema = ConfiguracaoSistema.getSistema();
         return sistema.contratoEstaAtrasado(contrato);
+    }
+
+    private String textoAtraso(long dias) {
+    if (dias == 0) {
+        return "—";
+    }
+    if (dias == 1) {
+        return "1 dia";
+    }
+    return dias + " dias";
     }
 
     private long diasDeAtraso(ContratoAluguel contrato) {
