@@ -5,7 +5,10 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import apresentacao.base.BaseControllersRelatorios;
 import entidades.ContratoAluguel;
+import entidades.Usuario;
+import facade.SistemaFacade;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,15 +19,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
-import main.ConfiguracaoSistema;
 
 /** Aba "Faturamento" (RelatorioFaturamento.fxml): contratos retirados dentro de um período, com totais. */
-public class FaturamentoController {
+public final class FaturamentoController extends BaseControllersRelatorios {
+
+    private static final String CAMPO_INVALIDO = "input-invalido";
 
     @FXML private DatePicker dataInicial;
     @FXML private DatePicker dataFinal;
     @FXML private Button btnExportar;
-    @FXML private Label lblErro;
     @FXML private Label lblAviso;
     @FXML private Label lblTotalContratos;
     @FXML private Label lblTotalAlugueis;
@@ -65,34 +68,65 @@ public class FaturamentoController {
 
         tabela.setItems(contratos);
         tabela.setPlaceholder(new Label("Escolha o período e gere o relatório."));
-        Mensagens.esconder(lblErro);
         Mensagens.esconder(lblAviso);
+    }
+
+    /** Chamado por RelatoriosController.configurar: guarda a sessão e gera o primeiro relatório. */
+    public void configurar(SistemaFacade sistema, Usuario usuario) {
+        iniciarSessao(sistema, usuario);
         gerar();
     }
 
-    /** Reaplica o período escolhido (chamado ao abrir a aba), para refletir contratos criados em outras telas. */
+    /** Ao abrir a aba: refaz o último período gerado, para refletir contratos criados em outras telas. */
     public void atualizar() {
-        gerar();
-        Mensagens.esconder(lblAviso);
+        executar("atualizar faturamento", () -> {
+            exigirSessao();
+            if (inicioGerado == null) {
+                gerar();
+            } else {
+                carregar(inicioGerado, fimGerado);
+            }
+            Mensagens.esconder(lblAviso);
+        });
     }
 
     @FXML
     private void gerar() {
-        limparErro();
+        executar("gerar faturamento", () -> {
+            exigirSessao();
+            limparMarcas();
 
-        LocalDate inicio = dataInicial.getValue();
-        LocalDate fim = dataFinal.getValue();
+            LocalDate inicio = dataInicial.getValue();
+            LocalDate fim = dataFinal.getValue();
 
-        if (inicio == null || fim == null) {
-            mostrarErro("Informe a data inicial e a data final.", inicio == null ? dataInicial : dataFinal);
-            return;
-        }
-        if (fim.isBefore(inicio)) {
-            mostrarErro("A data final não pode ser anterior à data inicial.", dataFinal);
-            return;
-        }
+            if (inicio == null || fim == null) {
+                marcarInvalido(inicio == null ? dataInicial : dataFinal);
+                throw new IllegalArgumentException("Informe a data inicial e a data final.");
+            }
+            if (fim.isBefore(inicio)) {
+                marcarInvalido(dataFinal);
+                throw new IllegalArgumentException("A data final não pode ser anterior à data inicial.");
+            }
+            carregar(inicio, fim);
+        });
+    }
 
-        List<ContratoAluguel> encontrados = ConfiguracaoSistema.getSistema().listarContratosPorPeriodo(inicio, fim);
+    @FXML
+    private void exportar() {
+        executar("exportar faturamento", () -> {
+            exigirSessao();
+            if (contratos.isEmpty() || inicioGerado == null) {
+                throw new IllegalArgumentException("Gere um relatório com contratos antes de exportar.");
+            }
+            sistema.exportarFaturamento(new ArrayList<>(contratos), inicioGerado.toString(), fimGerado.toString());
+            Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/faturamento.csv");
+        });
+    }
+
+    // ---------- dados e validação ----------
+
+    private void carregar(LocalDate inicio, LocalDate fim) {
+        List<ContratoAluguel> encontrados = sistema.listarContratosPorPeriodo(inicio, fim);
         contratos.setAll(encontrados);
         inicioGerado = inicio;
         fimGerado = fim;
@@ -108,24 +142,13 @@ public class FaturamentoController {
         btnExportar.setDisable(encontrados.isEmpty());
     }
 
-    @FXML
-    private void exportar() {
-        ConfiguracaoSistema.getSistema().exportarFaturamento(
-                new ArrayList<>(contratos), inicioGerado.toString(), fimGerado.toString());
-        Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/faturamento.csv");
+    private void marcarInvalido(DatePicker campo) {
+        campo.getStyleClass().add(CAMPO_INVALIDO);
     }
 
-    // ---------- validação ----------
-
-    private void mostrarErro(String mensagem, DatePicker campo) {
-        Mensagens.erro(lblErro, mensagem);
-        campo.getStyleClass().add("input-invalido");
-    }
-
-    private void limparErro() {
-        Mensagens.esconder(lblErro);
-        dataInicial.getStyleClass().remove("input-invalido");
-        dataFinal.getStyleClass().remove("input-invalido");
+    private void limparMarcas() {
+        dataInicial.getStyleClass().remove(CAMPO_INVALIDO);
+        dataFinal.getStyleClass().remove(CAMPO_INVALIDO);
     }
 
     private void configurarDatePicker(DatePicker picker) {
