@@ -109,7 +109,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("NOME_B: ");
+        System.out.print(NOME_B);
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
@@ -136,7 +136,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("NOME_B: ");
+        System.out.print(NOME_B);
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);
@@ -163,7 +163,7 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("NOME_B: ");
+        System.out.print(NOME_B);
         String nome = scanner.nextLine().trim();
 
         System.out.print(EMAIL_B);

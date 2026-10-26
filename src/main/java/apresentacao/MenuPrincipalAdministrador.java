@@ -10,7 +10,7 @@ public class MenuPrincipalAdministrador {
 
     private SistemaFacade sistema;
     private Administrador administrador;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public MenuPrincipalAdministrador(SistemaFacade sistema, Administrador administrador, Scanner scanner) {
         this.sistema = sistema;
