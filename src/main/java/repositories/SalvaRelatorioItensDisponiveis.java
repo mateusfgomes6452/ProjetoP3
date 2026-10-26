@@ -23,9 +23,9 @@ public class SalvaRelatorioItensDisponiveis {
 
             for (int j = 0; j < itens.size() - 1 - i; j++) {
 
-                String categoriaAtual =itens.get(j).getCategoria().getNome();
+                String categoriaAtual = nomeCategoria(itens.get(j));
 
-                String proximaCategoria =itens.get(j + 1).getCategoria().getNome();
+                String proximaCategoria = nomeCategoria(itens.get(j + 1));
 
                 if (categoriaAtual.compareToIgnoreCase(proximaCategoria) > 0) {
 
@@ -51,7 +51,7 @@ public class SalvaRelatorioItensDisponiveis {
             for (Item item : itens) {
 
                 escritor.write(
-                        item.getCategoria().getNome() + ";" + item.getId() + ";" + item.getNome() + ";" + item.getTaxaDiaria());
+                        nomeCategoria(item) + ";" + item.getId() + ";" + item.getNome() + ";" + item.getTaxaDiaria());
 
                 escritor.newLine();
 
@@ -64,6 +64,10 @@ public class SalvaRelatorioItensDisponiveis {
 
         }
 
+    }
+
+    private String nomeCategoria(Item item) {
+        return item.getCategoria() == null ? "Sem categoria" : item.getCategoria().getNome();
     }
 
 }

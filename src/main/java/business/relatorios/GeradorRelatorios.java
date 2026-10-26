@@ -32,30 +32,20 @@ public class GeradorRelatorios implements IRelatorios {
     @Override
     public void gerarRelatorioItensDisponiveis() {
 
-        List<Item> itensDisponiveis = new ArrayList<>();
+        List<Item> itensDisponiveis = listarItensDisponiveis();
 
-        for (Item item : gerenciamentoItens.listarItens()) {
-
-            if (item.estaDisponivel()) {
-                itensDisponiveis.add(item);
-
-            }
-
-        }
         System.out.println("\n===== RELATÓRIO DE ITENS DISPONÍVEIS =====");
 
             System.out.printf("%-20s %-5s %-25s %-10s%n","CATEGORIA", "ID", "NOME", "TAXA");
 
             for (Item item : itensDisponiveis) {
-                System.out.printf("%-20s %-5d %-25s R$ %.2f%n",item.getCategoria().getNome(),item.getId(), item.getNome(), item.getTaxaDiaria());
+                System.out.printf("%-20s %-5d %-25s R$ %.2f%n",item.getCategoria() == null ? "Sem categoria" : item.getCategoria().getNome(),item.getId(), item.getNome(), item.getTaxaDiaria());
 
             }
 
         System.out.println("\nArquivo CSV gerado na pasta relatorios");
 
-        SalvaRelatorioItensDisponiveis salva = new SalvaRelatorioItensDisponiveis();
-
-        salva.salvar(itensDisponiveis);
+        exportarItensDisponiveis(itensDisponiveis);
 
     }
 
@@ -69,16 +59,7 @@ public class GeradorRelatorios implements IRelatorios {
             System.out.println("Cliente não encontrado");
         } else {
             
-            List<ContratoAluguel> historico = new ArrayList<>();
-
-            for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
-
-                if (contrato.getCliente().getId() == idCliente) {
-                    
-                    historico.add(contrato);
-                }
-
-            }
+            List<ContratoAluguel> historico = listarHistoricoCliente(idCliente);
 
             if (historico.isEmpty()) {
 
@@ -98,9 +79,7 @@ public class GeradorRelatorios implements IRelatorios {
                     }
 
                 System.out.println("\nArquivo CSV gerado na pasta relatorios");
-                SalvaRelatorioHistoricoCliente salva = new SalvaRelatorioHistoricoCliente();
-                
-                salva.salvar(historico);
+                exportarHistoricoCliente(historico);
 
             }
 
@@ -110,16 +89,7 @@ public class GeradorRelatorios implements IRelatorios {
     @Override
     public void gerarRelatorioItensAlugados() {
 
-        List<ContratoAluguel> contratosAtivos = new ArrayList<>();
-
-        for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
-
-            if (contrato.estaAtivo()) {
-                contratosAtivos.add(contrato);
-
-            }
-
-        }
+        List<ContratoAluguel> contratosAtivos = listarContratosAtivos();
 
         if (contratosAtivos.isEmpty()) {
 
@@ -130,15 +100,11 @@ public class GeradorRelatorios implements IRelatorios {
 
             System.out.printf("%-5s %-20s %-20s %-15s %-10s%n","ID","CLIENTE","ITEM","DEVOLUÇÃO","SITUAÇÃO");
 
-            LocalDate hoje = LocalDate.now();
-
             for (ContratoAluguel contrato : contratosAtivos) {
-
-                LocalDate dataPrevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
 
                 String situacao;
 
-                if (hoje.isAfter(dataPrevista)) {
+                if (estaAtrasado(contrato)) {
 
                     situacao = "ATRASADO";
 
@@ -151,9 +117,7 @@ public class GeradorRelatorios implements IRelatorios {
                 System.out.printf("%-5d %-20s %-20s %-15s %-10s%n",contrato.getId(),contrato.getCliente().getNome(),contrato.getItem().getNome(),contrato.getDataDevolucaoPrevista(),situacao);
             }
 
-            SalvaRelatorioItensAlugados salva = new SalvaRelatorioItensAlugados();
-
-            salva.salvar(contratosAtivos);
+            exportarItensAlugados(contratosAtivos);
         }
 
     }
@@ -177,25 +141,14 @@ public class GeradorRelatorios implements IRelatorios {
 
         }
 
-        List<ContratoAluguel> contratosPeriodo = new ArrayList<>();
+        List<ContratoAluguel> contratosPeriodo = listarContratosPorPeriodo(inicio, fim);
 
         double totalAlugueis = 0;
         double totalMultas = 0;
 
-        for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
-
-            LocalDate dataContrato = LocalDate.parse(contrato.getDataRetirada());
-
-            if (!dataContrato.isBefore(inicio) && !dataContrato.isAfter(fim)) {
-
-                contratosPeriodo.add(contrato);
-
-                totalAlugueis += contrato.getValorTotal();
-
-                totalMultas += contrato.getValorMulta();
-
-            }
-
+        for (ContratoAluguel contrato : contratosPeriodo) {
+            totalAlugueis += contrato.getValorTotal();
+            totalMultas += contrato.getValorMulta();
         }
 
         if (contratosPeriodo.isEmpty()) {
@@ -227,11 +180,109 @@ public class GeradorRelatorios implements IRelatorios {
 
             System.out.printf("Total geral: R$ %.2f%n", totalAlugueis + totalMultas);
 
-            SalvaRelatorioFaturamento salva = new SalvaRelatorioFaturamento();
-
-            salva.salvar(contratosPeriodo, dataInicial, dataFinal);
+            exportarFaturamento(contratosPeriodo, dataInicial, dataFinal);
         }
 
+    }
+
+    // =========================================================================
+    // DADOS DOS RELATÓRIOS (usados pelas telas JavaFX)
+    // =========================================================================
+
+    @Override
+    public List<Item> listarItensDisponiveis() {
+
+        List<Item> itensDisponiveis = new ArrayList<>();
+
+        for (Item item : gerenciamentoItens.listarItens()) {
+
+            if (item.estaDisponivel()) {
+                itensDisponiveis.add(item);
+            }
+        }
+
+        return itensDisponiveis;
+    }
+
+    @Override
+    public List<ContratoAluguel> listarHistoricoCliente(int idCliente) {
+
+        List<ContratoAluguel> historico = new ArrayList<>();
+
+        for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
+
+            if (contrato.getCliente().getId() == idCliente) {
+                historico.add(contrato);
+            }
+        }
+
+        return historico;
+    }
+
+    @Override
+    public List<ContratoAluguel> listarContratosAtivos() {
+
+        List<ContratoAluguel> contratosAtivos = new ArrayList<>();
+
+        for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
+
+            if (contrato.estaAtivo()) {
+                contratosAtivos.add(contrato);
+            }
+        }
+
+        return contratosAtivos;
+    }
+
+    @Override
+    public List<ContratoAluguel> listarContratosPorPeriodo(LocalDate inicio, LocalDate fim) {
+
+        List<ContratoAluguel> contratosPeriodo = new ArrayList<>();
+
+        for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
+
+            LocalDate dataContrato = LocalDate.parse(contrato.getDataRetirada());
+
+            if (!dataContrato.isBefore(inicio) && !dataContrato.isAfter(fim)) {
+                contratosPeriodo.add(contrato);
+            }
+        }
+
+        return contratosPeriodo;
+    }
+
+    @Override
+    public boolean estaAtrasado(ContratoAluguel contrato) {
+
+        if (!contrato.estaAtivo()) {
+            return false;
+        }
+
+        return LocalDate.now().isAfter(LocalDate.parse(contrato.getDataDevolucaoPrevista()));
+    }
+
+    // =========================================================================
+    // EXPORTAÇÃO PARA CSV
+    // =========================================================================
+
+    @Override
+    public void exportarItensDisponiveis(List<Item> itens) {
+        new SalvaRelatorioItensDisponiveis().salvar(new ArrayList<>(itens));
+    }
+
+    @Override
+    public void exportarHistoricoCliente(List<ContratoAluguel> historico) {
+        new SalvaRelatorioHistoricoCliente().salvar(historico);
+    }
+
+    @Override
+    public void exportarItensAlugados(List<ContratoAluguel> contratosAtivos) {
+        new SalvaRelatorioItensAlugados().salvar(contratosAtivos);
+    }
+
+    @Override
+    public void exportarFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal) {
+        new SalvaRelatorioFaturamento().salvar(contratos, dataInicial, dataFinal);
     }
 
 }
