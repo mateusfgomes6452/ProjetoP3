@@ -1,0 +1,11 @@
+/*Arquivo feito para resolver o problema do DatePicker com o mesmo visual dos campos 
+O DatePicker tem um TextField dentro dele, e esse TextField fica com a borda pra fora*/
+
+.date-picker.input-field {
+    -fx-padding: 0;
+}
+.date-picker.input-field > .text-field {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 9 11;
+}
