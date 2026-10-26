@@ -9,7 +9,7 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
 
     private String arquivo = "dados/categorias.csv";
 
-    private List<Categoria> categorias;
+    private final List<Categoria> categorias;
     private ManipulaArquivo manipulaArquivo;
 
     public CategoriaRepositorio() {
