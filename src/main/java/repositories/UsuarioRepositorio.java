@@ -12,14 +12,14 @@ import entidades.Usuario;
 
 public class UsuarioRepositorio implements IUsuarioRepositorio {
 
-    private String arquivo = "dados/usuarios.csv";
+    private static final String ARQUIVO = "dados/usuarios.csv";
 
  private final List<Usuario> usuarios;
  private final ManipulaArquivo manipulaArquivo;
 
     public UsuarioRepositorio() {
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
         usuarios = carregar();
 
     }
