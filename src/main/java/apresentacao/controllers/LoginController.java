@@ -47,14 +47,21 @@ public class LoginController {
     }
 
     private void redirecionarUsuario(Usuario usuario) {
-        String arquivo = "";
+        String arquivo;
 
-        if (usuario instanceof Cliente) {
-            arquivo = "/fxml/MenuCliente.fxml"; 
+        if (usuario instanceof Administrador) {
+            arquivo = "/fxml/ItensAdministrador.fxml";
         } else if (usuario instanceof Funcionario) {
-            arquivo = "/fxml/MenuFuncionario.fxml"; 
-        } else if (usuario instanceof Administrador) {
-            arquivo = "/fxml/ItensAdministrador.fxml"; 
+            arquivo = "/fxml/ItensFuncionario.fxml";
+        } else if (usuario instanceof Cliente) {
+            arquivo = "/fxml/MultasClientes.fxml";
+        } else {
+            mostrarAlerta(
+                AlertType.ERROR,
+                "Acesso não permitido",
+                "Perfil de usuário não reconhecido."
+            );
+            return;
         }
 
         Navegacao.setUsuarioLogado(usuario);
