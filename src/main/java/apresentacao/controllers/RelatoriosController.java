@@ -22,7 +22,7 @@ import javafx.scene.control.Label;
  * Cada aba é um FXML próprio (fx:include) com o seu controller, configurado aqui:
  * ItensDisponiveisController, HistoricoClienteController, ItensAlugadosController e FaturamentoController.
  */
-public final class RelatoriosController extends BaseControllersRelatorios {
+public final class RelatoriosController extends BaseControllersRelatorios implements Navegacao.ControladorComSessao {
 
     private Consumer<String> navegacao;
     private Runnable sair;
@@ -52,6 +52,7 @@ public final class RelatoriosController extends BaseControllersRelatorios {
         mostrarAba(btnAbaItens, abaItens, () -> abaItensController.atualizar());
     }
 
+    @Override
     public void configurar(SistemaFacade sistema, Usuario usuario, Consumer<String> navegacao, Runnable sair) {
         iniciarSessao(sistema, usuario);
         this.navegacao = Objects.requireNonNull(navegacao, "Callback de navegação é obrigatório");
