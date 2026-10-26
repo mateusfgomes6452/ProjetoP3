@@ -1,4 +1,4 @@
-package apresentacao.controllers;
+package apresentacao.base;
 
 import apresentacao.navegacao.Navegacao;
 import entidades.Administrador;

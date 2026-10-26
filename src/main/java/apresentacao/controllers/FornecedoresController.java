@@ -1,5 +1,6 @@
 package apresentacao.controllers;
 
+import apresentacao.base.*;
 import entidades.Fornecedor;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -40,10 +41,6 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
     @Override protected String descricaoDe(Fornecedor f) { return f.getCnpj() + " " + f.getEmail() + " " + f.getTelefone(); }
     @Override protected boolean desativarRegistro(Fornecedor f) { return sistema.desativarFornecedor(f.getId()); }
     @Override protected String nomeEntidade() { return "fornecedor"; }
-
-    @Override
-    @FXML
-    protected void abrirFornecedores() { atualizar(); }
 
     @FXML
     private void novo() {
