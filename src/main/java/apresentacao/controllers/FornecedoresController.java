@@ -55,8 +55,8 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
             exigirSessao();
             idEmEdicao = null;
             tituloFormulario.setText("Cadastrar fornecedor");
-            razao.clear(); cnpj.clear(); email.clear(); telefone.clear();
-            cnpj.setDisable(false);
+            razao.clear(); cCnpj.clear(); email.clear(); telefone.clear();
+            cCnpj.setDisable(false);
             btnSalvar.setText("Cadastrar fornecedor");
             exibirFormulario(true);
             razao.requestFocus();
