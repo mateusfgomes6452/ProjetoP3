@@ -192,13 +192,13 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         return limpo;
     }
 
-    @FXML private void abrirFornecedores() {
-    	executar("navegar para fornecedores", () -> { 
+    @FXML private void abrirUsuarios() {
+    	executar("navegar para usuarios", () -> { 
             exigirSessao(); 
             if (usuario instanceof entidades.Administrador) {
-                navegacao.accept("FornecedoresAdministrador"); 
+                navegacao.accept("UsuariosAdministrador"); 
             } else {
-                navegacao.accept("FornecedoresFuncionario"); 
+                navegacao.accept("UsuariosFuncionario"); 
             }
         }); 
     }
@@ -221,6 +221,17 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
 	        }
     	}); 
     }
+    @FXML private void abrirFornecedores() {
+    	executar("navegar para fornecedores", () -> { 
+            exigirSessao(); 
+            if (usuario instanceof entidades.Administrador) {
+                navegacao.accept("FornecedoresAdministrador"); 
+            } else {
+                navegacao.accept("FornecedoresFuncionario"); 
+            }
+        }); 
+    }
+
     @FXML protected void abrirMultas() {
         executar("navegar para multas", () -> { exigirSessao(); navegacao.accept("multas"); });
     }

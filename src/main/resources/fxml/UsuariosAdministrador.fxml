@@ -19,6 +19,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.PasswordField?>
 
 <BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.UsuariosController">
   <stylesheets><URL value="@../css/identidade.css" /></stylesheets>
@@ -82,13 +83,13 @@
               <Label styleClass="field-label" text="Nome *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
               <Label styleClass="field-label" text="CPF *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
               <TextField fx:id="campoNome" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-              <TextField fx:id="cpf" promptText="000.000.000-00" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-              <Label styleClass="field-label" text="Email *" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-              <Label styleClass="field-label" text="Tipo de usuário *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-              <TextField fx:id="campoEmail" promptText="Ex.: fulano@loja.com" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-              <ComboBox fx:id="comboTipo" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-              <Label styleClass="field-label" text="Senha *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-              <PasswordField fx:id="senha" maxWidth="-Infinity" prefHeight="30.0" prefWidth="340.0">
+              <TextField fx:id="campoCPF" promptText="000.000.000-00" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+              <Label styleClass="field-label" text="Email *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+              <Label styleClass="field-label" text="Tipo de usuário *" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+              <TextField fx:id="campoEmail" promptText="Ex.: fulano@loja.com" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+              <ComboBox fx:id="comboTipo" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+              <Label styleClass="field-label" text="Senha *" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+              <PasswordField fx:id="campoSenha" maxWidth="-Infinity" prefHeight="30.0" prefWidth="340.0" GridPane.columnIndex="0" GridPane.rowIndex="6"></PasswordField>
             </GridPane>
             <HBox alignment="CENTER_RIGHT" spacing="9">
               <Button onAction="#cancelar" styleClass="secondary-button" text="Cancelar" />
@@ -117,8 +118,8 @@
               <columns>
                 <TableColumn fx:id="colId" prefWidth="55" text="ID" />
                 <TableColumn fx:id="colNome" prefWidth="172.79998779296875" text="NOME" />
-                <TableColumn fx:id="colEmail" prefWidth="171.19993591308594" text="CPF" />
-                <TableColumn fx:id="colCPF" prefWidth="224.0" text="EMAIL" />
+                <TableColumn fx:id="colCPF" prefWidth="171.19993591308594" text="CPF" />
+                <TableColumn fx:id="colEmail" prefWidth="224.0" text="EMAIL" />
                 <TableColumn fx:id="colTipo" minWidth="0.0" prefWidth="165.5999755859375" text="TIPO" />
                 <TableColumn fx:id="colStatus" prefWidth="152.800048828125" text="STATUS" />
               </columns>

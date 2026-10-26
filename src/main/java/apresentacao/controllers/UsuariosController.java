@@ -1,11 +1,17 @@
 package apresentacao.controllers;
 
 import apresentacao.base.*;
+import entidades.Administrador;
+import entidades.Cliente;
+import entidades.Funcionario;
 import entidades.Usuario;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 
@@ -17,51 +23,65 @@ public class UsuariosController extends BaseControllers<Usuario> {
     @FXML private TableColumn<Usuario, String> colNome;
     @FXML private TableColumn<Usuario, String> colCPF;
     @FXML private TableColumn<Usuario, String> colEmail;
-    @FXML private TableColumn<Usuario, String> colSenha;
+    @FXML private TableColumn<Usuario, String> colTipo;
     @FXML private TableColumn<Usuario, String> colStatus;
 
     @FXML private TextField campoNome;
-    @FXML private TextField campoDescricao;
+    @FXML private TextField campoCPF;
+    @FXML private TextField campoEmail;
+    @FXML private PasswordField campoSenha; 
+    @FXML private ComboBox<String> comboTipo;
 
     @FXML
     private void initialize() {
         colId.setCellValueFactory(x -> new ReadOnlyIntegerWrapper(x.getValue().getId()));
         colNome.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getNome()));
-        colDescricao.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getDescricao()));
+        colCPF.setCellValueFactory(x -> new ReadOnlyStringWrapper(String.valueOf(x.getValue().getCpf())));
+        colEmail.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getEmail()));
+        colTipo.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getTipo()));
         colStatus.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().isAtivo() ? "Ativo" : "Inativo"));
-
+        
+        comboTipo.setItems(FXCollections.observableArrayList("Administrador", "Funcionário", "Cliente"));
+        
         iniciarBase();
     }
 
-    @Override protected List<Categoria> listarRegistros() { return sistema.listarCategorias(); }
-    @Override protected boolean estaAtivo(Categoria c) { return c.isAtiva(); }
-    @Override protected int idDe(Categoria c) { return c.getId(); }
-    @Override protected String nomeDe(Categoria c) { return c.getNome(); }
-    @Override protected String descricaoDe(Categoria c) { return c.getDescricao(); }
-    @Override protected boolean desativarRegistro(Categoria c) { return sistema.excluirItem(c.getId()); }
-    @Override protected String nomeEntidade() { return "categoria"; }
+    @Override protected List<Usuario> listarRegistros() { return sistema.listarUsuarios(); }
+    @Override protected boolean estaAtivo(Usuario u) { return u.isAtivo(); }
+    @Override protected int idDe(Usuario u) { return u.getId(); }
+    @Override protected String nomeDe(Usuario u) { return u.getNome(); }
+    @Override protected String descricaoDe(Usuario u) { return u.getCpf() + " " + u.getEmail(); }
+    @Override protected boolean desativarRegistro(Usuario u) { return sistema.desativaUsuario(u.getId()); }
+    @Override protected String nomeEntidade() { return "usuario"; }
 
     @FXML
     private void novo() {
-        executar("abrir cadastro de categoria", () -> {
+        executar("abrir cadastro de usuario", () -> {
             exigirSessao();
             idEmEdicao = null;
-            tituloFormulario.setText("Cadastrar categoria");
+            tituloFormulario.setText("Cadastrar usuário");
             limparFormulario();
-            btnSalvar.setText("Cadastrar categoria");
+            btnSalvar.setText("Cadastrar usuário");
             exibirFormulario(true);
         });
     }
 
     @FXML
     private void editar() {
-        executar("editar item", () -> {
+        executar("editar usuário", () -> {
             exigirSessao();
-            Categoria c = selecionado();
-            idEmEdicao = c.getId();
-            tituloFormulario.setText("Editar categoria #" + c.getId());
-            campoNome.setText(c.getNome());
-            campoDescricao.setText(c.getDescricao());
+            Usuario u = selecionado();
+            idEmEdicao = u.getId();
+            tituloFormulario.setText("Editar usuário #" + u.getId());
+            campoNome.setText(u.getNome());
+            campoCPF.setText(String.valueOf(u.getCpf()));
+            campoEmail.setText(u.getEmail());
+            campoSenha.setText(u.getSenha());
+            
+            if (u instanceof Administrador) comboTipo.setValue("Administrador");
+            else if (u instanceof Funcionario) comboTipo.setValue("Funcionário");
+            else comboTipo.setValue("Cliente");
+
             btnSalvar.setText("Salvar alterações");
             exibirFormulario(true);
         });
@@ -69,33 +89,51 @@ public class UsuariosController extends BaseControllers<Usuario> {
 
     @FXML
     private void salvar() {
-        executar("salvar item", () -> {
+        executar("salvar usuario", () -> {
             exigirSessao();
             String nome = validarTexto(campoNome.getText(), "Nome");
-            String descricao = validarTexto(campoDescricao.getText(), "Descrição");
+            String cpf = validarTexto(campoCPF.getText(), "CPF");
+            String email = validarTexto(campoEmail.getText(), "Email");
+            String senha = validarTexto(campoSenha.getText(), "Senha");
+            String tipo = comboTipo.getValue();
 
-            Categoria categoria = (idEmEdicao == null)
-                    ? new Categoria(sistema.gerarProximoIdItem(), nome, descricao)
-                    : sistema.buscarCategoria(idEmEdicao);
-            if (categoria == null) throw new IllegalArgumentException("Categoria não encontrado.");
-
-            if (idEmEdicao != null) {
-                categoria.setNome(nome);
-                categoria.setDescricao(descricao);
+            if (tipo == null || tipo.isBlank()) {
+                throw new IllegalArgumentException("Selecione o tipo de usuário.");
             }
 
-            boolean ok = (idEmEdicao == null) ? sistema.cadastrarCategoria(categoria) : sistema.atualizarCategoria(categoria);
-            if (!ok) throw new IllegalArgumentException("Operação não realizada. Verifique dados duplicados.");
+            boolean ok;
+            if (idEmEdicao == null) {
+                Usuario novoUsuario;
+                int novoId = sistema.gerarProximoIdUsuario(); 
+                
+                if (tipo.equals("Administrador")) {
+                    novoUsuario = new Administrador(novoId, nome, email, senha, cpf);
+                } else if (tipo.equals("Funcionário")) {
+                    novoUsuario = new Funcionario(novoId, nome, email, senha, cpf);
+                } else {
+                    novoUsuario = new Cliente(novoId, nome, email, senha, cpf);
+                }
+                ok = sistema.cadastrarUsuario(novoUsuario);
+            } else {
+                Usuario atual = sistema.buscarUsuario(idEmEdicao);
+                if (atual == null) throw new IllegalArgumentException("Usuário não encontrado.");
+                
+                ok = sistema.atualizarUsuario(idEmEdicao, nome, email, senha);
+            }
+
+            if (!ok) throw new IllegalArgumentException("Não foi possível salvar o usuário. Verifique dados duplicados.");
 
             cancelar();
             atualizar();
-            alerta(Alert.AlertType.INFORMATION, "Sucesso", "Categoria salva com sucesso.");
+            alerta(Alert.AlertType.INFORMATION, "Sucesso", "Usuário salvo com sucesso.");
         });
     }
 
     private void limparFormulario() {
         campoNome.clear();
-        campoDescricao.clear();
+        campoCPF.clear();
+        campoEmail.clear();
+        campoSenha.clear();
+        comboTipo.setValue(null);
     }
-
 }
