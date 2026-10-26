@@ -26,7 +26,7 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
     @FXML private TableColumn<Fornecedor, String> colTelefone;
     @FXML private TableColumn<Fornecedor, String> colStatus;
     @FXML private TextField razao;
-    @FXML private TextField cCnpj;
+    @FXML private TextField cnpj;
     @FXML private TextField email;
     @FXML private TextField telefone;
 
