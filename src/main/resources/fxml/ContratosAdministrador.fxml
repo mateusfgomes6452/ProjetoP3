@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.ContratosController">
+  <stylesheets><URL value="@../css/identidade.css" />
+      <URL value="@../css/contratos.css" /></stylesheets>
+  <left><VBox minWidth="225" prefWidth="225" spacing="19" styleClass="sidebar">
+      <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
+      <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
+      <VBox spacing="5">
+        <Label fx:id="lblPerfil" styleClass="role-label" text="ADMINISTRADOR" />
+        <Region prefHeight="8" />
+        <Label maxWidth="Infinity" text="Contratos">
+               <styleClass>
+                  <String fx:value="nav-item" />
+                  <String fx:value="nav-selected" />
+               </styleClass></Label><Label maxWidth="Infinity" styleClass="nav-item" text="Itens" /><Label maxWidth="Infinity" styleClass="nav-item" text="Categorias" /><Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" /><Label maxWidth="Infinity" styleClass="nav-item" text="Usuários" /><Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" /><Label maxWidth="Infinity" styleClass="nav-item" text="Relatórios" />
+      </VBox>
+      <Region VBox.vgrow="ALWAYS" />
+      <Separator />
+      <HBox alignment="CENTER_LEFT" spacing="9">
+        <Label fx:id="lblAvatar" styleClass="avatar" text="U" />
+        <VBox spacing="2">
+           <Label fx:id="lblNomeUsuario" styleClass="user-name" text="Usuário autenticado" />
+           <Label styleClass="user-role" text="Sessão ativa" />
+        </VBox>
+      </HBox>
+      <Button maxWidth="Infinity" onAction="#encerrarSessao" styleClass="secondary-button" text="Sair da conta" />
+    </VBox></left>
+  <center><ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
+      <content><VBox spacing="22" styleClass="content-area">
+        <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
+        <HBox alignment="CENTER_LEFT" spacing="12"><VBox spacing="4">
+          <Label styleClass="page-title" text="Gestão de Contratos" />
+          <Label styleClass="page-subtitle" text="Registre aluguéis, acompanhe devoluções e cancele contratos." /></VBox>
+          <Region HBox.hgrow="ALWAYS" /><Button onAction="#abrirRegistro" styleClass="primary-button" text="+ Registrar aluguel" /></HBox>
+               <VBox fx:id="painelRegistro" managed="false" prefHeight="200.0" prefWidth="100.0" spacing="16.0" styleClass="panel-card" visible="false">
+                  <children>
+                     <Label styleClass="section-title" text="Registrar aluguel" />
+                     <Label styleClass="minor-text" text="O valor total é calculado pela quantidade de dias × taxa diária do item." />
+                     <GridPane hgap="16.0" vgap="10.0">
+                       <columnConstraints>
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                       </columnConstraints>
+                       <rowConstraints>
+                         <RowConstraints vgrow="SOMETIMES" />
+                         <RowConstraints vgrow="SOMETIMES" />
+                         <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                       </rowConstraints>
+                        <children>
+                           <Label styleClass="field-label" text="Cliente *" />
+                           <Label styleClass="field-label" text="Item *" GridPane.columnIndex="1" />
+                           <Label styleClass="field-label" text="Data de retirada *" GridPane.rowIndex="2" />
+                           <Label styleClass="field-label" text="Devolução prevista *" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           <ComboBox fx:id="comboCliente" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="Selecione um cliente" styleClass="input-field" GridPane.rowIndex="1" />
+                           <ComboBox fx:id="comboItem" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="Selecione um item disponível" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           <DatePicker fx:id="dataRetirada" maxWidth="1.7976931348623157E308" styleClass="input-field" GridPane.rowIndex="3" />
+                           <DatePicker fx:id="dataDevolucao" maxWidth="1.7976931348623157E308" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        </children>
+                     </GridPane>
+                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                        <children>
+                           <VBox spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="PERÍODO" />
+                                 <Label fx:id="lblDias" styleClass="section-title" text="0 dia(s)" />
+                              </children>
+                           </VBox>
+                           <VBox spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="TAXA DIÁRIA" />
+                                 <Label fx:id="lblTaxa" styleClass="section-title" text="R$ 0,00" />
+                              </children>
+                           </VBox>
+                           <VBox spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="VALOR TOTAL" />
+                                 <Label fx:id="lblValorTotal" styleClass="stat-value" text="R$ 0,00" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="9.0">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#cancelarRegistro" styleClass="secondary-button" text="Cancelar" />
+                           <Button fx:id="btnConfirmarRegistro" mnemonicParsing="false" onAction="#registrar" styleClass="primary-button" text="Registrar aluguel" />
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+               <VBox fx:id="painelFinalizacao" managed="false" prefHeight="200.0" prefWidth="100.0" spacing="16.0" styleClass="panel-card" visible="false">
+                  <children>
+                     <Label styleClass="section-title" text="Finalizar devolução" />
+                     <Label fx:id="lblContratoFinalizacao" styleClass="minor-text" text="Contrato #0 · Cliente · Item" />
+                     <GridPane hgap="16.0" vgap="10.0">
+                        <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                        </rowConstraints>
+                        <children>
+                           <Label styleClass="field-label" text="Devolução prevista" />
+                           <Label styleClass="field-label" text="Data real da devolução *" GridPane.columnIndex="1" />
+                           <DatePicker fx:id="dataDevolucaoReal" maxWidth="1.7976931348623157E308" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           <Label fx:id="lblPrevistaFinalizacao" styleClass="section-title" text="-" GridPane.rowIndex="1" />
+                        </children>
+                     </GridPane>
+                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                        <children>
+                           <VBox spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="DIAS DE ATRASO" />
+                                 <Label fx:id="lblDiasAtraso" styleClass="section-title" text="0" />
+                              </children>
+                           </VBox>
+                           <VBox spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="MULTA POR ATRASO" />
+                                 <Label fx:id="lblMulta" styleClass="stat-value" text="R$ 0,00" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="9.0">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#cancelarFinalizacao" styleClass="secondary-button" text="Cancelar" />
+                           <Button fx:id="btnConfirmarFinalizacao" mnemonicParsing="false" onAction="#finalizar" styleClass="primary-button" text="Confirmar devolução" />
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+               <VBox fx:id="painelDetalhes" managed="false" spacing="16.0" styleClass="panel-card" visible="false">
+                  <children>
+                     <Label fx:id="lblTituloDetalhes" styleClass="section-title" text="Contrato #0" />
+                     <Label styleClass="minor-text" text="Dados completos do contrato selecionado" />
+                     <GridPane hgap="16.0" vgap="10.0">
+                        <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                           <RowConstraints vgrow="SOMETIMES" />
+                        </rowConstraints>
+                        <children>
+                           <Label styleClass="field-label" text="Cliente" />
+                           <Label styleClass="field-label" text="Item" GridPane.columnIndex="1" />
+                           <Label fx:id="detRetirada" text="-" GridPane.rowIndex="3" />
+                           <Label styleClass="field-label" text="Data retirada" GridPane.rowIndex="2" />
+                           <Label styleClass="field-label" text="Devolução real" GridPane.rowIndex="4" />
+                           <Label styleClass="field-label" text="Devolução Prevista" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           <Label fx:id="detPrevista" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           <Label styleClass="field-label" text="Status" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                           <Label fx:id="detCliente" text="-" GridPane.rowIndex="1" />
+                           <Label fx:id="detItem" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           <Label fx:id="detReal" text="-" GridPane.rowIndex="5" />
+                           <Label fx:id="detStatus" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        </children>
+                     </GridPane>
+                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                        <children>
+                           <VBox prefHeight="200.0" prefWidth="100.0" spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="VALOR TOTAL" />
+                                 <Label fx:id="detValor" styleClass="section-title" text="-" />
+                              </children>
+                           </VBox>
+                           <VBox prefHeight="200.0" prefWidth="100.0" spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="VALOR DA MULTA" />
+                                 <Label fx:id="detMulta" styleClass="section-title" text="-" />
+                              </children>
+                           </VBox>
+                           <VBox prefHeight="200.0" prefWidth="100.0" spacing="4.0">
+                              <children>
+                                 <Label styleClass="stat-caption" text="MULTA PAGA" />
+                                 <Label fx:id="detMultaPaga" styleClass="section-title" text="-" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="9.0">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#fecharDetalhes" styleClass="secondary-button" text="Fechar" />
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox><HBox spacing="14"><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label styleClass="stat-caption" text="TOTAL DE CONTRATOS" />
+        <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
+        </VBox><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label styleClass="stat-caption" text="CONTRATOS ATIVOS" />
+        <Label fx:id="lblAtivos" styleClass="stat-value" text="0" />
+        </VBox><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+        <Label styleClass="stat-caption" text="DEVOLUÇÕES ATRASADAS" />
+        <Label fx:id="lblAtrasados" styleClass="stat-value" text="0" />
+        </VBox></HBox><VBox spacing="13" styleClass="panel-card">
+      <HBox alignment="CENTER_LEFT" spacing="12"><VBox spacing="4">
+       <Label styleClass="section-title" text="Contratos cadastrados" />
+       <Label styleClass="minor-text" text="Selecione um contrato para ver detalhes, finalizar ou cancelar." />
+       </VBox><Region HBox.hgrow="ALWAYS" />
+       <Button onAction="#atualizar" styleClass="secondary-button" text="Atualizar lista" />
+      </HBox>
+      <TextField fx:id="busca" promptText="Buscar por ID, cliente ou item..." styleClass="input-field" />
+      <HBox alignment="CENTER_LEFT" spacing="9">
+       <Button fx:id="btnTodos" onAction="#filtrarTodos" styleClass="filter-button" text="Todos" /><Button fx:id="btnAtivos" onAction="#filtrarAtivos" styleClass="filter-button" text="Ativos" /><Button fx:id="btnFinalizados" onAction="#filtrarFinalizados" styleClass="filter-button" text="Finalizados" />
+                     <Button fx:id="btnCancelados" onAction="#filtrarCancelados" styleClass="filter-button" text="Cancelados" />
+       <Region HBox.hgrow="ALWAYS" />
+       <Label fx:id="lblResultado" styleClass="minor-text" text="Exibindo 0 de 0" />
+       </HBox>
+      <TableView fx:id="tabela" prefHeight="345" styleClass="data-table">
+       <columns>
+        <TableColumn fx:id="colId" minWidth="50.0" prefWidth="60.0" text="ID" />
+        <TableColumn fx:id="colCliente" prefWidth="200.0" text="CLIENTE" />
+        <TableColumn fx:id="colItem" prefWidth="200.0" text="ITEM" />
+        <TableColumn fx:id="colRetirada" prefWidth="110.0" text="RETIRADA" />
+        <TableColumn fx:id="colPrevista" minWidth="140.0" prefWidth="170.0" text="DEVOLUÇÃO PREVISTA" />
+        <TableColumn fx:id="colValor" prefWidth="110.0" text="VALOR" />
+        <TableColumn fx:id="colStatus" prefWidth="110.0" text="STATUS" />
+       </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+      </TableView>
+      <HBox alignment="CENTER_RIGHT" spacing="10.0"><Button fx:id="btnDetalhes" onAction="#verDetalhes" styleClass="secondary-button" text="Ver detalhes" />
+                     <Button fx:id="btnCancelar" onAction="#cancelarContrato" styleClass="danger-button" text="Cancelar contrato" />
+                     <Button fx:id="btnFinalizar" onAction="#abrirFinalizacao" styleClass="primary-button" text="Finalizar devolução" /></HBox>
+      </VBox>
+      </VBox></content>
+  </ScrollPane></center>
+</BorderPane>
