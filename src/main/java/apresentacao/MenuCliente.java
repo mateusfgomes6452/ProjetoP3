@@ -11,7 +11,7 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuCliente {
 
-    private SistemaFacade sistema;
+    private final SistemaFacade sistema;
     private Cliente cliente;
     private Scanner scanner;
 
