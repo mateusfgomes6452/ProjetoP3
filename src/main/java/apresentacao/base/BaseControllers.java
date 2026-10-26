@@ -212,7 +212,15 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             }
         }); 
     }
-    @FXML private void abrirCategorias() { executar("navegar para categorias", () -> { exigirSessao(); navegacao.accept("categorias"); }); }
+    @FXML private void abrirCategorias() { executar("navegar para categorias", () -> { 
+        exigirSessao(); 
+	        if (usuario instanceof entidades.Administrador) {
+	            navegacao.accept("CategoriasAdministrador"); 
+	        } else {
+	            navegacao.accept("CategoriasFuncionario"); 
+	        }
+    	}); 
+    }
     @FXML protected void abrirMultas() {
         executar("navegar para multas", () -> { exigirSessao(); navegacao.accept("multas"); });
     }
