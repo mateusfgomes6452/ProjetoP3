@@ -457,11 +457,7 @@ public final class MultasController implements Navegacao.ControladorComSessao {
 
     @FXML
     private void encerrarSessao() {
-        executar("encerrar sessão", () -> {
-            exigirSessao();
-            Navegacao.setUsuarioLogado(null);
-            sair.run();
-        });
+        executar("encerrar sessão", () -> {exigirSessao();sair.run();});
     }
 
     private void executar(String acao, Runnable operacao) {

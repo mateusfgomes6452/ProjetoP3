@@ -192,16 +192,19 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         return limpo;
     }
 
-    @FXML private void abrirFornecedores() {
-    	executar("navegar para fornecedores", () -> { 
-            exigirSessao(); 
-            if (usuario instanceof entidades.Administrador) {
-                navegacao.accept("FornecedoresAdministrador"); 
+    @FXML
+    private void abrirFornecedores() {
+        executar("navegar para fornecedores", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("FornecedoresAdministrador");
             } else {
-                navegacao.accept("FornecedoresFuncionario"); 
+                navegacao.accept("FornecedoresFunccionarios");
             }
-        }); 
+        });
     }
+
     @FXML private void abrirItens() { 
         executar("navegar para itens", () -> { 
             exigirSessao(); 
@@ -212,10 +215,33 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             }
         }); 
     }
-    @FXML private void abrirCategorias() { executar("navegar para categorias", () -> { exigirSessao(); navegacao.accept("categorias"); }); }
-    @FXML protected void abrirMultas() {
-        executar("navegar para multas", () -> { exigirSessao(); navegacao.accept("multas"); });
+
+    @FXML
+    private void abrirCategorias() {
+        executar("navegar para categorias", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("CategoriasAdministrador");
+            } else {
+                navegacao.accept("CategoriasFuncionarios");
+            }
+        });
     }
+
+    @FXML
+    protected void abrirMultas() {
+        executar("navegar para multas", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("Multasadministrador");
+            } else {
+                navegacao.accept("MultasFuncionario");
+            }
+        });
+    }
+    
     @FXML protected void encerrarSessao() {
         executar("encerrar sessão", () -> { exigirSessao(); sair.run(); });
     }
