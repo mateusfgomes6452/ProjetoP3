@@ -62,7 +62,7 @@ public final class Navegacao {
             }
 
         } catch (Exception e) {
-        	LOG.log(Level.SEVERE, e, () -> "Falha ao " + acao);
+        	LOG.log(Level.SEVERE, e, () -> "Falha ao carregar a tela");
             Alert aviso = new Alert(AlertType.INFORMATION, "Esta tela ainda não está disponível.");
             aviso.setHeaderText(null);
             aviso.showAndWait();
