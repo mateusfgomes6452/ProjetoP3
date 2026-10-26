@@ -56,7 +56,7 @@
                                     <Insets bottom="10.0" left="25.0" top="30.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="campoEmail" maxWidth="-Infinity" prefHeight="30.0" prefWidth="340.0">
+                              <TextField fx:id="login" maxWidth="-Infinity" prefHeight="30.0" prefWidth="340.0">
                                  <VBox.margin>
                                     <Insets bottom="20.0" left="30.0" />
                                  </VBox.margin>
@@ -70,7 +70,7 @@
                                     <Insets bottom="10.0" left="25.0" />
                                  </VBox.margin>
                               </Label>
-                              <PasswordField fx:id="campoSenha" maxWidth="-Infinity" prefHeight="30.0" prefWidth="340.0">
+                              <PasswordField fx:id="senha" maxWidth="-Infinity" prefHeight="30.0" prefWidth="340.0">
 								   <VBox.margin>
 								      <Insets bottom="20.0" left="30.0" />
 								   </VBox.margin>
@@ -78,7 +78,7 @@
 
                               <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0">
                                  <children>
-                                    <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#realizarLogin" prefHeight="14.0" prefWidth="160.0" style="-fx-font-size: 14px;" styleClass="primary-button" text="Entrar" textAlignment="CENTER">
+                                    <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#entrar" prefHeight="14.0" prefWidth="160.0" style="-fx-font-size: 14px;" styleClass="primary-button" text="Entrar" textAlignment="CENTER">
                                        <HBox.margin>
                                           <Insets bottom="10.0" top="5.0" />
                                        </HBox.margin>

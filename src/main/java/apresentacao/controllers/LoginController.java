@@ -5,7 +5,6 @@ import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
-import facade.SistemaJavaFX; // Importante para puxar a fábrica do sistema
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,24 +21,24 @@ public class LoginController {
     private BorderPane raiz;
 
     @FXML
-    private TextField campoEmail;
+    private TextField login;
 
     @FXML
-    private PasswordField campoSenha;
+    private PasswordField senha;
 
-    private SistemaFacade sistema = SistemaJavaFX.getSistema();
+    private SistemaFacade sistema = SistemaFacade.getSistema();
 
     @FXML
-    private void realizarLogin(ActionEvent event) {
-        String email = campoEmail.getText().trim();
-        String senha = campoSenha.getText();
+    private void entrar(ActionEvent event) {
+        String cLogin = login.getText().trim();
+        String cSenha = senha.getText();
 
-        if (email.isEmpty() || senha.isEmpty()) {
+        if (cLogin.isEmpty() || cSenha.isEmpty()) {
             mostrarAlerta(AlertType.WARNING, "Campos vazios", "Por favor, preencha o email e a senha.");
             return;
         }
 
-        Usuario usuario = sistema.realizarLogin(email, senha);
+        Usuario usuario = sistema.realizarLogin(cLogin, cSenha);
 
         if (usuario == null) {
             mostrarAlerta(AlertType.ERROR, "Falha no Login", "E-mail ou senha inválidos. Tente novamente.");
@@ -49,24 +48,18 @@ public class LoginController {
     }
 
     private void redirecionarUsuario(Usuario usuario) {
-        try {
-            String caminhoFxml = "";
+        String arquivo = "";
 
-            if (usuario instanceof Cliente) {
-                caminhoFxml = "/fxml/MenuCliente.fxml"; 
-            } else if (usuario instanceof Funcionario) {
-                caminhoFxml = "/fxml/MenuFuncionario.fxml"; 
-            } else if (usuario instanceof Administrador) {
-                caminhoFxml = "/fxml/ItensAdministrador.fxml"; 
-            }
-
-            Parent novaTela = FXMLLoader.load(getClass().getResource(caminhoFxml));
-            raiz.setCenter(novaTela);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarAlerta(AlertType.ERROR, "Erro de Navegação", "Não foi possível carregar a tela: " + e.getMessage());
+        if (usuario instanceof Cliente) {
+            arquivo = "/fxml/MenuCliente.fxml"; 
+        } else if (usuario instanceof Funcionario) {
+            arquivo = "/fxml/MenuFuncionario.fxml"; 
+        } else if (usuario instanceof Administrador) {
+            arquivo = "/fxml/ItensAdministrador.fxml"; 
         }
+
+        Navegacao.setUsuarioLogado(usuario);
+        Navegacao.irPara(raiz, arquivo);
     }
 
     private void mostrarAlerta(AlertType tipo, String titulo, String mensagem) {

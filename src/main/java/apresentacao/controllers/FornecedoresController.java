@@ -18,7 +18,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -29,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-public final class FornecedoresController {
+public final class FornecedoresController implements Navegacao.ControladorComSessao {
     private static final Logger LOG = Logger.getLogger(FornecedoresController.class.getName());
     private static final Pattern CNPJ = Pattern.compile("[A-Z0-9]{2}\\.[A-Z0-9]{3}\\.[A-Z0-9]{3}/[A-Z0-9]{4}-[A-Z0-9]{2}");
     private static final Pattern CELULAR = Pattern.compile("\\(\\d{2}\\) 9 \\d{4}-\\d{4}");
@@ -223,9 +222,19 @@ public final class FornecedoresController {
         return limpo;
     }
     @FXML private void abrirFornecedores() { atualizar(); }
+    @FXML private void abrirCategorias() { executar("navegar para categorias", () -> { exigirSessao(); navegacao.accept("categorias"); }); }
+    @FXML private void abrirItens() { 
+        executar("navegar para fornecedores", () -> { 
+            exigirSessao(); 
+            if (usuario instanceof entidades.Administrador) {
+                navegacao.accept("ItensAdministrador"); 
+            } else {
+                navegacao.accept("ItensFuncionario"); 
+            }
+        }); 
+    }
     @FXML private void abrirMultas() { executar("navegar para multas", () -> { exigirSessao(); navegacao.accept("multas"); }); }
     @FXML private void encerrarSessao() { executar("encerrar sessão", () -> { exigirSessao(); sair.run(); }); }
-
     private void executar(String acao, Runnable operacao) {
         try { operacao.run(); }
         catch (IllegalArgumentException | SecurityException e) { alerta(Alert.AlertType.WARNING, "Atenção", e.getMessage()); }
