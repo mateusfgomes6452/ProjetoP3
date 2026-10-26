@@ -64,7 +64,7 @@ public class ItensDisponiveisController {
         List<Item> itens = ConfiguracaoSistema.getSistema().listarItensDisponiveis().stream()
                 .sorted(Comparator.comparing(this::nomeCategoria, String.CASE_INSENSITIVE_ORDER)
                         .thenComparing(Item::getNome, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+                .toList();
         todos.setAll(itens);
         montarFiltros(itens);
         aplicarFiltro();
