@@ -2,7 +2,6 @@ package apresentacao.controllers;
 
 import apresentacao.base.BaseControllerCliente;
 import entidades.Item;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -11,9 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +18,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
-/** Catálogo público de itens disponíveis, em modo de consulta para clientes. */
+
 public final class ItensClientesController extends BaseControllerCliente {
 
     private static final String TODAS = "Todas";
@@ -29,8 +26,6 @@ public final class ItensClientesController extends BaseControllerCliente {
     @FXML private Label lblTotal;
     @FXML private Label lblCategorias;
     @FXML private Label lblTaxaMedia;
-    @FXML private Label lblResultado;
-    @FXML private TextField busca;
     @FXML private FlowPane filtrosCategoria;
     @FXML private TableView<Item> tabela;
     @FXML private TableColumn<Item, String> colId;
@@ -39,14 +34,11 @@ public final class ItensClientesController extends BaseControllerCliente {
     @FXML private TableColumn<Item, String> colDescricao;
     @FXML private TableColumn<Item, String> colEstado;
     @FXML private TableColumn<Item, String> colTaxa;
-    @FXML private Button btnDetalhes;
-    @FXML private VBox painelDetalhes;
     @FXML private Label lblDetalheNome;
     @FXML private Label lblDetalheDescricao;
     @FXML private Label lblDetalheCategoria;
     @FXML private Label lblDetalheEstado;
     @FXML private Label lblDetalheTaxa;
-    @FXML private Label lblDetalheReposicao;
 
     private final ObservableList<Item> itens = FXCollections.observableArrayList();
     private final FilteredList<Item> visiveis = new FilteredList<>(itens);
@@ -61,14 +53,7 @@ public final class ItensClientesController extends BaseControllerCliente {
         colEstado.setCellValueFactory(c -> prop(c.getValue().getEstadoConservacao()));
         colTaxa.setCellValueFactory(c -> prop(Formatador.moeda(c.getValue().getTaxaDiaria())));
 
-        tabela.setItems(visiveis);
-        tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tabela.setPlaceholder(new Label("Nenhum item disponível no momento."));
-        tabela.getSelectionModel().selectedItemProperty().addListener((obs, antes, atual) -> {
-            btnDetalhes.setDisable(atual == null);
-            fecharDetalhes();
-        });
-        busca.textProperty().addListener((obs, antes, atual) -> filtrar());
+        prepararTabela(tabela, visiveis, "Nenhum item disponível no momento.", this::filtrar);
     }
 
     @Override
@@ -111,15 +96,8 @@ public final class ItensClientesController extends BaseControllerCliente {
             lblDetalheCategoria.setText("Categoria: " + nomeCategoria(item));
             lblDetalheEstado.setText("Estado de conservação: " + item.getEstadoConservacao());
             lblDetalheTaxa.setText("Taxa diária: " + Formatador.moeda(item.getTaxaDiaria()));
-            painelDetalhes.setManaged(true);
-            painelDetalhes.setVisible(true);
+            mostrarDetalhes();
         });
-    }
-
-    @FXML
-    private void fecharDetalhes() {
-        painelDetalhes.setVisible(false);
-        painelDetalhes.setManaged(false);
     }
 
     private void montarFiltros(List<Item> resultado) {
@@ -149,7 +127,7 @@ public final class ItensClientesController extends BaseControllerCliente {
     }
 
     private void filtrar() {
-        String termo = busca.getText() == null ? "" : busca.getText().strip().toLowerCase(Locale.ROOT);
+        String termo = termoBusca();
         visiveis.setPredicate(i -> (TODAS.equals(categoriaAtiva) || nomeCategoria(i).equalsIgnoreCase(categoriaAtiva))
                 && (termo.isEmpty()
                     || String.valueOf(i.getId()).equals(termo)
@@ -168,7 +146,4 @@ public final class ItensClientesController extends BaseControllerCliente {
         return valor == null ? "" : valor.toLowerCase(Locale.ROOT);
     }
 
-    private ReadOnlyStringWrapper prop(String valor) {
-        return new ReadOnlyStringWrapper(valor == null ? "" : valor);
-    }
 }

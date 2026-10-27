@@ -4,10 +4,16 @@ import apresentacao.navegacao.Navegacao;
 import entidades.Cliente;
 import entidades.Usuario;
 import facade.SistemaFacade;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -33,6 +39,12 @@ public abstract class BaseControllerCliente implements Navegacao.ControladorComS
     @FXML protected Label lblPerfil;
     @FXML protected Label lblNomeUsuario;
     @FXML protected Label lblAvatar;
+
+    // Componentes que as 3 telas do cliente têm (mesmo fx:id em todos os FXML)
+    @FXML protected TextField busca;
+    @FXML protected Label lblResultado;
+    @FXML protected Button btnDetalhes;
+    @FXML protected VBox painelDetalhes;
 
     @Override
     public final void configurar(SistemaFacade sistema, Usuario usuario,
@@ -94,6 +106,45 @@ public abstract class BaseControllerCliente implements Navegacao.ControladorComS
             exigirSessao();
             navegacao.accept(fxmlSemExtensao);
         });
+    }
+
+ 
+    protected final <T> void prepararTabela(TableView<T> tabela, FilteredList<T> visiveis,
+                                            String textoTabelaVazia, Runnable filtrar) {
+        tabela.setItems(visiveis);
+        tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tabela.setPlaceholder(new Label(textoTabelaVazia));
+        tabela.getSelectionModel().selectedItemProperty().addListener((obs, antes, atual) -> {
+            btnDetalhes.setDisable(atual == null);
+            fecharDetalhes();
+        });
+        busca.textProperty().addListener((obs, antes, atual) -> filtrar.run());
+    }
+
+    protected final String termoBusca() {
+        return busca.getText() == null ? "" : busca.getText().strip().toLowerCase(Locale.ROOT);
+    }
+
+    protected final void destacarFiltro(Button selecionado, Button... todos) {
+        for (Button botao : todos) {
+            botao.getStyleClass().remove("filter-active");
+        }
+        selecionado.getStyleClass().add("filter-active");
+    }
+
+    protected final void mostrarDetalhes() {
+        painelDetalhes.setVisible(true);
+        painelDetalhes.setManaged(true);
+    }
+
+    @FXML
+    protected final void fecharDetalhes() {
+        painelDetalhes.setVisible(false);
+        painelDetalhes.setManaged(false);
+    }
+
+    protected final ReadOnlyStringWrapper prop(String valor) {
+        return new ReadOnlyStringWrapper(valor == null ? "" : valor);
     }
 
     protected final void executar(String acao, Runnable operacao) {
