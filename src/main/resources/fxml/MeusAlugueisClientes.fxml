@@ -1,107 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<BorderPane fx:id="raiz" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.MeusAlugueisClientesController" prefWidth="1280" prefHeight="800" styleClass="app-root">
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.MeusAlugueisClientesController">
   <stylesheets><URL value="@../css/identidade.css" /></stylesheets>
 <left>
   <VBox minWidth="225" prefWidth="225" spacing="19" styleClass="sidebar">
-    <padding><Insets top="27" bottom="22" left="16" right="16" /></padding>
+    <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
     <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
     <VBox spacing="5">
-      <Label fx:id="lblPerfil" text="CLIENTE" styleClass="role-label" />
+      <Label fx:id="lblPerfil" styleClass="role-label" text="CLIENTE" />
       <Region prefHeight="8" />
-        <Button text="Itens disponíveis" onAction="#abrirItensDisponiveis" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />
-        <Button text="Meus aluguéis" onAction="#abrirMeusAlugueis" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item, nav-selected" />
-        <Button text="Histórico" onAction="#abrirHistorico" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />
-        <Button text="Multas" onAction="#abrirMultas" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />    </VBox>
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirItensDisponiveis" styleClass="nav-item" text="Itens disponíveis" />
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMeusAlugueis" styleClass="nav-item, nav-selected" text="Meus aluguéis" />
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirHistorico" styleClass="nav-item" text="Histórico" />
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />    </VBox>
     <Region VBox.vgrow="ALWAYS" />
     <Separator />
     <HBox alignment="CENTER_LEFT" spacing="9">
-      <Label fx:id="lblAvatar" text="U" styleClass="avatar" />
+      <Label fx:id="lblAvatar" styleClass="avatar" text="U" />
       <VBox spacing="2">
-        <Label fx:id="lblNomeUsuario" text="Usuário autenticado" styleClass="user-name" />
-        <Label text="Sessão ativa" styleClass="user-role" />
+        <Label fx:id="lblNomeUsuario" styleClass="user-name" text="Usuário autenticado" />
+        <Label styleClass="user-role" text="Sessão ativa" />
       </VBox>
     </HBox>
-    <Button text="Sair da conta" onAction="#encerrarSessao" maxWidth="Infinity" styleClass="secondary-button" />
+    <Button maxWidth="Infinity" onAction="#encerrarSessao" styleClass="secondary-button" text="Sair da conta" />
   </VBox>
 </left>
   <center>
     <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
       <content>
         <VBox spacing="22" styleClass="content-area">
-          <padding><Insets top="32" bottom="34" left="35" right="35" /></padding>
+          <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
 
 <HBox alignment="CENTER_LEFT" spacing="12">
-  <VBox spacing="4">
-    <Label text="Meus aluguéis" styleClass="page-title" />
-    <Label text="Acompanhe os contratos de aluguel que estão ativos em seu nome." styleClass="page-subtitle" />
-  </VBox>
-  <Region HBox.hgrow="ALWAYS" />
-  <Button text="Atualizar contratos" onAction="#atualizar" styleClass="secondary-button" />
-</HBox>
-<HBox spacing="14">
-  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
-    <Label text="ALUGUÉIS ATIVOS" styleClass="stat-caption" />
-    <Label fx:id="lblAtivos" text="0" styleClass="stat-value" />
-  </VBox>
-  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
-    <Label text="DEVOLUÇÕES EM DIA" styleClass="stat-caption" />
-    <Label fx:id="lblEmDia" text="0" styleClass="stat-value, stat-green" />
-  </VBox>
-  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
-    <Label text="DEVOLUÇÕES ATRASADAS" styleClass="stat-caption" />
-    <Label fx:id="lblAtrasados" text="0" styleClass="stat-value, stat-red" />
-  </VBox>
+                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+                     <children>
+                        <Label styleClass="stat-caption" text="ALUGUÉIS ATIVOS" />
+                        <Label fx:id="lblAtivos" styleClass="stat-value" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+                     <children>
+                        <Label styleClass="stat-caption" text="DEVOLUÇÕES EM DIA" />
+                        <Label fx:id="lblEmDia" styleClass="stat-value, stat-green" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+                     <children>
+                        <Label styleClass="stat-caption" text="DEVOLUÇÕES ATRASADAS" />
+                        <Label fx:id="lblAtrasados" styleClass="stat-value, stat-red" text="0" />
+                     </children>
+                  </VBox>
+                  <Region prefHeight="104.0" prefWidth="51.0" />
+  <Button onAction="#atualizar" styleClass="secondary-button" text="Atualizar contratos" />
 </HBox>
 <VBox spacing="13" styleClass="panel-card">
   <HBox alignment="CENTER_LEFT" spacing="12">
     <VBox spacing="3">
-      <Label text="Contratos em andamento" styleClass="section-title" />
-      <Label text="Veja a previsão de devolução e acompanhe a situação dos seus aluguéis." styleClass="minor-text" />
+      <Label styleClass="section-title" text="Contratos em andamento" />
+      <Label styleClass="minor-text" text="Veja a previsão de devolução e acompanhe a situação dos seus aluguéis." />
     </VBox>
     <Region HBox.hgrow="ALWAYS" />
-    <Button text="Ver minhas multas" onAction="#abrirMultas" styleClass="secondary-button" />
+    <Button onAction="#abrirMultas" styleClass="secondary-button" text="Ver minhas multas" />
   </HBox>
   <TextField fx:id="busca" promptText="Buscar por número do contrato ou nome do item..." styleClass="input-field" />
   <HBox alignment="CENTER_LEFT" spacing="9">
-    <Button fx:id="btnTodos" text="Todos" onAction="#filtrarTodos" styleClass="filter-button, filter-active" />
-    <Button fx:id="btnEmDia" text="Em dia" onAction="#filtrarEmDia" styleClass="filter-button" />
-    <Button fx:id="btnAtrasados" text="Atrasados" onAction="#filtrarAtrasados" styleClass="filter-button" />
+    <Button fx:id="btnTodos" onAction="#filtrarTodos" styleClass="filter-button, filter-active" text="Todos" />
+    <Button fx:id="btnEmDia" onAction="#filtrarEmDia" styleClass="filter-button" text="Em dia" />
+    <Button fx:id="btnAtrasados" onAction="#filtrarAtrasados" styleClass="filter-button" text="Atrasados" />
     <Region HBox.hgrow="ALWAYS" />
-    <Label fx:id="lblResultado" text="Exibindo 0 de 0" styleClass="minor-text" />
+    <Label fx:id="lblResultado" styleClass="minor-text" text="Exibindo 0 de 0" />
   </HBox>
   <TableView fx:id="tabela" prefHeight="345" styleClass="data-table">
     <columns>
-      <TableColumn fx:id="colId" text="CONTRATO" prefWidth="90" />
-      <TableColumn fx:id="colItem" text="ITEM" prefWidth="200" />
-      <TableColumn fx:id="colRetirada" text="RETIRADA" prefWidth="120" />
-      <TableColumn fx:id="colPrevista" text="DEVOLUÇÃO PREVISTA" prefWidth="160" />
-      <TableColumn fx:id="colSituacao" text="SITUAÇÃO" prefWidth="125" />
-      <TableColumn fx:id="colValor" text="VALOR" prefWidth="115" />
+      <TableColumn fx:id="colId" prefWidth="90" text="CONTRATO" />
+      <TableColumn fx:id="colItem" prefWidth="200" text="ITEM" />
+      <TableColumn fx:id="colRetirada" prefWidth="120" text="RETIRADA" />
+      <TableColumn fx:id="colPrevista" prefWidth="160" text="DEVOLUÇÃO PREVISTA" />
+      <TableColumn fx:id="colSituacao" prefWidth="125" text="SITUAÇÃO" />
+      <TableColumn fx:id="colValor" prefWidth="115" text="VALOR" />
     </columns>
   </TableView>
   <HBox alignment="CENTER_RIGHT" spacing="9">
-    <Label text="A consulta não modifica os contratos." styleClass="minor-text" />
+    <Label styleClass="minor-text" text="A consulta não modifica os contratos." />
     <Region HBox.hgrow="ALWAYS" />
-    <Button fx:id="btnDetalhes" text="Detalhes do aluguel" onAction="#verDetalhes" disable="true" styleClass="primary-button" />
+    <Button fx:id="btnDetalhes" disable="true" onAction="#verDetalhes" styleClass="primary-button" text="Detalhes do aluguel" />
   </HBox>
 </VBox>
-<VBox fx:id="painelDetalhes" spacing="10" managed="false" visible="false" styleClass="panel-card">
+<VBox fx:id="painelDetalhes" managed="false" spacing="10" styleClass="panel-card" visible="false">
   <HBox alignment="CENTER_LEFT">
-    <Label fx:id="lblDetalheContrato" text="Contrato" styleClass="section-title" />
+    <Label fx:id="lblDetalheContrato" styleClass="section-title" text="Contrato" />
     <Region HBox.hgrow="ALWAYS" />
-    <Button text="Fechar" onAction="#fecharDetalhes" styleClass="secondary-button" />
+    <Button onAction="#fecharDetalhes" styleClass="secondary-button" text="Fechar" />
   </HBox>
-  <Label fx:id="lblDetalheItem" text="Item:" styleClass="field-label" />
-  <Label fx:id="lblDetalheRetirada" text="Retirada:" styleClass="field-label" />
-  <Label fx:id="lblDetalhePrevista" text="Devolução prevista:" styleClass="field-label" />
-  <Label fx:id="lblDetalheSituacao" text="Situação:" wrapText="true" styleClass="field-label" />
-  <Label fx:id="lblDetalheValor" text="Valor do aluguel:" styleClass="field-label" />
+  <Label fx:id="lblDetalheItem" styleClass="field-label" text="Item:" />
+  <Label fx:id="lblDetalheRetirada" styleClass="field-label" text="Retirada:" />
+  <Label fx:id="lblDetalhePrevista" styleClass="field-label" text="Devolução prevista:" />
+  <Label fx:id="lblDetalheSituacao" styleClass="field-label" text="Situação:" wrapText="true" />
+  <Label fx:id="lblDetalheValor" styleClass="field-label" text="Valor do aluguel:" />
 </VBox>
 
         </VBox>

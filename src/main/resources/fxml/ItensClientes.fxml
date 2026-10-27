@@ -1,103 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<BorderPane fx:id="raiz" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.ItensClientesController" prefWidth="1280" prefHeight="800" styleClass="app-root">
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="raiz" prefHeight="800" prefWidth="1280" styleClass="app-root" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.ItensClientesController">
   <stylesheets><URL value="@../css/identidade.css" /></stylesheets>
 <left>
   <VBox minWidth="225" prefWidth="225" spacing="19" styleClass="sidebar">
-    <padding><Insets top="27" bottom="22" left="16" right="16" /></padding>
+    <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
     <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
     <VBox spacing="5">
-      <Label fx:id="lblPerfil" text="CLIENTE" styleClass="role-label" />
+      <Label fx:id="lblPerfil" styleClass="role-label" text="CLIENTE" />
       <Region prefHeight="8" />
-        <Button text="Itens disponíveis" onAction="#abrirItensDisponiveis" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item, nav-selected" />
-        <Button text="Meus aluguéis" onAction="#abrirMeusAlugueis" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />
-        <Button text="Histórico" onAction="#abrirHistorico" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />
-        <Button text="Multas" onAction="#abrirMultas" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />    </VBox>
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirItensDisponiveis" styleClass="nav-item, nav-selected" text="Itens disponíveis" />
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMeusAlugueis" styleClass="nav-item" text="Meus aluguéis" />
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirHistorico" styleClass="nav-item" text="Histórico" />
+        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />    </VBox>
     <Region VBox.vgrow="ALWAYS" />
     <Separator />
     <HBox alignment="CENTER_LEFT" spacing="9">
-      <Label fx:id="lblAvatar" text="U" styleClass="avatar" />
+      <Label fx:id="lblAvatar" styleClass="avatar" text="U" />
       <VBox spacing="2">
-        <Label fx:id="lblNomeUsuario" text="Usuário autenticado" styleClass="user-name" />
-        <Label text="Sessão ativa" styleClass="user-role" />
+        <Label fx:id="lblNomeUsuario" styleClass="user-name" text="Usuário autenticado" />
+        <Label styleClass="user-role" text="Sessão ativa" />
       </VBox>
     </HBox>
-    <Button text="Sair da conta" onAction="#encerrarSessao" maxWidth="Infinity" styleClass="secondary-button" />
+    <Button maxWidth="Infinity" onAction="#encerrarSessao" styleClass="secondary-button" text="Sair da conta" />
   </VBox>
 </left>
   <center>
     <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
       <content>
         <VBox spacing="22" styleClass="content-area">
-          <padding><Insets top="32" bottom="34" left="35" right="35" /></padding>
+          <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
 
 <HBox alignment="CENTER_LEFT" spacing="12">
-  <VBox spacing="4">
-    <Label text="Itens disponíveis" styleClass="page-title" />
-    <Label text="Explore os itens que estão disponíveis para aluguel." styleClass="page-subtitle" />
-  </VBox>
-  <Region HBox.hgrow="ALWAYS" />
-  <Button text="Atualizar catálogo" onAction="#atualizar" styleClass="secondary-button" />
+                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+                     <children>
+                        <Label styleClass="stat-caption" text="ITENS DISPONÍVEIS" />
+                        <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+                     <children>
+                        <Label styleClass="stat-caption" text="CATEGORIAS DISPONÍVEIS" />
+                        <Label fx:id="lblCategorias" styleClass="stat-value" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+                     <children>
+                        <Label styleClass="stat-caption" text="TAXA MÉDIA / DIA" />
+                        <Label fx:id="lblTaxaMedia" styleClass="stat-value" text="R$ 0,00" />
+                     </children>
+                  </VBox>
+                  <Region prefHeight="104.0" prefWidth="42.0" />
+  <Button onAction="#atualizar" styleClass="secondary-button" text="Atualizar catálogo" />
 </HBox>
-<HBox spacing="14">
-  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
-    <Label text="ITENS DISPONÍVEIS" styleClass="stat-caption" />
-    <Label fx:id="lblTotal" text="0" styleClass="stat-value" />
-  </VBox>
-  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
-    <Label text="CATEGORIAS DISPONÍVEIS" styleClass="stat-caption" />
-    <Label fx:id="lblCategorias" text="0" styleClass="stat-value" />
-  </VBox>
-  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
-    <Label text="TAXA MÉDIA / DIA" styleClass="stat-caption" />
-    <Label fx:id="lblTaxaMedia" text="R$ 0,00" styleClass="stat-value" />
-  </VBox>
-</HBox>
+<HBox spacing="14" />
 <VBox spacing="13" styleClass="panel-card">
   <HBox alignment="CENTER_LEFT" spacing="12">
     <VBox spacing="3">
-      <Label text="Catálogo para aluguel" styleClass="section-title" />
-      <Label text="Pesquise, filtre por categoria e selecione um item para consultar seus detalhes." styleClass="minor-text" />
+      <Label styleClass="section-title" text="Catálogo para aluguel" />
+      <Label styleClass="minor-text" text="Pesquise, filtre por categoria e selecione um item para consultar seus detalhes." />
     </VBox>
     <Region HBox.hgrow="ALWAYS" />
-    <Button text="Limpar busca" onAction="#limparBusca" styleClass="secondary-button" />
+    <Button onAction="#limparBusca" styleClass="secondary-button" text="Limpar busca" />
   </HBox>
   <TextField fx:id="busca" promptText="Buscar por nome, descrição, categoria ou número do item..." styleClass="input-field" />
   <HBox alignment="CENTER_LEFT" spacing="9">
     <FlowPane fx:id="filtrosCategoria" hgap="9" vgap="9" HBox.hgrow="ALWAYS" />
-    <Label fx:id="lblResultado" text="Exibindo 0 de 0" styleClass="minor-text" />
+    <Label fx:id="lblResultado" styleClass="minor-text" text="Exibindo 0 de 0" />
   </HBox>
   <TableView fx:id="tabela" prefHeight="345" styleClass="data-table">
     <columns>
-      <TableColumn fx:id="colId" text="Nº" prefWidth="65" />
-      <TableColumn fx:id="colNome" text="ITEM" prefWidth="165" />
-      <TableColumn fx:id="colCategoria" text="CATEGORIA" prefWidth="150" />
-      <TableColumn fx:id="colDescricao" text="DESCRIÇÃO" prefWidth="205" />
-      <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="105" />
-      <TableColumn fx:id="colTaxa" text="TAXA / DIA" prefWidth="120" />
+      <TableColumn fx:id="colId" prefWidth="65" text="Nº" />
+      <TableColumn fx:id="colNome" prefWidth="165" text="ITEM" />
+      <TableColumn fx:id="colCategoria" prefWidth="150" text="CATEGORIA" />
+      <TableColumn fx:id="colDescricao" prefWidth="205" text="DESCRIÇÃO" />
+      <TableColumn fx:id="colEstado" prefWidth="105" text="ESTADO" />
+      <TableColumn fx:id="colTaxa" prefWidth="120" text="TAXA / DIA" />
     </columns>
   </TableView>
   <HBox alignment="CENTER_RIGHT" spacing="9">
-    <Label text="Consulta de disponibilidade; não efetua reservas." styleClass="minor-text" />
+    <Label styleClass="minor-text" text="Consulta de disponibilidade; não efetua reservas." />
     <Region HBox.hgrow="ALWAYS" />
-    <Button fx:id="btnDetalhes" text="Ver detalhes do item" onAction="#verDetalhes" disable="true" styleClass="primary-button" />
+    <Button fx:id="btnDetalhes" disable="true" onAction="#verDetalhes" styleClass="primary-button" text="Ver detalhes do item" />
   </HBox>
 </VBox>
-<VBox fx:id="painelDetalhes" spacing="10" managed="false" visible="false" styleClass="panel-card">
+<VBox fx:id="painelDetalhes" managed="false" spacing="10" styleClass="panel-card" visible="false">
   <HBox alignment="CENTER_LEFT">
-    <Label fx:id="lblDetalheNome" text="Detalhes do item" styleClass="section-title" />
+    <Label fx:id="lblDetalheNome" styleClass="section-title" text="Detalhes do item" />
     <Region HBox.hgrow="ALWAYS" />
-    <Button text="Fechar" onAction="#fecharDetalhes" styleClass="secondary-button" />
+    <Button onAction="#fecharDetalhes" styleClass="secondary-button" text="Fechar" />
   </HBox>
-  <Label fx:id="lblDetalheDescricao" text="" wrapText="true" styleClass="minor-text" />
-  <Label fx:id="lblDetalheCategoria" text="Categoria:" styleClass="field-label" />
-  <Label fx:id="lblDetalheEstado" text="Estado de conservação:" styleClass="field-label" />
-  <Label fx:id="lblDetalheTaxa" text="Taxa diária:" styleClass="field-label" />
+  <Label fx:id="lblDetalheDescricao" styleClass="minor-text" text="" wrapText="true" />
+  <Label fx:id="lblDetalheCategoria" styleClass="field-label" text="Categoria:" />
+  <Label fx:id="lblDetalheEstado" styleClass="field-label" text="Estado de conservação:" />
+  <Label fx:id="lblDetalheTaxa" styleClass="field-label" text="Taxa diária:" />
 </VBox>
 
         </VBox>

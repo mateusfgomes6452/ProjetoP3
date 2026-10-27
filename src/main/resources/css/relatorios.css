@@ -1,6 +1,3 @@
-/* Complementos da tela de Relatorios. As cores e componentes principais vem de identidade.css. */
-
-/* pilula amarela (status "Cancelado"), no mesmo formato das pilulas de identidade.css */
 .status-pill-warning {
     -fx-background-color: #FFF1D6;
     -fx-background-radius: 20;
@@ -10,7 +7,6 @@
     -fx-font-size: 10px;
 }
 
-/* seletor de datas com o mesmo visual dos campos de texto (input-field) */
 .date-picker.input-field { -fx-padding: 0 0 0 2; }
 .date-picker.input-field > .arrow-button { -fx-background-color: transparent; }
 .date-picker.input-field > .text-field {
@@ -19,7 +15,6 @@
     -fx-text-fill: #213A5C;
 }
 
-/* mensagens e campo invalido */
 .texto-erro { -fx-text-fill: #CC2A32; -fx-font-size: 11px; -fx-font-weight: bold; }
 .texto-sucesso { -fx-text-fill: #16804B; -fx-font-size: 11px; -fx-font-weight: bold; }
 .input-invalido { -fx-border-color: #CC2A32; }

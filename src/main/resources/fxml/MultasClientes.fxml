@@ -43,9 +43,7 @@
   <center><ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
       <content><VBox spacing="22" styleClass="content-area">
         <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
-        <HBox alignment="CENTER_LEFT" spacing="12"><VBox spacing="4">
-        	<Label styleClass="page-title" text="Minhas multas" />
-        	<Label styleClass="page-subtitle" text="Consulte as multas dos seus contratos e registre a quitação." /></VBox>
+        <HBox alignment="CENTER_LEFT" spacing="12"><VBox spacing="4" />
           <Region HBox.hgrow="ALWAYS" /></HBox><HBox spacing="14"><VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
         <Label styleClass="stat-caption" text="TOTAL DE MULTAS" />
         <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
