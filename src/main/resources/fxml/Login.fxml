@@ -24,12 +24,12 @@
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="700.0">
                      <children>
-                        <ImageView fitHeight="185.0" fitWidth="357.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="249.0" fitWidth="507.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../imagens/logo-loja.png" />
                            </image>
                            <VBox.margin>
-                              <Insets bottom="30.0" top="200.0" />
+                              <Insets bottom="30.0" top="300.0" />
                            </VBox.margin>
                         </ImageView>
                      </children>

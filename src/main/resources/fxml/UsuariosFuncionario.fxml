@@ -101,7 +101,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
               <VBox spacing="3">
                 <Label styleClass="section-title" text="Usuários cadastrados" />
-                <Label styleClass="minor-text" text="Selecione um usuário para editar ou desativar." />
+                <Label styleClass="minor-text" text="Selecione um usuário para editar." />
               </VBox>
               <Region HBox.hgrow="ALWAYS" />
               <Button onAction="#atualizar" styleClass="secondary-button" text="Atualizar lista" />
@@ -125,8 +125,7 @@
               </columns>
             </TableView>
             <HBox alignment="CENTER_RIGHT" spacing="10">
-              <Button fx:id="btnEditar" onAction="#editar" styleClass="secondary-button" text="Editar selecionado" />
-              <Button fx:id="btnDesativar" onAction="#desativar" styleClass="danger-button" text="Desativar selecionado" />
+              <Button fx:id="btnEditar" onAction="#editar" styleClass="secondary-button" text="Editar selecionado" />]
             </HBox>
           </VBox>
 

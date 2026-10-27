@@ -48,29 +48,32 @@
         <VBox spacing="22" styleClass="content-area">
           <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
 
-<HBox alignment="CENTER_LEFT" spacing="12">
-                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+   <HBox alignment="CENTER_LEFT" spacing="12">
+                  <HBox spacing="14">
                      <children>
-                        <Label styleClass="stat-caption" text="ITENS DISPONÍVEIS" />
-                        <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
+                        <VBox prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="stat-caption" text="ITENS DISPONÍVEIS" />
+                              <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="stat-caption" text="CATEGORIAS DISPONÍVEIS" />
+                              <Label fx:id="lblCategorias" styleClass="stat-value" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="stat-caption" text="TAXA MÉDIA / DIA" />
+                              <Label fx:id="lblTaxaMedia" styleClass="stat-value" text="R$ 0,00" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
-                     <children>
-                        <Label styleClass="stat-caption" text="CATEGORIAS DISPONÍVEIS" />
-                        <Label fx:id="lblCategorias" styleClass="stat-value" text="0" />
-                     </children>
-                  </VBox>
-                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
-                     <children>
-                        <Label styleClass="stat-caption" text="TAXA MÉDIA / DIA" />
-                        <Label fx:id="lblTaxaMedia" styleClass="stat-value" text="R$ 0,00" />
-                     </children>
-                  </VBox>
-                  <Region prefHeight="104.0" prefWidth="42.0" />
+                  </HBox>
+                  <Region prefHeight="0.0" prefWidth="34.0" />
   <Button onAction="#atualizar" styleClass="secondary-button" text="Atualizar catálogo" />
 </HBox>
-<HBox spacing="14" />
 <VBox spacing="13" styleClass="panel-card">
   <HBox alignment="CENTER_LEFT" spacing="12">
     <VBox spacing="3">
