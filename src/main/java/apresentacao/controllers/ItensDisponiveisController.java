@@ -20,6 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import apresentacao.util.Mensagens;
 
 /** Aba "Itens disponíveis" (RelatorioItensDisponiveis.fxml): itens com status DISPONIVEL, filtrados por categoria. */
 public final class ItensDisponiveisController extends BaseControllersRelatorios {
