@@ -139,36 +139,6 @@ public class UsuariosController extends BaseControllers<Usuario> {
         });
     }
 
-
-            boolean ok;
-            if (idEmEdicao == null) {
-                Usuario novoUsuario;
-                int novoId = sistema.gerarProximoIdUsuario(); 
-                
-                if (tipo.equals(ADMIN)) {
-                    novoUsuario = new Administrador(novoId, nome, email, cpf, senha);
-                } else if (tipo.equals(FUNCIONARIO)) {
-                    novoUsuario = new Funcionario(novoId, nome, email, cpf, senha);
-                } else {
-                    novoUsuario = new Cliente(novoId, nome, email, cpf, senha);
-                }
-                ok = sistema.cadastrarUsuario(novoUsuario);
-            } else {
-                Usuario atual = sistema.buscarUsuario(idEmEdicao);
-                if (atual == null) throw new IllegalArgumentException("Usuário não encontrado.");
-                if (!podeGerenciar(atual)) throw new SecurityException("Funcionário só pode alterar clientes.");
-
-                Usuario donoDoEmail = sistema.buscarUsuarioPorEmail(email);
-                if (donoDoEmail != null && donoDoEmail.getId() != atual.getId()) {
-                    throw new IllegalArgumentException("Este e-mail já é usado por outro usuário.");
-                }
-                ok = sistema.atualizarUsuario(idEmEdicao, nome, email, senha);
-            }
-
-            concluirSalvamento(ok, "Usuário salvo com sucesso.");
-        });
-    }
-
     private boolean cadastrarNovoUsuario(
             String nome,
             String cpf,
