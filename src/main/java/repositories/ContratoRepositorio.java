@@ -10,12 +10,12 @@ import entidades.Usuario;
 
 public class ContratoRepositorio implements IContratoRepositorio {
 
-    private String arquivo = "dados/contratos.csv";
+    private final String arquivo = "dados/contratos.csv";
 
-    private List<ContratoAluguel> contratos;
-    private IUsuarioRepositorio usuarioRepositorio;
+    private final List<ContratoAluguel> contratos;
+    private final IUsuarioRepositorio usuarioRepositorio;
     private final IItemRepositorio itemRepositorio;
-    private ManipulaArquivo manipulaArquivo;
+    private final ManipulaArquivo manipulaArquivo;
 
     public ContratoRepositorio(IUsuarioRepositorio usuarioRepositorio, IItemRepositorio itemRepositorio) {
 
