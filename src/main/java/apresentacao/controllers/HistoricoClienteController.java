@@ -29,6 +29,7 @@ public final class HistoricoClienteController extends BaseControllersRelatorios 
 
     @FXML private ComboBox<Usuario> cbCliente;
     @FXML private Button btnExportar;
+    @FXML private Button btnExportarPdf;
     @FXML private Label lblTotalContratos;
     @FXML private Label lblTotalAlugueis;
     @FXML private Label lblTotalMultas;
@@ -84,6 +85,7 @@ public final class HistoricoClienteController extends BaseControllersRelatorios 
         tabela.setItems(contratos);
         tabela.setPlaceholder(new Label("Selecione um cliente para ver o histórico."));
         Mensagens.esconder(lblAviso);
+        btnExportarPdf.setDisable(true);
     }
 
     /** Chamado por RelatoriosController.configurar: guarda a sessão e carrega os dados. */
@@ -126,6 +128,18 @@ public final class HistoricoClienteController extends BaseControllersRelatorios 
         });
     }
 
+    @FXML
+    private void exportarPdf() {
+        executar("exportar PDF", () -> {
+            exigirSessao();
+            if (contratos.isEmpty()) {
+                throw new IllegalArgumentException("Não há contratos para exportar.");
+            }
+            sistema.exportarPdfHistoricoCliente(List.copyOf(contratos));
+            Mensagens.sucesso(lblAviso, "PDF salvo em relatorios/historico_cliente.pdf");
+        });
+    }
+
     private void carregarHistorico(Usuario cliente) {
         if (cliente == null) {
             contratos.clear();
@@ -135,6 +149,7 @@ public final class HistoricoClienteController extends BaseControllersRelatorios 
             tabela.setPlaceholder(new Label("Este cliente ainda não possui contratos."));
         }
         btnExportar.setDisable(contratos.isEmpty());
+        btnExportarPdf.setDisable(contratos.isEmpty());
         lblTotalContratos.setText(String.valueOf(contratos.size()));
         lblTotalAlugueis.setText(Formatador.moeda(contratos.stream().mapToDouble(ContratoAluguel::getValorTotal).sum()));
         lblTotalMultas.setText(Formatador.moeda(contratos.stream().mapToDouble(ContratoAluguel::getValorMulta).sum()));

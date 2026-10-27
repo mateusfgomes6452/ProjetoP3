@@ -45,4 +45,14 @@ public interface IRelatorios {
 
     public abstract void exportarFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal);
 
+    // ---- Exportação para PDF (pasta relatorios) ----
+
+    public abstract void exportarPdfItensDisponiveis(List<Item> itens);
+
+    public abstract void exportarPdfHistoricoCliente(List<ContratoAluguel> historico);
+
+    public abstract void exportarPdfItensAlugados(List<ContratoAluguel> contratosAtivos);
+
+    public abstract void exportarPdfFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal);
+
 }

@@ -33,6 +33,7 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
     @FXML private Button btnEmDia;
     @FXML private Button btnAtrasados;
     @FXML private Button btnExportar;
+    @FXML private Button btnExportarPdf;
     @FXML private Label lblTotalAlugados;
     @FXML private Label lblTotalEmDia;
     @FXML private Label lblTotalAtrasados;
@@ -77,6 +78,7 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
 
         tabela.setItems(visiveis);
         Mensagens.esconder(lblAviso);
+        btnExportarPdf.setDisable(true);
     }
 
     /** Chamado por RelatoriosController.configurar: guarda a sessão e carrega os dados. */
@@ -129,6 +131,18 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
         });
     }
 
+    @FXML
+    private void exportarPdf() {
+        executar("exportar PDF", () -> {
+            exigirSessao();
+            if (visiveis.isEmpty()) {
+                throw new IllegalArgumentException("Não há contratos para exportar.");
+            }
+            sistema.exportarPdfItensAlugados(visiveis.stream().toList());
+            Mensagens.sucesso(lblAviso, "PDF salvo em relatorios/itens_alugados.pdf");
+        });
+    }
+
     // ---------- regras de exibição ----------
 
     private void trocarFiltro(Filtro novo, Button botaoAtivo) {
@@ -152,6 +166,7 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
             }
         });
         btnExportar.setDisable(visiveis.isEmpty());
+        btnExportarPdf.setDisable(visiveis.isEmpty());
         tabela.setPlaceholder(new Label(filtro == Filtro.ATRASADOS
                 ? "Nenhuma devolução atrasada." : "Não existem contratos ativos."));
     }

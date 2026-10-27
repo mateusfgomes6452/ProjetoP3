@@ -25,7 +25,8 @@
       </VBox>
       <Region HBox.hgrow="ALWAYS"/>
       <Button text="Atualizar lista" onAction="#atualizar" styleClass="secondary-button"/>
-      <Button text="Exportar CSV" onAction="#exportar" styleClass="primary-button"/>
+      <Button fx:id="btnExportar" text="Exportar CSV" onAction="#exportar" styleClass="primary-button"/>
+      <Button fx:id="btnExportarPdf" text="Exportar PDF" onAction="#exportarPdf" styleClass="secondary-button"/>
     </HBox>
     <Label fx:id="lblAviso" text="" styleClass="texto-sucesso"/>
     <TextField fx:id="busca" promptText="Buscar item pelo nome..." styleClass="input-field"/>

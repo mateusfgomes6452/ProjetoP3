@@ -33,6 +33,7 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
     @FXML private Label lblTaxaMedia;
     @FXML private Label lblResultado;
     @FXML private Label lblAviso;
+    @FXML private Button btnExportarPdf;
     @FXML private TextField busca;
     @FXML private FlowPane filtrosCategoria;
     @FXML private TableView<Item> tabela;
@@ -57,6 +58,7 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
         tabela.setPlaceholder(new Label("Nenhum item disponível no momento."));
         busca.textProperty().addListener((obs, antes, depois) -> aplicarFiltro());
         Mensagens.esconder(lblAviso);
+        btnExportarPdf.setDisable(true);
     }
 
     /** Chamado por RelatoriosController.configurar: guarda a sessão e carrega os dados. */
@@ -90,6 +92,18 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
             }
             sistema.exportarItensDisponiveis(List.copyOf(visiveis));
             Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_disponiveis.csv");
+        });
+    }
+
+    @FXML
+    private void exportarPdf() {
+        executar("exportar PDF de itens disponíveis", () -> {
+            exigirSessao();
+            if (visiveis.isEmpty()) {
+                throw new IllegalArgumentException("Não há itens para exportar.");
+            }
+            sistema.exportarPdfItensDisponiveis(List.copyOf(visiveis));
+            Mensagens.sucesso(lblAviso, "PDF salvo em relatorios/itens_disponiveis.pdf");
         });
     }
 
@@ -135,6 +149,7 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
         lblCategorias.setText(String.valueOf(visiveis.stream().map(this::nomeCategoria).distinct().count()));
         lblTaxaMedia.setText(Formatador.moeda(visiveis.stream().mapToDouble(Item::getTaxaDiaria).average().orElse(0)));
         lblResultado.setText("Exibindo " + visiveis.size() + " de " + todos.size());
+        btnExportarPdf.setDisable(visiveis.isEmpty());
     }
 
     private String nomeCategoria(Item item) {

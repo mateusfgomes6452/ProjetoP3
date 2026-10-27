@@ -31,6 +31,7 @@ public final class FaturamentoController extends BaseControllersRelatorios {
     @FXML private DatePicker dataInicial;
     @FXML private DatePicker dataFinal;
     @FXML private Button btnExportar;
+    @FXML private Button btnExportarPdf;
     @FXML private Label lblAviso;
     @FXML private Label lblTotalContratos;
     @FXML private Label lblTotalAlugueis;
@@ -72,6 +73,7 @@ public final class FaturamentoController extends BaseControllersRelatorios {
         tabela.setItems(contratos);
         tabela.setPlaceholder(new Label("Escolha o período e gere o relatório."));
         Mensagens.esconder(lblAviso);
+        btnExportarPdf.setDisable(true);
     }
 
     /** Chamado por RelatoriosController.configurar: guarda a sessão e gera o primeiro relatório. */
@@ -126,6 +128,18 @@ public final class FaturamentoController extends BaseControllersRelatorios {
         });
     }
 
+    @FXML
+    private void exportarPdf() {
+        executar("exportar PDF", () -> {
+            exigirSessao();
+            if (contratos.isEmpty() || inicioGerado == null) {
+                throw new IllegalArgumentException("Gere um relatório com contratos antes de exportar.");
+            }
+            sistema.exportarPdfFaturamento(new ArrayList<>(contratos), inicioGerado.toString(), fimGerado.toString());
+            Mensagens.sucesso(lblAviso, "PDF salvo em relatorios/faturamento.pdf");
+        });
+    }
+
     // ---------- dados e validação ----------
 
     private void carregar(LocalDate inicio, LocalDate fim) {
@@ -143,6 +157,7 @@ public final class FaturamentoController extends BaseControllersRelatorios {
 
         tabela.setPlaceholder(new Label("Nenhum contrato encontrado no período."));
         btnExportar.setDisable(encontrados.isEmpty());
+        btnExportarPdf.setDisable(encontrados.isEmpty());
     }
 
     private void marcarInvalido(DatePicker campo) {

@@ -312,4 +312,20 @@ public class SistemaFacade {
     public void exportarFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal) {
         geradorRelatorios.exportarFaturamento(contratos, dataInicial, dataFinal);
     }
+
+    public void exportarPdfItensDisponiveis(List<Item> itens) {
+        geradorRelatorios.exportarPdfItensDisponiveis(itens);
+    }
+
+    public void exportarPdfHistoricoCliente(List<ContratoAluguel> historico) {
+        geradorRelatorios.exportarPdfHistoricoCliente(historico);
+    }
+
+    public void exportarPdfItensAlugados(List<ContratoAluguel> contratosAtivos) {
+        geradorRelatorios.exportarPdfItensAlugados(contratosAtivos);
+    }
+
+    public void exportarPdfFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal) {
+        geradorRelatorios.exportarPdfFaturamento(contratos, dataInicial, dataFinal);
+    }
 }

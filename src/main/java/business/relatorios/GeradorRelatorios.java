@@ -269,27 +269,44 @@ public class GeradorRelatorios implements IRelatorios {
 
     @Override
     public void exportarItensDisponiveis(List<Item> itens) {
-        List<Item> copia = new ArrayList<>(itens);
-        new SalvaRelatorioItensDisponiveis().salvar(copia);
-        new SalvaRelatorioPdf().salvarItensDisponiveis(copia);
+        new SalvaRelatorioItensDisponiveis().salvar(new ArrayList<>(itens));
     }
 
     @Override
     public void exportarHistoricoCliente(List<ContratoAluguel> historico) {
         new SalvaRelatorioHistoricoCliente().salvar(historico);
-        new SalvaRelatorioPdf().salvarHistoricoCliente(historico);
     }
 
     @Override
     public void exportarItensAlugados(List<ContratoAluguel> contratosAtivos) {
         new SalvaRelatorioItensAlugados().salvar(contratosAtivos);
-        new SalvaRelatorioPdf().salvarItensAlugados(contratosAtivos);
     }
 
     @Override
     public void exportarFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal) {
         new SalvaRelatorioFaturamento().salvar(contratos, dataInicial, dataFinal);
-        new SalvaRelatorioPdf().salvarFaturamento(contratos, dataInicial, dataFinal);
+    }
+
+    // ---- Exportação para PDF ----
+
+    @Override
+    public void exportarPdfItensDisponiveis(List<Item> itens) {
+        new SalvaRelatorioPdf().salvarItensDisponiveis(new ArrayList<>(itens));
+    }
+
+    @Override
+    public void exportarPdfHistoricoCliente(List<ContratoAluguel> historico) {
+        new SalvaRelatorioPdf().salvarHistoricoCliente(new ArrayList<>(historico));
+    }
+
+    @Override
+    public void exportarPdfItensAlugados(List<ContratoAluguel> contratosAtivos) {
+        new SalvaRelatorioPdf().salvarItensAlugados(new ArrayList<>(contratosAtivos));
+    }
+
+    @Override
+    public void exportarPdfFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal) {
+        new SalvaRelatorioPdf().salvarFaturamento(new ArrayList<>(contratos), dataInicial, dataFinal);
     }
 
 }

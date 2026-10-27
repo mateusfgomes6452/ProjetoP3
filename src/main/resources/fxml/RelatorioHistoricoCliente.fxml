@@ -25,6 +25,7 @@
       </VBox>
       <Region HBox.hgrow="ALWAYS"/>
       <Button fx:id="btnExportar" text="Exportar CSV" onAction="#exportar" styleClass="primary-button"/>
+      <Button fx:id="btnExportarPdf" text="Exportar PDF" onAction="#exportarPdf" styleClass="secondary-button"/>
     </HBox>
     <Label fx:id="lblAviso" text="" styleClass="texto-sucesso"/>
     <VBox spacing="6">
