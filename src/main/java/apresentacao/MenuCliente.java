@@ -13,7 +13,7 @@ public class MenuCliente {
 
     private final SistemaFacade sistema;
     private Cliente cliente;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public MenuCliente(SistemaFacade sistema, Cliente cliente, Scanner scanner) {
         this.sistema = sistema;

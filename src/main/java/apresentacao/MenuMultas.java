@@ -10,7 +10,7 @@ import facade.SistemaFacade;
 public class MenuMultas {
 
     private SistemaFacade sistema;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public MenuMultas(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
