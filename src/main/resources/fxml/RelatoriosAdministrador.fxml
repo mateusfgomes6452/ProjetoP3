@@ -23,28 +23,15 @@
       <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
       <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
       <VBox spacing="5">
-        <Label fx:id="lblPerfil" text="ADMINISTRADOR" styleClass="role-label"/>
-        <Region prefHeight="8"/>
-        <Button text="Contratos" disable="true"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Itens" onAction="#abrirItens"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Categorias" onAction="#abrirCategorias"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Fornecedores" onAction="#abrirFornecedores"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Usuários" disable="true"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Multas" onAction="#abrirMultas"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Relatórios" onAction="#abrirRelatorios"
-                maxWidth="Infinity" styleClass="nav-item, nav-selected"/>
+        <Label fx:id="lblPerfil" styleClass="role-label" text="ADMINISTRADOR" />
+        <Region prefHeight="8" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirUsuarios" styleClass="nav-item" text="Usuários" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirItens" styleClass="nav-item" text="Itens" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item" text="Categorias" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" />
+     	<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirContratos" styleClass="nav-item" text="Contratos" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirRelatorios" styleClass="nav-item, nav-selected" text="Relatórios" />
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />
@@ -60,7 +47,6 @@
   <center><ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
       <content><VBox spacing="22" styleClass="content-area">
         <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
-        <VBox spacing="4" />
         <HBox alignment="CENTER_LEFT" spacing="9">
           <Button fx:id="btnAbaItens" onAction="#abrirAbaItens" styleClass="filter-button" text="Itens disponíveis" />
           <Button fx:id="btnAbaHistorico" onAction="#abrirAbaHistorico" styleClass="filter-button" text="Histórico do cliente" />

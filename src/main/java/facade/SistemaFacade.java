@@ -27,14 +27,17 @@ public class SistemaFacade {
         }
         return instancia;
     }
+    public static void registrar(SistemaFacade sistema) {
+        instancia = sistema;
+    }
 
-    private IGerenciamentoUsuarios   gerenciamentoUsuarios;
-    private IGerenciamentoContratos  gerenciamentoContratos;
-    private IGerenciamentoItens      gerenciamentoItens;
+    private final IGerenciamentoUsuarios   gerenciamentoUsuarios;
+    private final IGerenciamentoContratos  gerenciamentoContratos;
+    private final IGerenciamentoItens      gerenciamentoItens;
     private final IGerenciamentoCategoria  gerenciamentoCategoria;
-    private IGerenciamentoFornecedor gerenciamentoFornecedor;
-    private IGerenciamentoMultas     gerenciamentoMultas;
-    private IRelatorios              geradorRelatorios;
+    private final IGerenciamentoFornecedor gerenciamentoFornecedor;
+    private final IGerenciamentoMultas     gerenciamentoMultas;
+    private final IRelatorios              geradorRelatorios;
 
     public SistemaFacade(
             IGerenciamentoUsuarios   gerenciamentoUsuarios,
@@ -53,7 +56,6 @@ public class SistemaFacade {
         this.gerenciamentoMultas     = gerenciamentoMultas;
         this.geradorRelatorios       = geradorRelatorios;
         
-        instancia = this;
     }
 
     // =========================================================================

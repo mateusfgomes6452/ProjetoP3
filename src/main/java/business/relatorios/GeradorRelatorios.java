@@ -1,6 +1,7 @@
 package business.relatorios;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,9 @@ import repositories.SalvaRelatorioItensDisponiveis;
 @SuppressWarnings("java:S106")
 public class GeradorRelatorios implements IRelatorios {
 
-    private IGerenciamentoItens gerenciamentoItens;
-    private IGerenciamentoContratos gerenciamentoContratos;
-    private IGerenciamentoUsuarios gerenciamentoUsuarios;
+    private final IGerenciamentoItens gerenciamentoItens;
+    private final IGerenciamentoContratos gerenciamentoContratos;
+    private final IGerenciamentoUsuarios gerenciamentoUsuarios;
 
     public GeradorRelatorios(IGerenciamentoItens gerenciamentoItens, IGerenciamentoContratos gerenciamentoContratos, IGerenciamentoUsuarios gerenciamentoUsuarios) {
         this.gerenciamentoItens = gerenciamentoItens;
@@ -258,7 +259,7 @@ public class GeradorRelatorios implements IRelatorios {
             return false;
         }
 
-        return LocalDate.now().isAfter(LocalDate.parse(contrato.getDataDevolucaoPrevista()));
+        return LocalDate.now(ZoneId.systemDefault()).isAfter(LocalDate.parse(contrato.getDataDevolucaoPrevista()));
     }
 
     // =========================================================================

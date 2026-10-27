@@ -14,8 +14,8 @@ public class MainJavaFX extends Application {
 
     @Override
     public void start(Stage palco) throws IOException {
-    	    SistemaFacade sistema;
-    	    sistema = Main.criarSistema();
+        
+    	    Main.criarSistema();
     	    
     	    Parent raiz = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
     	    palco.setTitle("Loja que Aluga de Tudo");

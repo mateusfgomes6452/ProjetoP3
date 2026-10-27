@@ -3,8 +3,10 @@ package apresentacao.controllers;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.time.ZoneId;
 
 import apresentacao.base.BaseControllersRelatorios;
+import apresentacao.util.Formatador;
 import entidades.ContratoAluguel;
 import entidades.Usuario;
 import facade.SistemaFacade;
@@ -19,6 +21,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import apresentacao.util.Mensagens;
+import apresentacao.util.Pilulas;
 
 /** Aba "Itens alugados" (RelatorioItensAlugados.fxml): contratos ativos, com destaque para devoluções atrasadas. */
 public final class ItensAlugadosController extends BaseControllersRelatorios {
@@ -160,7 +164,7 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
         if (!atrasado(contrato)) {
             return 0;
         }
-        return ChronoUnit.DAYS.between(LocalDate.parse(contrato.getDataDevolucaoPrevista()), LocalDate.now());
+        return ChronoUnit.DAYS.between(LocalDate.parse(contrato.getDataDevolucaoPrevista()), LocalDate.now(ZoneId.systemDefault()));
     }
 
     private String textoAtraso(long dias) {

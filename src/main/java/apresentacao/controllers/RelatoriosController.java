@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 
 import apresentacao.base.BaseControllersRelatorios;
 import entidades.Administrador;
-import entidades.Administrador;
 import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.fxml.FXML;
@@ -16,14 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-/**
- * Controller das telas RelatoriosAdministrador.fxml e RelatoriosFuncionario.fxml:
- * menu lateral, título e as 4 abas. Segue o mesmo padrão de FornecedoresController e MultasController:
- * recebe tudo por {@link #configurar}, valida a sessão e navega pelos callbacks.
- *
- * Cada aba é um FXML próprio (fx:include) com o seu controller, configurado aqui:
- * ItensDisponiveisController, HistoricoClienteController, ItensAlugadosController e FaturamentoController.
- */
+
 public final class RelatoriosController extends BaseControllersRelatorios implements Navegacao.ControladorComSessao {
 
     private Consumer<String> navegacao;
@@ -123,6 +115,28 @@ public final class RelatoriosController extends BaseControllersRelatorios implem
 
     // ---------- menu lateral ----------
 
+    
+    @FXML
+    private void abrirUsuarios() {
+        executar("abrir usuários", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "UsuariosAdministrador"
+                    : "UsuariosFuncionario");
+        });
+    }
+
+    @FXML
+    private void abrirContratos() {
+        executar("abrir contratos", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "ContratosAdministrador"
+                    : "ContratosFuncionario");
+        });
+    }
     
     @FXML
     private void abrirItens() {

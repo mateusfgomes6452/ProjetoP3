@@ -7,7 +7,7 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuRelatorios {
 
-    private SistemaFacade sistema;
+    private final SistemaFacade sistema;
     private final Scanner scanner;
 
     public MenuRelatorios(SistemaFacade sistema, Scanner scanner) {

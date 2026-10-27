@@ -34,9 +34,9 @@
         <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirItens" styleClass="nav-item" text="Itens" />
         <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item" text="Categorias" />
         <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" />
-     	<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Contratos" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Multas" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Relatórios" />
+     	<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirContratos" styleClass="nav-item" text="Contratos" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirRelatorios" styleClass="nav-item" text="Relatórios" />
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />

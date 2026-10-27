@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane fx:id="raiz" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.MeusAlugueisClientesController" prefWidth="1280" prefHeight="800" styleClass="app-root">
+  <stylesheets><URL value="@../css/identidade.css" /></stylesheets>
+<left>
+  <VBox minWidth="225" prefWidth="225" spacing="19" styleClass="sidebar">
+    <padding><Insets top="27" bottom="22" left="16" right="16" /></padding>
+    <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
+    <VBox spacing="5">
+      <Label fx:id="lblPerfil" text="CLIENTE" styleClass="role-label" />
+      <Region prefHeight="8" />
+        <Button text="Itens disponíveis" onAction="#abrirItensDisponiveis" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />
+        <Button text="Meus aluguéis" onAction="#abrirMeusAlugueis" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item, nav-selected" />
+        <Button text="Histórico" onAction="#abrirHistorico" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />
+        <Button text="Multas" onAction="#abrirMultas" alignment="CENTER_LEFT" maxWidth="Infinity" styleClass="nav-item" />    </VBox>
+    <Region VBox.vgrow="ALWAYS" />
+    <Separator />
+    <HBox alignment="CENTER_LEFT" spacing="9">
+      <Label fx:id="lblAvatar" text="U" styleClass="avatar" />
+      <VBox spacing="2">
+        <Label fx:id="lblNomeUsuario" text="Usuário autenticado" styleClass="user-name" />
+        <Label text="Sessão ativa" styleClass="user-role" />
+      </VBox>
+    </HBox>
+    <Button text="Sair da conta" onAction="#encerrarSessao" maxWidth="Infinity" styleClass="secondary-button" />
+  </VBox>
+</left>
+  <center>
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
+      <content>
+        <VBox spacing="22" styleClass="content-area">
+          <padding><Insets top="32" bottom="34" left="35" right="35" /></padding>
+
+<HBox alignment="CENTER_LEFT" spacing="12">
+  <VBox spacing="4">
+    <Label text="Meus aluguéis" styleClass="page-title" />
+    <Label text="Acompanhe os contratos de aluguel que estão ativos em seu nome." styleClass="page-subtitle" />
+  </VBox>
+  <Region HBox.hgrow="ALWAYS" />
+  <Button text="Atualizar contratos" onAction="#atualizar" styleClass="secondary-button" />
+</HBox>
+<HBox spacing="14">
+  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+    <Label text="ALUGUÉIS ATIVOS" styleClass="stat-caption" />
+    <Label fx:id="lblAtivos" text="0" styleClass="stat-value" />
+  </VBox>
+  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+    <Label text="DEVOLUÇÕES EM DIA" styleClass="stat-caption" />
+    <Label fx:id="lblEmDia" text="0" styleClass="stat-value, stat-green" />
+  </VBox>
+  <VBox spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+    <Label text="DEVOLUÇÕES ATRASADAS" styleClass="stat-caption" />
+    <Label fx:id="lblAtrasados" text="0" styleClass="stat-value, stat-red" />
+  </VBox>
+</HBox>
+<VBox spacing="13" styleClass="panel-card">
+  <HBox alignment="CENTER_LEFT" spacing="12">
+    <VBox spacing="3">
+      <Label text="Contratos em andamento" styleClass="section-title" />
+      <Label text="Veja a previsão de devolução e acompanhe a situação dos seus aluguéis." styleClass="minor-text" />
+    </VBox>
+    <Region HBox.hgrow="ALWAYS" />
+    <Button text="Ver minhas multas" onAction="#abrirMultas" styleClass="secondary-button" />
+  </HBox>
+  <TextField fx:id="busca" promptText="Buscar por número do contrato ou nome do item..." styleClass="input-field" />
+  <HBox alignment="CENTER_LEFT" spacing="9">
+    <Button fx:id="btnTodos" text="Todos" onAction="#filtrarTodos" styleClass="filter-button, filter-active" />
+    <Button fx:id="btnEmDia" text="Em dia" onAction="#filtrarEmDia" styleClass="filter-button" />
+    <Button fx:id="btnAtrasados" text="Atrasados" onAction="#filtrarAtrasados" styleClass="filter-button" />
+    <Region HBox.hgrow="ALWAYS" />
+    <Label fx:id="lblResultado" text="Exibindo 0 de 0" styleClass="minor-text" />
+  </HBox>
+  <TableView fx:id="tabela" prefHeight="345" styleClass="data-table">
+    <columns>
+      <TableColumn fx:id="colId" text="CONTRATO" prefWidth="90" />
+      <TableColumn fx:id="colItem" text="ITEM" prefWidth="200" />
+      <TableColumn fx:id="colRetirada" text="RETIRADA" prefWidth="120" />
+      <TableColumn fx:id="colPrevista" text="DEVOLUÇÃO PREVISTA" prefWidth="160" />
+      <TableColumn fx:id="colSituacao" text="SITUAÇÃO" prefWidth="125" />
+      <TableColumn fx:id="colValor" text="VALOR" prefWidth="115" />
+    </columns>
+  </TableView>
+  <HBox alignment="CENTER_RIGHT" spacing="9">
+    <Label text="A consulta não modifica os contratos." styleClass="minor-text" />
+    <Region HBox.hgrow="ALWAYS" />
+    <Button fx:id="btnDetalhes" text="Detalhes do aluguel" onAction="#verDetalhes" disable="true" styleClass="primary-button" />
+  </HBox>
+</VBox>
+<VBox fx:id="painelDetalhes" spacing="10" managed="false" visible="false" styleClass="panel-card">
+  <HBox alignment="CENTER_LEFT">
+    <Label fx:id="lblDetalheContrato" text="Contrato" styleClass="section-title" />
+    <Region HBox.hgrow="ALWAYS" />
+    <Button text="Fechar" onAction="#fecharDetalhes" styleClass="secondary-button" />
+  </HBox>
+  <Label fx:id="lblDetalheItem" text="Item:" styleClass="field-label" />
+  <Label fx:id="lblDetalheRetirada" text="Retirada:" styleClass="field-label" />
+  <Label fx:id="lblDetalhePrevista" text="Devolução prevista:" styleClass="field-label" />
+  <Label fx:id="lblDetalheSituacao" text="Situação:" wrapText="true" styleClass="field-label" />
+  <Label fx:id="lblDetalheValor" text="Valor do aluguel:" styleClass="field-label" />
+</VBox>
+
+        </VBox>
+      </content>
+    </ScrollPane>
+  </center>
+</BorderPane>

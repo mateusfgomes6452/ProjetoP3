@@ -4,7 +4,7 @@ public abstract class Usuario {
 
     private int id;
     private String nome;
-    private String cpf;
+    private final String cpf;
     private String email;
     private String senha;
     private boolean ativo;

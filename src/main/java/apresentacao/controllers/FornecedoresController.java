@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class FornecedoresController extends BaseControllers<Fornecedor> {
 
-    private static final Pattern CNPJ = Pattern.compile("[A-Z0-9]{2}\\.[A-Z0-9]{3}\\.[A-Z0-9]{3}/[A-Z0-9]{4}-[A-Z0-9]{2}");
+    private static final Pattern FORMATO_CNPJ = Pattern.compile("[A-Z0-9]{2}\\.[A-Z0-9]{3}\\.[A-Z0-9]{3}/[A-Z0-9]{4}-[A-Z0-9]{2}");
     private static final Pattern CELULAR = Pattern.compile("\\(\\d{2}\\) 9 \\d{4}-\\d{4}");
     private static final Pattern FIXO = Pattern.compile("\\(\\d{2}\\) \\d{4}-\\d{4}");
 
@@ -86,15 +86,12 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
             String nome = validarTexto(razao.getText(), "Razão social");
             String mail = validarTexto(email.getText(), "E-mail");
             String phone = validarTexto(telefone.getText(), "Telefone");
-            if (!mail.toLowerCase(Locale.ROOT).endsWith("@loja.com"))
-                throw new IllegalArgumentException("O sistema atual exige e-mail @loja.com.");
-            if (!(CELULAR.matcher(phone).matches() || FIXO.matcher(phone).matches()))
-                throw new IllegalArgumentException("Telefone: use (81) 9 9999-9999 ou (81) 9999-9999.");
+            validarContato(mail,phone);
 
             final boolean sucesso;
             if (idEmEdicao == null) {
                 String documento = validarTexto(cnpj.getText(), "CNPJ").toUpperCase(Locale.ROOT);
-                if (!CNPJ.matcher(documento).matches())
+                if (!FORMATO_CNPJ.matcher(documento).matches())
                     throw new IllegalArgumentException("CNPJ: use XX.XXX.XXX/XXXX-XX.");
                 sucesso = sistema.cadastrarFornecedor(
                         new Fornecedor(sistema.gerarProximoIdFornecedor(), nome, documento, mail, phone));
@@ -110,5 +107,11 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
             atualizar();
             alerta(Alert.AlertType.INFORMATION, "Sucesso", "Fornecedor salvo com sucesso.");
         });
+    }
+    private void validarContato(String mail, String phone) {
+        if (!mail.toLowerCase(Locale.ROOT).endsWith("@loja.com"))
+            throw new IllegalArgumentException("O sistema atual exige e-mail @loja.com.");
+        if (!(CELULAR.matcher(phone).matches() || FIXO.matcher(phone).matches()))
+            throw new IllegalArgumentException("Telefone: use (81) 9 9999-9999 ou (81) 9999-9999.");
     }
 }

@@ -3,7 +3,6 @@ package apresentacao.controllers;
 import apresentacao.base.*;
 import entidades.Administrador;
 import entidades.Cliente;
-import entidades.Fornecedor;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
@@ -11,18 +10,15 @@ import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 public class UsuariosController extends BaseControllers<Usuario> {
-	private Consumer<String> navegacao;
 	private static final String ADMIN = "Administrador";
 	private static final String FUNCIONARIO = "Funcionário";
 	private static final String CLIENTE = "Cliente";
@@ -65,7 +61,9 @@ public class UsuariosController extends BaseControllers<Usuario> {
         }
     }
     
-    @Override protected List<Usuario> listarRegistros() { return sistema.listarUsuarios(); }
+    @Override protected List<Usuario> listarRegistros() {
+        return sistema.listarUsuarios().stream().filter(this::podeGerenciar).toList();
+    }
     @Override protected boolean estaAtivo(Usuario u) { return u.isAtivo(); }
     @Override protected int idDe(Usuario u) { return u.getId(); }
     @Override protected String nomeDe(Usuario u) { return u.getNome(); }
@@ -85,6 +83,8 @@ public class UsuariosController extends BaseControllers<Usuario> {
             campoCPF.setText(String.valueOf(u.getCpf()));
             campoEmail.setText(u.getEmail());
             campoSenha.setText(u.getSenha());
+            campoCPF.setDisable(true);
+            comboTipo.setDisable(true);
             if (u instanceof Administrador) comboTipo.setValue(ADMIN);
             else if (u instanceof Funcionario) comboTipo.setValue(FUNCIONARIO);
             else comboTipo.setValue(CLIENTE);
@@ -122,7 +122,12 @@ public class UsuariosController extends BaseControllers<Usuario> {
             } else {
                 Usuario atual = sistema.buscarUsuario(idEmEdicao);
                 if (atual == null) throw new IllegalArgumentException("Usuário não encontrado.");
-                
+                if (!podeGerenciar(atual)) throw new SecurityException("Funcionário só pode alterar clientes.");
+
+                Usuario donoDoEmail = sistema.buscarUsuarioPorEmail(email);
+                if (donoDoEmail != null && donoDoEmail.getId() != atual.getId()) {
+                    throw new IllegalArgumentException("Este e-mail já é usado por outro usuário.");
+                }
                 ok = sistema.atualizarUsuario(idEmEdicao, nome, email, senha);
             }
 
@@ -135,8 +140,14 @@ public class UsuariosController extends BaseControllers<Usuario> {
         campoCPF.clear();
         campoEmail.clear();
         campoSenha.clear();
+        campoCPF.setDisable(false);
         if (usuario instanceof Administrador) {
             comboTipo.setValue(null);
+            comboTipo.setDisable(false);
         }
+    }
+
+    private boolean podeGerenciar(Usuario alvo) {
+        return usuario instanceof Administrador || alvo instanceof Cliente;
     }
 }

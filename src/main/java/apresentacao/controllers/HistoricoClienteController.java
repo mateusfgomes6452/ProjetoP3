@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import apresentacao.base.BaseControllersRelatorios;
+import apresentacao.util.Formatador;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Usuario;
@@ -20,6 +21,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
+import apresentacao.util.Mensagens;
+import apresentacao.util.Pilulas;
 
 /** Aba "Histórico do cliente" (RelatorioHistoricoCliente.fxml): todos os contratos de um cliente. */
 public final class HistoricoClienteController extends BaseControllersRelatorios {

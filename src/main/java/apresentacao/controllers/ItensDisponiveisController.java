@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import apresentacao.base.BaseControllersRelatorios;
+import apresentacao.util.Formatador;
 import entidades.Item;
 import entidades.Usuario;
 import facade.SistemaFacade;
@@ -20,6 +21,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import apresentacao.util.Mensagens;
 
 /** Aba "Itens disponíveis" (RelatorioItensDisponiveis.fxml): itens com status DISPONIVEL, filtrados por categoria. */
 public final class ItensDisponiveisController extends BaseControllersRelatorios {
