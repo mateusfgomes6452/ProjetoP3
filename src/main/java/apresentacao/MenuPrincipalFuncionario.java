@@ -8,7 +8,7 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuPrincipalFuncionario {
 
-    private SistemaFacade sistema;
+    private final SistemaFacade sistema;
     private Funcionario funcionario;
     private final Scanner scanner;
 
