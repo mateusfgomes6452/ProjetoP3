@@ -76,6 +76,11 @@ public final class ContratosController implements Navegacao.ControladorComSessao
     @FXML private Label lblDias, lblTaxa, lblValorTotal;
     @FXML private Button btnConfirmarRegistro;
     @FXML private VBox painelFinalizacao;
+    //Finalização
+    @FXML private Label lblContratoFinalizacao, lblPrevistaFinalizacao, lblDiasAtraso, lblMulta;
+    @FXML private DatePicker dataDevolucaoReal;
+    @FXML private Button btnConfirmarFinalizacao;
+    private ContratoAluguel contratoEmFinalizacao;
     @FXML private VBox painelDetalhes;
     //Detalhes
     @FXML private Label lblTituloDetalhes;
@@ -100,6 +105,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
         busca.textProperty().addListener((obs, anterior, atual) -> filtrar());
         
         prepararRegistro();
+        dataDevolucaoReal.valueProperty().addListener((obs, anterior, atual) -> atualizarPreviaMulta());
 
         esconder(painelRegistro);
         esconder(painelFinalizacao);
@@ -298,7 +304,6 @@ public final class ContratosController implements Navegacao.ControladorComSessao
         btnConfirmarRegistro.setDisable(!completo);
     }
 
-    /** Botão "Registrar aluguel" do painel: mesmas checagens e mesma sequência do terminal. */
     @FXML
     private void registrar() {
         executar("registrar aluguel", () -> {
@@ -348,15 +353,112 @@ public final class ContratosController implements Navegacao.ControladorComSessao
                     + "Valor total: " + Formatador.moeda(valorTotal));
         });
     }
-  //Ações do fxml pra fazer
+    @FXML
+    private void abrirFinalizacao() {
+        executar("abrir devolução", () -> {
+            exigirSessao();
+            ContratoAluguel contrato = buscarSelecionadoNoSistema();
+            exigirAtivo(contrato);
 
-    @FXML private void abrirFinalizacao()    { emConstrucao(); }
-    @FXML private void finalizar()           { emConstrucao(); }
-    @FXML private void cancelarFinalizacao() { esconder(painelFinalizacao); }
+            contratoEmFinalizacao = contrato;
+            lblContratoFinalizacao.setText("Contrato #" + contrato.getId() + " · "
+                    + nomeCliente(contrato) + " · " + nomeItem(contrato));
+            lblPrevistaFinalizacao.setText(Formatador.data(contrato.getDataDevolucaoPrevista()));
+            dataDevolucaoReal.setValue(LocalDate.now(ZONA_LOJA));
+            atualizarPreviaMulta();
+
+            esconder(painelRegistro);
+            esconder(painelDetalhes);
+            mostrar(painelFinalizacao);
+        });
+    }
+
+    @FXML
+    private void cancelarFinalizacao() {
+        contratoEmFinalizacao = null;
+        esconder(painelFinalizacao);
+    }
+
+    private void exigirAtivo(ContratoAluguel contrato) {
+        if (!contrato.estaAtivo() || contrato.estaFinalizado()) {
+            throw new IllegalArgumentException("Este contrato não está ativo. Status: " + contrato.getStatus());
+        }
+    }
+
+    private long diasDeAtraso() {
+        if (contratoEmFinalizacao == null || dataDevolucaoReal.getValue() == null) {
+            return 0;
+        }
+        LocalDate prevista = LocalDate.parse(contratoEmFinalizacao.getDataDevolucaoPrevista());
+        return Math.max(0, ChronoUnit.DAYS.between(prevista, dataDevolucaoReal.getValue()));
+    }
+
+    private void atualizarPreviaMulta() {
+        long dias = diasDeAtraso();
+        double multa = 0;
+        if (dias > 0 && contratoEmFinalizacao != null && contratoEmFinalizacao.getItem() != null) {
+            multa = sistema.calcularMulta(dias, contratoEmFinalizacao.getItem().getTaxaDiaria());
+        }
+        lblDiasAtraso.setText(String.valueOf(dias));
+        lblMulta.setText(Formatador.moeda(multa));
+        btnConfirmarFinalizacao.setDisable(dataDevolucaoReal.getValue() == null);
+    }
+
+    @FXML
+    private void finalizar() {
+        executar("finalizar contrato", () -> {
+            exigirSessao();
+            if (contratoEmFinalizacao == null) {
+                throw new IllegalArgumentException("Selecione um contrato para finalizar.");
+            }
+            if (dataDevolucaoReal.getValue() == null) {
+                throw new IllegalArgumentException("Informe a data real da devolução.");
+            }
+            ContratoAluguel contrato = sistema.buscarContrato(contratoEmFinalizacao.getId());
+            if (contrato == null) {
+                throw new IllegalArgumentException("Contrato não encontrado.");
+            }
+            exigirAtivo(contrato);
+
+            String dataReal = dataDevolucaoReal.getValue().toString();   // "AAAA-MM-DD"
+            LocalDate prevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
+            long diasAtraso = ChronoUnit.DAYS.between(prevista, dataDevolucaoReal.getValue());
+
+            
+            contrato.setDataDevolucaoReal(dataReal);
+
+            
+            double multa = 0;
+            if (diasAtraso > 0) {
+                multa = sistema.calcularMulta(diasAtraso, contrato.getItem().getTaxaDiaria());
+                contrato.setValorMulta(multa);
+                contrato.setMultaPaga(false);
+            }
+
+            
+            if (contrato.getItem() != null) {
+                contrato.getItem().devolver();
+            }
+
+            if (!sistema.finalizarContrato(contrato.getId())) {
+                throw new IllegalArgumentException("Erro ao finalizar contrato.");
+            }
+
+            contratoEmFinalizacao = null;
+            esconder(painelFinalizacao);
+            atualizar();
+
+            String mensagem = diasAtraso > 0
+                    ? "Devolução com " + diasAtraso + " dia(s) de atraso.\n"
+                      + "Multa gerada: " + Formatador.moeda(multa) + " (pendente).\n"
+                    : "Devolução dentro do prazo.\n";
+            alerta(Alert.AlertType.INFORMATION, "Contrato finalizado",
+                    mensagem + "Item devolvido ao estoque.");
+        });
+    }
 
     @FXML private void fecharDetalhes()      { esconder(painelDetalhes); }
 
-    // ---------- Ver detalhes (MenuContratos.buscarContrato + exibirDetalhesContrato) ----------
 
     @FXML
     private void verDetalhes() {
