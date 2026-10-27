@@ -65,9 +65,7 @@
       <Label text="Filtre pelo status ou pesquise por item e número do contrato." styleClass="minor-text" />
     </VBox>
     <Region HBox.hgrow="ALWAYS" />
-    <Button fx:id="btnExportar" text="Exportar meu histórico (CSV)" onAction="#exportar" disable="true" styleClass="secondary-button" />
   </HBox>
-  <Label fx:id="lblAviso" text="" styleClass="texto-sucesso" />
   <TextField fx:id="busca" promptText="Buscar por número do contrato ou nome do item..." styleClass="input-field" />
   <HBox alignment="CENTER_LEFT" spacing="9">
     <Button fx:id="btnTodos" text="Todos" onAction="#filtrarTodos" styleClass="filter-button, filter-active" />
@@ -80,17 +78,17 @@
   <TableView fx:id="tabela" prefHeight="345" styleClass="data-table">
     <columns>
       <TableColumn fx:id="colId" text="CONTRATO" prefWidth="80" />
-      <TableColumn fx:id="colItem" text="ITEM" prefWidth="175" />
+      <TableColumn fx:id="colItem" text="ITEM" prefWidth="150" />
       <TableColumn fx:id="colRetirada" text="RETIRADA" prefWidth="100" />
       <TableColumn fx:id="colPrevista" text="PREVISÃO" prefWidth="100" />
       <TableColumn fx:id="colDevolucao" text="DEVOLVIDO EM" prefWidth="115" />
-      <TableColumn fx:id="colStatus" text="STATUS" prefWidth="95" />
+      <TableColumn fx:id="colStatus" text="STATUS" prefWidth="120" />
       <TableColumn fx:id="colValor" text="VALOR" prefWidth="105" />
       <TableColumn fx:id="colMulta" text="MULTA" prefWidth="90" />
     </columns>
   </TableView>
   <HBox alignment="CENTER_RIGHT" spacing="9">
-    <Label text="Somente contratos da sua conta são exibidos ou exportados." styleClass="minor-text" />
+    <Label text="Somente contratos da sua conta são exibidos." styleClass="minor-text" />
     <Region HBox.hgrow="ALWAYS" />
     <Button fx:id="btnDetalhes" text="Detalhes do contrato" onAction="#verDetalhes" disable="true" styleClass="primary-button" />
   </HBox>
