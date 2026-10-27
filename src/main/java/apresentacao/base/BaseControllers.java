@@ -228,6 +228,19 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
     }
 
     @FXML
+    private void abrirFornecedores() {
+        executar("navegar para fornecedores", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("FornecedoresAdministrador");
+            } else {
+                navegacao.accept("FornecedoresFunccionarios");
+            }
+        });
+    }
+    
+    @FXML
     protected void abrirMultas() {
         executar("navegar para multas", () -> {
             exigirSessao();

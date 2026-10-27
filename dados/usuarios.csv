@@ -2,5 +2,7 @@ id;tipo;nome;email;cpf;senha;ativo
 1;Administrador;Jackson-Raniel;jacksonmepassaporfavor@loja.com;000.000.000-00;obrigadojackson;true
 2;Funcionario;Funcionário Padrão;funcpad@loja.com;111.111.111-78;123456;true
 3;Cliente;Cliente Fiel;fiel@loja.com;333.333.333-33;123456;true
-4;Funcionario;fabi;fabi@loja.com;1234;100.000.000-0;true
-5;Funcionario;fafabibi;100.000.000-00;fabibas@loja.com;1234;true
+4;Funcionario;fabi;fabi@loja.com;1234;100.000.000-0;false
+5;Funcionario;fafabibi;100.000.000-00;fabibas@loja.com;1234;false
+6;Cliente;f;f@loja.com;100.000.000-00;111;false
+7;Funcionario;Fabibas;fabia@loja.com;100.000.000-11;123;true

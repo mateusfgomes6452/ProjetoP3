@@ -121,11 +121,11 @@ public class UsuariosController extends BaseControllers<Usuario> {
                 int novoId = sistema.gerarProximoIdUsuario(); 
                 
                 if (tipo.equals("Administrador")) {
-                    novoUsuario = new Administrador(novoId, nome, cpf, email, senha);
+                    novoUsuario = new Administrador(novoId, nome, email, cpf, senha);
                 } else if (tipo.equals("Funcionário")) {
-                    novoUsuario = new Funcionario(novoId, nome, cpf, email, senha);
+                    novoUsuario = new Funcionario(novoId, nome, email, cpf, senha);
                 } else {
-                    novoUsuario = new Cliente(novoId, nome, cpf, email, senha);
+                    novoUsuario = new Cliente(novoId, nome, email, cpf, senha);
                 }
                 ok = sistema.cadastrarUsuario(novoUsuario);
             } else {
