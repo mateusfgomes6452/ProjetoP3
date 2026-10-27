@@ -98,7 +98,6 @@
   <Label fx:id="lblDetalheCategoria" text="Categoria:" styleClass="field-label" />
   <Label fx:id="lblDetalheEstado" text="Estado de conservação:" styleClass="field-label" />
   <Label fx:id="lblDetalheTaxa" text="Taxa diária:" styleClass="field-label" />
-  <Label fx:id="lblDetalheReposicao" text="Valor de reposição:" styleClass="field-label" />
 </VBox>
 
         </VBox>
