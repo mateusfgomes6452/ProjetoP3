@@ -13,11 +13,10 @@ import javafx.stage.Window;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import apresentacao.base.BaseControllers;
 
 public final class Navegacao {
 	
-	private static final Logger LOG = Logger.getLogger(BaseControllers.class.getName());
+	private static final Logger LOG = Logger.getLogger(Navegacao.class.getName());
     private static Usuario usuarioLogado;
 
     public interface ControladorComSessao {

@@ -9,7 +9,7 @@ import entidades.Item;
 
 public class ItemRepositorio implements IItemRepositorio {
 
-    private final String arquivo = "dados/itens.csv";
+    private static final String ARQUIVO = "dados/itens.csv";
 
     private final List<Item> itens;
     private final ICategoriaRepositorio categoriaRepositorio;
@@ -21,7 +21,7 @@ public class ItemRepositorio implements IItemRepositorio {
         this.categoriaRepositorio = categoriaRepositorio;
         this.fornecedorRepositorio = fornecedorRepositorio;
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
 
         itens = carregar();
 

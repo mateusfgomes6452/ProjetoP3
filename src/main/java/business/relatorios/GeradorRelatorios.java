@@ -1,6 +1,7 @@
 package business.relatorios;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -258,7 +259,7 @@ public class GeradorRelatorios implements IRelatorios {
             return false;
         }
 
-        return LocalDate.now().isAfter(LocalDate.parse(contrato.getDataDevolucaoPrevista()));
+        return LocalDate.now(ZoneId.systemDefault()).isAfter(LocalDate.parse(contrato.getDataDevolucaoPrevista()));
     }
 
     // =========================================================================

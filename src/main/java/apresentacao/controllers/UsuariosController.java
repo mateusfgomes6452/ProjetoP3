@@ -83,44 +83,16 @@ public class UsuariosController extends BaseControllers<Usuario> {
             comboTipo.setDisable(true);
         }
     }
-
-    @Override
-    protected List<Usuario> listarRegistros() {
-        return sistema.listarUsuarios()
-                .stream()
-                .filter(this::podeGerenciar)
-                .toList();
+    
+    @Override protected List<Usuario> listarRegistros() {
+        return sistema.listarUsuarios().stream().filter(this::podeGerenciar).toList();
     }
-
-    @Override
-    protected boolean estaAtivo(Usuario u) {
-        return u.isAtivo();
-    }
-
-    @Override
-    protected int idDe(Usuario u) {
-        return u.getId();
-    }
-
-    @Override
-    protected String nomeDe(Usuario u) {
-        return u.getNome();
-    }
-
-    @Override
-    protected String descricaoDe(Usuario u) {
-        return u.getCpf() + " " + u.getEmail();
-    }
-
-    @Override
-    protected boolean desativarRegistro(Usuario u) {
-        return sistema.desativaUsuario(u.getId());
-    }
-
-    @Override
-    protected String nomeEntidade() {
-        return "usuario";
-    }
+    @Override protected boolean estaAtivo(Usuario u) { return u.isAtivo(); }
+    @Override protected int idDe(Usuario u) { return u.getId(); }
+    @Override protected String nomeDe(Usuario u) { return u.getNome(); }
+    @Override protected String descricaoDe(Usuario u) { return u.getCpf() + " " + u.getEmail(); }
+    @Override protected boolean desativarRegistro(Usuario u) { return sistema.desativaUsuario(u.getId()); }
+    @Override protected String nomeEntidade() { return "usuario"; }
 
     @FXML
     private void novo() {
@@ -134,17 +106,11 @@ public class UsuariosController extends BaseControllers<Usuario> {
             campoCPF.setText(String.valueOf(u.getCpf()));
             campoEmail.setText(u.getEmail());
             campoSenha.setText(u.getSenha());
-
             campoCPF.setDisable(true);
             comboTipo.setDisable(true);
-
-            if (u instanceof Administrador) {
-                comboTipo.setValue(ADMIN);
-            } else if (u instanceof Funcionario) {
-                comboTipo.setValue(FUNCIONARIO);
-            } else {
-                comboTipo.setValue(CLIENTE);
-            }
+            if (u instanceof Administrador) comboTipo.setValue(ADMIN);
+            else if (u instanceof Funcionario) comboTipo.setValue(FUNCIONARIO);
+            else comboTipo.setValue(CLIENTE);
         });
     }
 
@@ -172,9 +138,30 @@ public class UsuariosController extends BaseControllers<Usuario> {
                         "Selecione o tipo de usuário.");
             }
 
-            boolean ok = idEmEdicao == null
-                    ? cadastrarNovoUsuario(nome, cpf, email, senha, tipo)
-                    : atualizarUsuarioExistente(nome, email, senha);
+            boolean ok;
+            if (idEmEdicao == null) {
+                Usuario novoUsuario;
+                int novoId = sistema.gerarProximoIdUsuario(); 
+                
+                if (tipo.equals(ADMIN)) {
+                    novoUsuario = new Administrador(novoId, nome, email, cpf, senha);
+                } else if (tipo.equals(FUNCIONARIO)) {
+                    novoUsuario = new Funcionario(novoId, nome, email, cpf, senha);
+                } else {
+                    novoUsuario = new Cliente(novoId, nome, email, cpf, senha);
+                }
+                ok = sistema.cadastrarUsuario(novoUsuario);
+            } else {
+                Usuario atual = sistema.buscarUsuario(idEmEdicao);
+                if (atual == null) throw new IllegalArgumentException("Usuário não encontrado.");
+                if (!podeGerenciar(atual)) throw new SecurityException("Funcionário só pode alterar clientes.");
+
+                Usuario donoDoEmail = sistema.buscarUsuarioPorEmail(email);
+                if (donoDoEmail != null && donoDoEmail.getId() != atual.getId()) {
+                    throw new IllegalArgumentException("Este e-mail já é usado por outro usuário.");
+                }
+                ok = sistema.atualizarUsuario(idEmEdicao, nome, email, senha);
+            }
 
             concluirSalvamento(ok, "Usuário salvo com sucesso.");
         });
@@ -241,9 +228,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
         campoCPF.clear();
         campoEmail.clear();
         campoSenha.clear();
-
         campoCPF.setDisable(false);
-
         if (usuario instanceof Administrador) {
             comboTipo.setValue(null);
             comboTipo.setDisable(false);
@@ -251,7 +236,6 @@ public class UsuariosController extends BaseControllers<Usuario> {
     }
 
     private boolean podeGerenciar(Usuario alvo) {
-        return usuario instanceof Administrador
-                || alvo instanceof Cliente;
+        return usuario instanceof Administrador || alvo instanceof Cliente;
     }
 }

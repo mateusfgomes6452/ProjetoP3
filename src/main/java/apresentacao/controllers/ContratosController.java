@@ -2,6 +2,7 @@
 package apresentacao.controllers;
 
 import apresentacao.navegacao.Navegacao;
+import apresentacao.util.Formatador;
 import entidades.Administrador;
 import entidades.ContratoAluguel;
 import entidades.Funcionario;
@@ -357,6 +358,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             List<Cliente> clientes = sistema.listarUsuarios().stream()
                     .filter(Cliente.class::isInstance)
                     .map(u -> (Cliente) u)
+                    .filter(Cliente::isAtivo)
                     .toList();
 
             List<Item> disponiveis = sistema.listarItens().stream()
@@ -433,6 +435,10 @@ public final class ContratosController implements Navegacao.ControladorComSessao
                 throw new IllegalArgumentException(
                         "Selecione o cliente.");
             }
+            if (!cliente.isAtivo()) {
+                throw new IllegalArgumentException(
+                        "Cliente desativado não pode realizar aluguéis.");
+            }
 
             if (sistema.clientePossuiMultaPendente(cliente.getId())) {
                 throw new IllegalArgumentException(
@@ -480,6 +486,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             }
 
             item.alugar();
+            salvarStatusDoItem(item);   // grava ALUGADO no itens.csv
 
             esconder(painelRegistro);
             atualizar();
@@ -568,7 +575,22 @@ public final class ContratosController implements Navegacao.ControladorComSessao
         lblMulta.setText(Formatador.moeda(multa));
 
         btnConfirmarFinalizacao.setDisable(
-                dataDevolucaoReal.getValue() == null);
+                dataDevolucaoReal.getValue() == null || devolucaoAntesDaRetirada());
+    }
+    
+    private boolean devolucaoAntesDaRetirada() {
+        return contratoEmFinalizacao != null
+                && dataDevolucaoReal.getValue() != null
+                && dataDevolucaoReal.getValue().isBefore(
+                        LocalDate.parse(contratoEmFinalizacao.getDataRetirada()));
+    }
+
+    
+    private void salvarStatusDoItem(Item item) {
+        if (!sistema.atualizarItem(item)) {
+            throw new IllegalStateException(
+                    "Não foi possível salvar o status do item " + item.getId() + ".");
+        }
     }
 
     @FXML
@@ -595,6 +617,13 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             }
 
             exigirAtivo(contrato);
+            
+            if (dataDevolucaoReal.getValue().isBefore(LocalDate.parse(contrato.getDataRetirada()))) {
+                throw new IllegalArgumentException(
+                        "A data da devolução não pode ser anterior à retirada ("
+                                + Formatador.data(contrato.getDataRetirada()) + ").");
+            }
+            
 
             String dataReal = dataDevolucaoReal.getValue().toString();
 
@@ -619,6 +648,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
 
             if (contrato.getItem() != null) {
                 contrato.getItem().devolver();
+                salvarStatusDoItem(contrato.getItem());
             }
 
             if (!sistema.finalizarContrato(contrato.getId())) {
@@ -728,6 +758,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
 
             if (contrato.getItem() != null) {
                 contrato.getItem().devolver();
+                salvarStatusDoItem(contrato.getItem());
             }
 
             esconder(painelDetalhes);

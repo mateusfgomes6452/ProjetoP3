@@ -11,7 +11,7 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuLogin {
  
-    private SistemaFacade sistema;
+    private final SistemaFacade sistema;
     private final Scanner scanner;
  
     public MenuLogin(SistemaFacade sistema, Scanner scanner) {
