@@ -11,7 +11,7 @@ public class MultaRepositorio implements IMultaRepositorio {
     private String arquivo = "dados/multas.csv";
 
     private List<Multa> multas;
-    private ManipulaArquivo manipulaArquivo;
+    private final ManipulaArquivo manipulaArquivo;
 
     public MultaRepositorio() {
 
