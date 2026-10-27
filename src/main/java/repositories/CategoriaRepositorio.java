@@ -7,10 +7,10 @@ import entidades.Categoria;
 
 public class CategoriaRepositorio implements ICategoriaRepositorio {
 
-    private String arquivo = "dados/categorias.csv";
+    private final String arquivo = "dados/categorias.csv";
 
     private final List<Categoria> categorias;
-    private ManipulaArquivo manipulaArquivo;
+    private final ManipulaArquivo manipulaArquivo;
 
     public CategoriaRepositorio() {
 

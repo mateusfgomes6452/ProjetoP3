@@ -31,7 +31,7 @@ public class SistemaFacade {
     private IGerenciamentoUsuarios   gerenciamentoUsuarios;
     private IGerenciamentoContratos  gerenciamentoContratos;
     private IGerenciamentoItens      gerenciamentoItens;
-    private final IGerenciamentoCategoria  gerenciamentoCategoria;
+    private IGerenciamentoCategoria  gerenciamentoCategoria;
     private IGerenciamentoFornecedor gerenciamentoFornecedor;
     private IGerenciamentoMultas     gerenciamentoMultas;
     private IRelatorios              geradorRelatorios;

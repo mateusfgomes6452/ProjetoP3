@@ -50,7 +50,7 @@ public class LoginController {
         String arquivo = "";
 
         if (usuario instanceof Cliente) {
-            arquivo = "/fxml/Login.fxml";
+            arquivo = "/fxml/MultasClientes.fxml";
         } else if (usuario instanceof Funcionario) {
             arquivo = "/fxml/UsuariosFuncionario.fxml"; 
         } else if (usuario instanceof Administrador) {
