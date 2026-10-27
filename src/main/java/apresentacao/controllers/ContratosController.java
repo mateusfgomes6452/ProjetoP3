@@ -536,12 +536,22 @@ public final class ContratosController implements Navegacao.ControladorComSessao
         return contrato;
     }
 
-    // ---------- Menu lateral (a navegação entre telas será ligada depois) ----------
-    @FXML private void abrirFornecedores()   { emConstrucao(); }
-    @FXML private void abrirMultas()         { emConstrucao(); }
-    @FXML private void encerrarSessao()      { executar("encerrar sessão", () -> sair.run()); }
+    //Menu Lateral (navegação)
+    @FXML private void abrirItens()        { abrirTela("ItensAdministrador", "ItensFuncionario"); }
+    @FXML private void abrirCategorias()   { abrirTela("CategoriasAdministrador", "CategoriasFuncionarios"); }
+    @FXML private void abrirFornecedores() { abrirTela("FornecedoresAdministrador", "FornecedoresFunccionarios"); }
+    @FXML private void abrirMultas()       { abrirTela("Multasadministrador", "MultasFuncionario"); }
+    @FXML private void abrirRelatorios()   { abrirTela("RelatoriosAdministrador", "RelatoriosFuncionario"); }
+    @FXML private void abrirUsuarios()     { emConstrucao(); }   // a tela de usuários ainda não existe
+    @FXML private void encerrarSessao()    { executar("encerrar sessão", () -> sair.run()); }
 
-    
+    //Pede a navegação para trocar de tela
+    private void abrirTela(String telaAdministrador, String telaFuncionario) {
+        executar("abrir tela", () -> {
+            exigirSessao();
+            navegacao.accept(usuario instanceof Administrador ? telaAdministrador : telaFuncionario);
+        });
+    }
     private boolean confirmar(String titulo, String mensagem) {
         Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION, mensagem, ButtonType.YES, ButtonType.NO);
         dialogo.setTitle(titulo);
