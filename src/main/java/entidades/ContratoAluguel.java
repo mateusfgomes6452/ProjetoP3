@@ -1,13 +1,13 @@
 package entidades;
 public class ContratoAluguel {
 
-    private int id;
+    private final int id;
     private final Cliente cliente;
-    private Item item;
-    private String dataRetirada;
+    private final Item item;
+    private final String dataRetirada;
     private String dataDevolucaoPrevista;
     private String dataDevolucaoReal;
-    private double valorTotal;
+    private final double valorTotal;
     private String status;
     private boolean ativo;
     private double valorMulta;

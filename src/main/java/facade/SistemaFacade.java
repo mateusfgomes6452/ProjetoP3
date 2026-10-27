@@ -19,7 +19,7 @@ import entidades.Usuario;
 
 public class SistemaFacade {
 	
-    private final static SistemaFacade instancia;
+    private static SistemaFacade instancia;
 
     public static SistemaFacade getSistema() {
         if (instancia == null) {
@@ -28,13 +28,13 @@ public class SistemaFacade {
         return instancia;
     }
 
-    private final IGerenciamentoUsuarios   gerenciamentoUsuarios;
-    private final IGerenciamentoContratos  gerenciamentoContratos;
-    private final IGerenciamentoItens      gerenciamentoItens;
-    private final IGerenciamentoCategoria  gerenciamentoCategoria;
-    private final IGerenciamentoFornecedor gerenciamentoFornecedor;
-    private final IGerenciamentoMultas     gerenciamentoMultas;
-    private final IRelatorios              geradorRelatorios;
+    private IGerenciamentoUsuarios   gerenciamentoUsuarios;
+    private IGerenciamentoContratos  gerenciamentoContratos;
+    private IGerenciamentoItens      gerenciamentoItens;
+    private IGerenciamentoCategoria  gerenciamentoCategoria;
+    private IGerenciamentoFornecedor gerenciamentoFornecedor;
+    private IGerenciamentoMultas     gerenciamentoMultas;
+    private IRelatorios              geradorRelatorios;
 
     public SistemaFacade(
             IGerenciamentoUsuarios   gerenciamentoUsuarios,
