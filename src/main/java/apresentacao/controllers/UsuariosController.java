@@ -3,6 +3,7 @@ package apresentacao.controllers;
 import apresentacao.base.*;
 import entidades.Administrador;
 import entidades.Cliente;
+import entidades.Fornecedor;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
@@ -17,10 +18,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 public class UsuariosController extends BaseControllers<Usuario> {
 	private Consumer<String> navegacao;
+	private static final String ADMIN = "Administrador";
+	private static final String FUNCIONARIO = "Funcionário";
+	private static final String CLIENTE = "Cliente";
 	
     @FXML private TableColumn<Usuario, Number> colId;
     @FXML private TableColumn<Usuario, String> colNome;
@@ -52,10 +57,10 @@ public class UsuariosController extends BaseControllers<Usuario> {
         super.configurar(sistema, usuario, navegacao, sair);
 
         if (usuario instanceof Administrador) {
-            comboTipo.setItems(FXCollections.observableArrayList("Administrador", "Funcionário", "Cliente"));
+            comboTipo.setItems(FXCollections.observableArrayList(ADMIN, FUNCIONARIO, CLIENTE));
         } else {
-            comboTipo.setItems(FXCollections.observableArrayList("Cliente"));
-            comboTipo.setValue("Cliente");
+            comboTipo.setItems(FXCollections.observableArrayList(CLIENTE));
+            comboTipo.setValue(CLIENTE);
             comboTipo.setDisable(true);
         }
     }
@@ -92,8 +97,8 @@ public class UsuariosController extends BaseControllers<Usuario> {
             campoEmail.setText(u.getEmail());
             campoSenha.setText(u.getSenha());
             
-            if (u instanceof Administrador) comboTipo.setValue("Administrador");
-            else if (u instanceof Funcionario) comboTipo.setValue("Funcionário");
+            if (u instanceof Administrador) comboTipo.setValue(ADMIN);
+            else if (u instanceof Funcionario) comboTipo.setValue(FUNCIONARIO);
             else comboTipo.setValue("Cliente");
 
             btnSalvar.setText("Salvar alterações");
@@ -110,6 +115,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
             String email = validarTexto(campoEmail.getText(), "Email");
             String senha = validarTexto(campoSenha.getText(), "Senha");
             String tipo = comboTipo.getValue();
+            
 
             if (tipo == null || tipo.isBlank()) {
                 throw new IllegalArgumentException("Selecione o tipo de usuário.");
@@ -120,9 +126,9 @@ public class UsuariosController extends BaseControllers<Usuario> {
                 Usuario novoUsuario;
                 int novoId = sistema.gerarProximoIdUsuario(); 
                 
-                if (tipo.equals("Administrador")) {
+                if (tipo.equals(ADMIN)) {
                     novoUsuario = new Administrador(novoId, nome, email, cpf, senha);
-                } else if (tipo.equals("Funcionário")) {
+                } else if (tipo.equals(FUNCIONARIO)) {
                     novoUsuario = new Funcionario(novoId, nome, email, cpf, senha);
                 } else {
                     novoUsuario = new Cliente(novoId, nome, email, cpf, senha);
