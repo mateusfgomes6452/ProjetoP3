@@ -19,6 +19,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import apresentacao.util.Mensagens;
+import apresentacao.util.Pilulas;
 
 /** Aba "Itens alugados" (RelatorioItensAlugados.fxml): contratos ativos, com destaque para devoluções atrasadas. */
 public final class ItensAlugadosController extends BaseControllersRelatorios {

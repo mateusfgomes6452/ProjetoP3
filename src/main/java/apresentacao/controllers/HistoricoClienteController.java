@@ -20,6 +20,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
+import apresentacao.util.Mensagens;
+import apresentacao.util.Pilulas;
 
 /** Aba "Histórico do cliente" (RelatorioHistoricoCliente.fxml): todos os contratos de um cliente. */
 public final class HistoricoClienteController extends BaseControllersRelatorios {

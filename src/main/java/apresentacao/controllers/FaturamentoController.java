@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
+import apresentacao.util.Mensagens;
 
 /** Aba "Faturamento" (RelatorioFaturamento.fxml): contratos retirados dentro de um período, com totais. */
 public final class FaturamentoController extends BaseControllersRelatorios {
