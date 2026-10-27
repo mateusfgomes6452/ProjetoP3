@@ -227,7 +227,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             if (usuario instanceof entidades.Administrador) {
                 navegacao.accept("FornecedoresAdministrador"); 
             } else {
-                navegacao.accept("FornecedoresFuncionario"); 
+                navegacao.accept("FornecedoresFunccionario"); 
             }
         }); 
     }

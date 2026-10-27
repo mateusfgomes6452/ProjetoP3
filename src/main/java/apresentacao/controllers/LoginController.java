@@ -52,9 +52,9 @@ public class LoginController {
         if (usuario instanceof Cliente) {
             arquivo = "/fxml/MenuCliente.fxml"; 
         } else if (usuario instanceof Funcionario) {
-            arquivo = "/fxml/MenuFuncionario.fxml"; 
+            arquivo = "/fxml/UsuariosFuncionario.fxml"; 
         } else if (usuario instanceof Administrador) {
-            arquivo = "/fxml/CategoriasAdministrador.fxml"; 
+            arquivo = "/fxml/UsuariosAdministrador.fxml"; 
         }
 
         Navegacao.setUsuarioLogado(usuario);

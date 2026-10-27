@@ -5,6 +5,7 @@ import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
+import facade.SistemaFacade;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -16,9 +17,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class UsuariosController extends BaseControllers<Usuario> {
-
+	private Consumer<String> navegacao;
+	
     @FXML private TableColumn<Usuario, Number> colId;
     @FXML private TableColumn<Usuario, String> colNome;
     @FXML private TableColumn<Usuario, String> colCPF;
@@ -41,11 +44,22 @@ public class UsuariosController extends BaseControllers<Usuario> {
         colTipo.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getTipo()));
         colStatus.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().isAtivo() ? "Ativo" : "Inativo"));
         
-        comboTipo.setItems(FXCollections.observableArrayList("Administrador", "Funcionário", "Cliente"));
-        
         iniciarBase();
     }
 
+    @Override
+    public void configurar(SistemaFacade sistema, Usuario usuario, Consumer<String> navegacao, Runnable sair) {
+        super.configurar(sistema, usuario, navegacao, sair);
+
+        if (usuario instanceof Administrador) {
+            comboTipo.setItems(FXCollections.observableArrayList("Administrador", "Funcionário", "Cliente"));
+        } else {
+            comboTipo.setItems(FXCollections.observableArrayList("Cliente"));
+            comboTipo.setValue("Cliente");
+            comboTipo.setDisable(true);
+        }
+    }
+    
     @Override protected List<Usuario> listarRegistros() { return sistema.listarUsuarios(); }
     @Override protected boolean estaAtivo(Usuario u) { return u.isAtivo(); }
     @Override protected int idDe(Usuario u) { return u.getId(); }
@@ -107,11 +121,11 @@ public class UsuariosController extends BaseControllers<Usuario> {
                 int novoId = sistema.gerarProximoIdUsuario(); 
                 
                 if (tipo.equals("Administrador")) {
-                    novoUsuario = new Administrador(novoId, nome, email, senha, cpf);
+                    novoUsuario = new Administrador(novoId, nome, cpf, email, senha);
                 } else if (tipo.equals("Funcionário")) {
-                    novoUsuario = new Funcionario(novoId, nome, email, senha, cpf);
+                    novoUsuario = new Funcionario(novoId, nome, cpf, email, senha);
                 } else {
-                    novoUsuario = new Cliente(novoId, nome, email, senha, cpf);
+                    novoUsuario = new Cliente(novoId, nome, cpf, email, senha);
                 }
                 ok = sistema.cadastrarUsuario(novoUsuario);
             } else {
@@ -134,6 +148,8 @@ public class UsuariosController extends BaseControllers<Usuario> {
         campoCPF.clear();
         campoEmail.clear();
         campoSenha.clear();
-        comboTipo.setValue(null);
+        if (usuario instanceof Administrador) {
+            comboTipo.setValue(null);
+        }
     }
 }
