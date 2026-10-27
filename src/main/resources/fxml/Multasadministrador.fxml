@@ -25,15 +25,7 @@
   <stylesheets><URL value="@../css/identidade.css" /></stylesheets>
   <left><VBox minWidth="225" prefWidth="225" spacing="19" styleClass="sidebar">
       <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
-              <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
-        <HBox alignment="CENTER_LEFT" spacing="12">
-          <VBox spacing="4">
-            <Label styleClass="page-title" text="Gestão de Multas" />
-            <Label styleClass="page-subtitle" text="Consulte, registre e quite multas de avaria ou atraso." />
-          </VBox>
-        </HBox>
-        <HBox alignment="CENTER_LEFT" spacing="12">
-                  <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
+      <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
       <VBox spacing="5">
         <Label fx:id="lblPerfil" styleClass="role-label" text="ADMINISTRADOR" />
         <Region prefHeight="8" />
@@ -59,6 +51,12 @@
   <center><ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="screen-scroll">
       <content><VBox spacing="22" styleClass="content-area">
         <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
+        <HBox alignment="CENTER_LEFT" spacing="12">
+          <VBox spacing="4">
+            <Label styleClass="page-title" text="Gestão de Multas" />
+            <Label styleClass="page-subtitle" text="Consulte, registre e quite multas de avaria ou atraso." />
+          </VBox>
+        </HBox>
         <HBox alignment="CENTER_LEFT" spacing="12">
                   <VBox prefWidth="250.0" spacing="9" styleClass="stat-card">
                      <children>
