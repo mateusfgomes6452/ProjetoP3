@@ -47,7 +47,7 @@ public class LoginController {
     }
 
     private void redirecionarUsuario(Usuario usuario) {
-        String arquivo;
+        String arquivo = "";
 
         if (usuario instanceof Cliente) {
             arquivo = "/fxml/Login.fxml";
