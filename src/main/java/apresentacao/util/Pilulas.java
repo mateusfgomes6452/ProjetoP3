@@ -1,4 +1,4 @@
-package apresentacao.util;
+package apresentacao.controllers
 
 import javafx.scene.control.Label;
 
