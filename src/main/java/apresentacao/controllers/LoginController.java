@@ -47,10 +47,10 @@ public class LoginController {
     }
 
     private void redirecionarUsuario(Usuario usuario) {
-        String arquivo = "";
+        String arquivo;
 
         if (usuario instanceof Cliente) {
-            arquivo = "/fxml/MenuCliente.fxml"; 
+            arquivo = "/fxml/Login.fxml";
         } else if (usuario instanceof Funcionario) {
             arquivo = "/fxml/UsuariosFuncionario.fxml"; 
         } else if (usuario instanceof Administrador) {

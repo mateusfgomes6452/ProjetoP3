@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import apresentacao.base.BaseControllersRelatorios;
+import entidades.Administrador;
+import entidades.Administrador;
 import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.fxml.FXML;
@@ -22,7 +24,7 @@ import javafx.scene.control.Label;
  * Cada aba é um FXML próprio (fx:include) com o seu controller, configurado aqui:
  * ItensDisponiveisController, HistoricoClienteController, ItensAlugadosController e FaturamentoController.
  */
-public final class RelatoriosController extends BaseControllersRelatorios {
+public final class RelatoriosController extends BaseControllersRelatorios implements Navegacao.ControladorComSessao {
 
     private Consumer<String> navegacao;
     private Runnable sair;
@@ -52,6 +54,7 @@ public final class RelatoriosController extends BaseControllersRelatorios {
         mostrarAba(btnAbaItens, abaItens, () -> abaItensController.atualizar());
     }
 
+    @Override
     public void configurar(SistemaFacade sistema, Usuario usuario, Consumer<String> navegacao, Runnable sair) {
         iniciarSessao(sistema, usuario);
         this.navegacao = Objects.requireNonNull(navegacao, "Callback de navegação é obrigatório");
@@ -120,6 +123,29 @@ public final class RelatoriosController extends BaseControllersRelatorios {
 
     // ---------- menu lateral ----------
 
+    
+    @FXML
+    private void abrirItens() {
+        executar("abrir itens", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "ItensAdministrador"
+                    : "ItensFuncionario");
+        });
+    }
+
+    @FXML
+    private void abrirCategorias() {
+        executar("abrir categorias", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "CategoriasAdministrador"
+                    : "CategoriasFuncionarios");
+        });
+    }
+
     @FXML
     private void abrirRelatorios() {
         executar("atualizar relatórios", () -> {
@@ -132,7 +158,7 @@ public final class RelatoriosController extends BaseControllersRelatorios {
     private void abrirFornecedores() {
         executar("abrir fornecedores", () -> {
             exigirSessao();
-            navegacao.accept("fornecedores");
+            navegacao.accept(usuario instanceof Administrador ? "FornecedoresAdministrador" : "FornecedoresFunccionarios");
         });
     }
 
@@ -140,7 +166,9 @@ public final class RelatoriosController extends BaseControllersRelatorios {
     private void abrirMultas() {
         executar("abrir multas", () -> {
             exigirSessao();
-            navegacao.accept("multas");
+            navegacao.accept(usuario instanceof Administrador
+                    ? "Multasadministrador"
+                    : "MultasFuncionario");
         });
     }
 

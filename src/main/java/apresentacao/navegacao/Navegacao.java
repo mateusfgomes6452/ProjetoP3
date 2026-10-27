@@ -37,10 +37,10 @@ public final class Navegacao {
 
             if (controller instanceof ControladorComSessao c) {
                 c.configurar(
-                    SistemaFacade.getSistema(), 
-                    usuarioLogado, 
+                    SistemaFacade.getSistema(),
+                    usuarioLogado,
                     destino -> irPara(origem, "/fxml/" + destino + ".fxml"),
-                    () -> irPara(origem, "/fxml/Login.fxml")
+                    () -> encerrarSessao(origem)
                 );
             }
 
@@ -66,6 +66,11 @@ public final class Navegacao {
             aviso.setHeaderText(null);
             aviso.showAndWait();
         }
+    }
+
+    private static void encerrarSessao(Node origem) {
+        usuarioLogado = null;
+        irPara(origem, "/fxml/Login.fxml");
     }
 
     public static void sair() {

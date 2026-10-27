@@ -444,6 +444,41 @@ public final class MultasController implements Navegacao.ControladorComSessao {
         return texto;
     }
 
+    
+    @FXML
+    private void abrirItens() {
+        executar("abrir itens", () -> {
+            exigirOperador();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "ItensAdministrador"
+                    : "ItensFuncionario");
+        });
+    }
+
+    @FXML
+    private void abrirCategorias() {
+        executar("abrir categorias", () -> {
+            exigirOperador();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "CategoriasAdministrador"
+                    : "CategoriasFuncionarios");
+        });
+    }
+
+    @FXML
+    private void abrirRelatorios() {
+        executar("abrir relatórios", () -> {
+            exigirOperador();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "RelatoriosAdministrador"
+                    : "RelatoriosFuncionario");
+        });
+    }
+
+
     @FXML private void abrirMultas() { atualizar(); }
 
     @FXML
@@ -457,11 +492,7 @@ public final class MultasController implements Navegacao.ControladorComSessao {
 
     @FXML
     private void encerrarSessao() {
-        executar("encerrar sessão", () -> {
-            exigirSessao();
-            Navegacao.setUsuarioLogado(null);
-            sair.run();
-        });
+        executar("encerrar sessão", () -> {exigirSessao();sair.run();});
     }
 
     private void executar(String acao, Runnable operacao) {
