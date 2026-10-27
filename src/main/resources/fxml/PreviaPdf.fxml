@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="760.0" prefWidth="760.0" styleClass="content-area" stylesheets="@../css/identidade.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.controllers.PreviaPdfController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="12.0">
+         <padding>
+            <Insets bottom="14.0" left="20.0" right="20.0" top="16.0" />
+         </padding>
+         <VBox spacing="3.0">
+            <Label fx:id="lblTitulo" styleClass="section-title" text="Prévia do relatório" />
+            <Label fx:id="lblArquivo" styleClass="minor-text" text="relatorios/arquivo.pdf" />
+         </VBox>
+         <Region HBox.hgrow="ALWAYS" />
+         <Button onAction="#fechar" styleClass="primary-button" text="Fechar" />
+      </HBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" styleClass="screen-scroll">
+         <VBox fx:id="paginas" alignment="TOP_CENTER" spacing="16.0">
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="4.0" />
+            </padding>
+         </VBox>
+      </ScrollPane>
+   </center>
+</BorderPane>
