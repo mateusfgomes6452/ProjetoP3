@@ -114,23 +114,16 @@ public class UsuariosController extends BaseControllers<Usuario> {
         });
     }
 
+    
     @FXML
     private void salvar() {
         executar("salvar usuario", () -> {
             exigirSessao();
 
-            String nome = validarTexto(
-                    campoNome.getText(), "Nome");
-
-            String cpf = validarTexto(
-                    campoCPF.getText(), "CPF");
-
-            String email = validarTexto(
-                    campoEmail.getText(), "Email");
-
-            String senha = validarTexto(
-                    campoSenha.getText(), "Senha");
-
+            String nome = validarTexto(campoNome.getText(), "Nome");
+            String cpf = validarTexto(campoCPF.getText(), "CPF");
+            String email = validarTexto(campoEmail.getText(), "Email");
+            String senha = validarTexto(campoSenha.getText(), "Senha");
             String tipo = comboTipo.getValue();
 
             if (tipo == null || tipo.isBlank()) {
@@ -138,30 +131,9 @@ public class UsuariosController extends BaseControllers<Usuario> {
                         "Selecione o tipo de usuário.");
             }
 
-            boolean ok;
-            if (idEmEdicao == null) {
-                Usuario novoUsuario;
-                int novoId = sistema.gerarProximoIdUsuario(); 
-                
-                if (tipo.equals(ADMIN)) {
-                    novoUsuario = new Administrador(novoId, nome, email, cpf, senha);
-                } else if (tipo.equals(FUNCIONARIO)) {
-                    novoUsuario = new Funcionario(novoId, nome, email, cpf, senha);
-                } else {
-                    novoUsuario = new Cliente(novoId, nome, email, cpf, senha);
-                }
-                ok = sistema.cadastrarUsuario(novoUsuario);
-            } else {
-                Usuario atual = sistema.buscarUsuario(idEmEdicao);
-                if (atual == null) throw new IllegalArgumentException("Usuário não encontrado.");
-                if (!podeGerenciar(atual)) throw new SecurityException("Funcionário só pode alterar clientes.");
-
-                Usuario donoDoEmail = sistema.buscarUsuarioPorEmail(email);
-                if (donoDoEmail != null && donoDoEmail.getId() != atual.getId()) {
-                    throw new IllegalArgumentException("Este e-mail já é usado por outro usuário.");
-                }
-                ok = sistema.atualizarUsuario(idEmEdicao, nome, email, senha);
-            }
+            boolean ok = idEmEdicao == null
+                    ? cadastrarNovoUsuario(nome, cpf, email, senha, tipo)
+                    : atualizarUsuarioExistente(nome, email, senha);
 
             concluirSalvamento(ok, "Usuário salvo com sucesso.");
         });
