@@ -3,7 +3,6 @@ package apresentacao.controllers;
 import apresentacao.base.*;
 import entidades.Administrador;
 import entidades.Cliente;
-import entidades.Fornecedor;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
