@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class FornecedoresController extends BaseControllers<Fornecedor> {
 
-    private static final Pattern CNPJ = Pattern.compile("[A-Z0-9]{2}\\.[A-Z0-9]{3}\\.[A-Z0-9]{3}/[A-Z0-9]{4}-[A-Z0-9]{2}");
+    private static final Pattern FORMATO_CNPJ = Pattern.compile("[A-Z0-9]{2}\\.[A-Z0-9]{3}\\.[A-Z0-9]{3}/[A-Z0-9]{4}-[A-Z0-9]{2}");
     private static final Pattern CELULAR = Pattern.compile("\\(\\d{2}\\) 9 \\d{4}-\\d{4}");
     private static final Pattern FIXO = Pattern.compile("\\(\\d{2}\\) \\d{4}-\\d{4}");
 
@@ -94,7 +94,7 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
             final boolean sucesso;
             if (idEmEdicao == null) {
                 String documento = validarTexto(cnpj.getText(), "CNPJ").toUpperCase(Locale.ROOT);
-                if (!CNPJ.matcher(documento).matches())
+                if (!FORMATO_CNPJ.matcher(documento).matches())
                     throw new IllegalArgumentException("CNPJ: use XX.XXX.XXX/XXXX-XX.");
                 sucesso = sistema.cadastrarFornecedor(
                         new Fornecedor(sistema.gerarProximoIdFornecedor(), nome, documento, mail, phone));

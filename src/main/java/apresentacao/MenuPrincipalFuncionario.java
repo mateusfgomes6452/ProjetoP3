@@ -9,7 +9,7 @@ import facade.SistemaFacade;
 public class MenuPrincipalFuncionario {
 
     private SistemaFacade sistema;
-    private Funcionario funcionario;
+    private final Funcionario funcionario;
     private final Scanner scanner;
 
     public MenuPrincipalFuncionario(SistemaFacade sistema, Funcionario funcionario, Scanner scanner) {

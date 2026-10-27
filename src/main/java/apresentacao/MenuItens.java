@@ -11,7 +11,7 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuItens {
 
-    private SistemaFacade sistema;
+    private final SistemaFacade sistema;
     private Scanner scanner;
     private static final String ID_DO_ITEM = "ID do item: ";
 
