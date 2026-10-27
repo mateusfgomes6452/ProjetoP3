@@ -8,7 +8,7 @@ import repositories.IFornecedorRepositorio;
 
 public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
-    private IFornecedorRepositorio repositorio;
+    private final IFornecedorRepositorio repositorio;
 
     public GerenciamentoFornecedor(IFornecedorRepositorio repositorio) {
         this.repositorio = repositorio;
