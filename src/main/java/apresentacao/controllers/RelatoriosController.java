@@ -125,6 +125,28 @@ public final class RelatoriosController extends BaseControllersRelatorios implem
 
     
     @FXML
+    private void abrirUsuarios() {
+        executar("abrir usuários", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "UsuariosAdministrador"
+                    : "UsuariosFuncionario");
+        });
+    }
+
+    @FXML
+    private void abrirContratos() {
+        executar("abrir contratos", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "ContratosAdministrador"
+                    : "ContratosFuncionario");
+        });
+    }
+    
+    @FXML
     private void abrirItens() {
         executar("abrir itens", () -> {
             exigirSessao();
