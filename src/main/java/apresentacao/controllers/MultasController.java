@@ -193,8 +193,6 @@ public final class MultasController implements Navegacao.ControladorComSessao {
     private void adicionarMultasManuais(List<LinhaMulta> linhas,
                                        Map<Integer, ContratoAluguel> contratosPorId) {
         for (Multa multa : sistema.listarMultas()) {
-            // A referência ao contrato é mantida mesmo se o contrato não estiver disponível
-            // Só operadores acessam registros manuais, não é expostos a clientes
             ContratoAluguel contrato = contratosPorId.get(multa.getIdContrato());
             if (contrato == null) {
                 LOG.warning(() -> "Contrato " + multa.getIdContrato()
@@ -210,12 +208,10 @@ public final class MultasController implements Navegacao.ControladorComSessao {
     private void adicionarMultasContratuais(List<LinhaMulta> linhas,
                                            List<ContratoAluguel> contratos) {
         for (ContratoAluguel contrato : contratos) {
-            if (usuario instanceof Cliente && !pertenceAoCliente(contrato)) {
-                continue;
-            }
-            if (contrato.getValorMulta() <= 0) {
-                continue;
-            }
+        	boolean deOutroCliente = usuario instanceof Cliente && !pertenceAoCliente(contrato);
+        	 if (deOutroCliente || contrato.getValorMulta() <= 0) {
+        	        continue;
+        	    }
             String nomeItem = contrato.getItem() == null
                     ? "" : " - " + contrato.getItem().getNome();
             linhas.add(new LinhaMulta(
