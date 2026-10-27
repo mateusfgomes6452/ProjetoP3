@@ -12,7 +12,7 @@ import facade.SistemaFacade;
 public class MenuItens {
 
     private final SistemaFacade sistema;
-    private Scanner scanner;
+    private final Scanner scanner;
     private static final String ID_DO_ITEM = "ID do item: ";
 
     public MenuItens(SistemaFacade sistema, Scanner scanner) {

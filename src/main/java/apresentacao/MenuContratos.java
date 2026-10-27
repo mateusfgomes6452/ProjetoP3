@@ -14,8 +14,8 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuContratos {
 
-    private SistemaFacade sistema;
-    private Scanner scanner;
+    private final SistemaFacade sistema;
+    private final Scanner scanner;
     private static final String CONTRATO_N_ENCONTRADO = "Contrato não encontrado";
 
     public MenuContratos(SistemaFacade sistema, Scanner scanner) {
