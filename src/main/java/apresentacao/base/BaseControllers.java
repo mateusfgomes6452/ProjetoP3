@@ -94,6 +94,38 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             throw new SecurityException("Sessão ausente ou sem permissão.");
         }
     }
+    
+    protected void iniciarNovo(String entidade, Runnable limpar) {
+        executar("abrir cadastro de " + entidade, () -> {
+            exigirSessao();
+            idEmEdicao = null;
+            tituloFormulario.setText("Cadastrar " + entidade);
+            limpar.run();
+            btnSalvar.setText("Cadastrar " + entidade);
+            exibirFormulario(true);
+        });
+    }
+
+    protected void iniciarEdicao(String entidade, Consumer<T> preencher) {
+        executar("editar " + entidade, () -> {
+            exigirSessao();
+            T registro = selecionado();
+            idEmEdicao = idDe(registro);
+            tituloFormulario.setText("Editar " + entidade + " #" + idEmEdicao);
+            preencher.accept(registro);
+            btnSalvar.setText("Salvar alterações");
+            exibirFormulario(true);
+        });
+    }
+
+    protected void concluirSalvamento(boolean ok, String mensagemSucesso) {
+        if (!ok) {
+            throw new IllegalArgumentException("Operação não realizada. Verifique dados duplicados.");
+        }
+        cancelar();
+        atualizar();
+        alerta(Alert.AlertType.INFORMATION, "Sucesso", mensagemSucesso);
+    }
 
     @FXML
     protected void atualizar() {

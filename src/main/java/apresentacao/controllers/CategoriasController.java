@@ -41,53 +41,35 @@ public class CategoriasController extends BaseControllers<Categoria> {
 
     @FXML
     private void novo() {
-        executar("abrir cadastro de categoria", () -> {
-            exigirSessao();
-            idEmEdicao = null;
-            tituloFormulario.setText("Cadastrar categoria");
-            limparFormulario();
-            btnSalvar.setText("Cadastrar categoria");
-            exibirFormulario(true);
-        });
+        iniciarNovo("categoria", this::limparFormulario);
     }
 
     @FXML
     private void editar() {
-        executar("editar item", () -> {
-            exigirSessao();
-            Categoria c = selecionado();
-            idEmEdicao = c.getId();
-            tituloFormulario.setText("Editar categoria #" + c.getId());
+        iniciarEdicao("categoria", c -> {
             campoNome.setText(c.getNome());
             campoDescricao.setText(c.getDescricao());
-            btnSalvar.setText("Salvar alterações");
-            exibirFormulario(true);
         });
     }
 
     @FXML
     private void salvar() {
-        executar("salvar item", () -> {
+        executar("salvar categoria", () -> {
             exigirSessao();
             String nome = validarTexto(campoNome.getText(), "Nome");
             String descricao = validarTexto(campoDescricao.getText(), "Descrição");
 
-            Categoria categoria = (idEmEdicao == null)
-                    ? new Categoria(sistema.gerarProximoIdItem(), nome, descricao)
-                    : sistema.buscarCategoria(idEmEdicao);
-            if (categoria == null) throw new IllegalArgumentException("Categoria não encontrado.");
-
-            if (idEmEdicao != null) {
+            boolean ok;
+            if (idEmEdicao == null) {
+                ok = sistema.cadastrarCategoria(new Categoria(sistema.gerarProximoIdCategoria(), nome, descricao));
+            } else {
+                Categoria categoria = sistema.buscarCategoria(idEmEdicao);
+                if (categoria == null) throw new IllegalArgumentException("Categoria não encontrada.");
                 categoria.setNome(nome);
                 categoria.setDescricao(descricao);
+                ok = sistema.atualizarCategoria(categoria);
             }
-
-            boolean ok = (idEmEdicao == null) ? sistema.cadastrarCategoria(categoria) : sistema.atualizarCategoria(categoria);
-            if (!ok) throw new IllegalArgumentException("Operação não realizada. Verifique dados duplicados.");
-
-            cancelar();
-            atualizar();
-            alerta(Alert.AlertType.INFORMATION, "Sucesso", "Categoria salva com sucesso.");
+            concluirSalvamento(ok, "Categoria salva com sucesso.");
         });
     }
 

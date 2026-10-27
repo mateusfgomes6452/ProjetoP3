@@ -75,34 +75,19 @@ public class UsuariosController extends BaseControllers<Usuario> {
 
     @FXML
     private void novo() {
-        executar("abrir cadastro de usuario", () -> {
-            exigirSessao();
-            idEmEdicao = null;
-            tituloFormulario.setText("Cadastrar usuário");
-            limparFormulario();
-            btnSalvar.setText("Cadastrar usuário");
-            exibirFormulario(true);
-        });
+        iniciarNovo("usuário", this::limparFormulario);
     }
 
     @FXML
     private void editar() {
-        executar("editar usuário", () -> {
-            exigirSessao();
-            Usuario u = selecionado();
-            idEmEdicao = u.getId();
-            tituloFormulario.setText("Editar usuário #" + u.getId());
+        iniciarEdicao("usuário", u -> {
             campoNome.setText(u.getNome());
             campoCPF.setText(String.valueOf(u.getCpf()));
             campoEmail.setText(u.getEmail());
             campoSenha.setText(u.getSenha());
-            
             if (u instanceof Administrador) comboTipo.setValue(ADMIN);
             else if (u instanceof Funcionario) comboTipo.setValue(FUNCIONARIO);
-            else comboTipo.setValue("Cliente");
-
-            btnSalvar.setText("Salvar alterações");
-            exibirFormulario(true);
+            else comboTipo.setValue(CLIENTE);
         });
     }
 
@@ -141,11 +126,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
                 ok = sistema.atualizarUsuario(idEmEdicao, nome, email, senha);
             }
 
-            if (!ok) throw new IllegalArgumentException("Não foi possível salvar o usuário. Verifique dados duplicados.");
-
-            cancelar();
-            atualizar();
-            alerta(Alert.AlertType.INFORMATION, "Sucesso", "Usuário salvo com sucesso.");
+            concluirSalvamento(ok, "Usuário salvo com sucesso.");
         });
     }
 
