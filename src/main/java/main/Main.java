@@ -1,8 +1,7 @@
 package main;
 
-import java.util.Scanner;
+import java.io.IOException;
 
-import apresentacao.MenuLogin;
 import business.cruds.GerenciamentoCategoria;
 import business.cruds.GerenciamentoContratos;
 import business.cruds.GerenciamentoFornecedor;
@@ -15,6 +14,11 @@ import business.interfaces.IGerenciamentoUsuarios;
 import business.relatorios.GeradorRelatorios;
 import entidades.Administrador;
 import facade.SistemaFacade;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import repositories.CategoriaRepositorio;
 import repositories.ContratoRepositorio;
 import repositories.FornecedorRepositorio;
@@ -22,11 +26,21 @@ import repositories.ItemRepositorio;
 import repositories.MultaRepositorio;
 import repositories.UsuarioRepositorio;
 
-public class Main {
+public class Main extends Application {
 
     private static final String EMAIL_PADRAO = "jacksonmepassaporfavor@loja.com";
 
-    public static SistemaFacade criarSistema() {
+    @Override
+    public void start(Stage palco) throws IOException {
+        criarSistema();
+
+        Parent raiz = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
+        palco.setTitle("Loja que Aluga de Tudo");
+        palco.setScene(new Scene(raiz));
+        palco.show();
+    }
+
+    static SistemaFacade criarSistema() {
         UsuarioRepositorio usuarios = new UsuarioRepositorio();
         CategoriaRepositorio categorias = new CategoriaRepositorio();
         FornecedorRepositorio fornecedores = new FornecedorRepositorio();
@@ -53,8 +67,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            new MenuLogin(criarSistema(), scanner).exibir();
-        }
+        launch(args);
     }
 }
