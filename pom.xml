@@ -38,6 +38,13 @@
 
     <dependencies>
 
+        <!-- Geração de relatórios PDF -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+
         <!-- JavaFX (interface gráfica) -->
         <dependency>
             <groupId>org.openjfx</groupId>
