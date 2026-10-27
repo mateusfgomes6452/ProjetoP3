@@ -36,7 +36,9 @@ public class CategoriasController extends BaseControllers<Categoria> {
     @Override protected int idDe(Categoria c) { return c.getId(); }
     @Override protected String nomeDe(Categoria c) { return c.getNome(); }
     @Override protected String descricaoDe(Categoria c) { return c.getDescricao(); }
-    @Override protected boolean desativarRegistro(Categoria c) { return sistema.excluirItem(c.getId()); }
+    @Override protected boolean desativarRegistro(Categoria c) {
+        return sistema.desativarCategoria(c.getId());
+    }
     @Override protected String nomeEntidade() { return "categoria"; }
 
     @FXML
