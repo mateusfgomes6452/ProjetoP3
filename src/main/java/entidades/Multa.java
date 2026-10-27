@@ -2,9 +2,9 @@ package entidades;
 
 public class Multa {
 
-    private int id;
-    private int idContrato;
-    private String tipo;       
+    private final int id;
+    private final int idContrato;
+    private final String tipo;       
     private final String descricao;
     private double valor;
     private boolean paga;
