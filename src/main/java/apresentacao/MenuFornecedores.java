@@ -11,7 +11,7 @@ public class MenuFornecedores {
 
     private static final String MENSAGEM_ID_FORNECEDOR = "ID do fornecedor: ";
     private final SistemaFacade sistema;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public MenuFornecedores(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
