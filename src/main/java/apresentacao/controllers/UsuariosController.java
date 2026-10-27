@@ -25,7 +25,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
     private static final String FUNCIONARIO = "Funcionário";
     private static final String CLIENTE = "Cliente";
     private static final Pattern EMAIL_LOJA = Pattern.compile(
-            "[A-Za-z0-9._%+-]+@loja\\.com", Pattern.CASE_INSENSITIVE);
+        "[\\w.%+-]+@loja\\.com", Pattern.CASE_INSENSITIVE);
     private static final Pattern FORMATO_CPF = Pattern.compile(
             "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
 
