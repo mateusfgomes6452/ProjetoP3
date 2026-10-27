@@ -478,6 +478,39 @@ public final class MultasController implements Navegacao.ControladorComSessao {
         });
     }
 
+    @FXML private void abrirItensDisponiveis() { navegarCliente("ItensClientes"); }
+    @FXML private void abrirMeusAlugueis()     { navegarCliente("MeusAlugueisClientes"); }
+    @FXML private void abrirHistorico()        { navegarCliente("HistoricoClientes"); }
+
+   
+    private void navegarCliente(String tela) {
+        executar("abrir " + tela, () -> {
+            exigirSessao();
+            if (!(usuario instanceof Cliente)) {
+                throw new SecurityException("Tela exclusiva de clientes.");
+            }
+            navegacao.accept(tela);
+        });
+    }
+    @FXML
+    private void abrirContratos() {
+        executar("abrir contratos", () -> {
+            exigirOperador();
+            navegacao.accept(usuario instanceof Administrador
+                    ? "ContratosAdministrador"
+                    : "ContratosFuncionario");
+        });
+    }
+
+    @FXML
+    private void abrirUsuarios() {
+        executar("abrir usuários", () -> {
+            exigirOperador();
+            navegacao.accept(usuario instanceof Administrador
+                    ? "UsuariosAdministrador"
+                    : "UsuariosFuncionario");
+        });
+    }
 
     @FXML private void abrirMultas() { atualizar(); }
 
