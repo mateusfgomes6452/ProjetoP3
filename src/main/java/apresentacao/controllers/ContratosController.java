@@ -542,8 +542,12 @@ public final class ContratosController implements Navegacao.ControladorComSessao
     @FXML private void abrirFornecedores() { abrirTela("FornecedoresAdministrador", "FornecedoresFunccionarios"); }
     @FXML private void abrirMultas()       { abrirTela("Multasadministrador", "MultasFuncionario"); }
     @FXML private void abrirRelatorios()   { abrirTela("RelatoriosAdministrador", "RelatoriosFuncionario"); }
-    @FXML private void abrirUsuarios()     { emConstrucao(); }   // a tela de usuários ainda não existe
+
+    @FXML private void abrirUsuarios() {abrirTela("UsuariosAdministrador", "UsuariosFuncionario");}
+
     @FXML private void encerrarSessao()    { executar("encerrar sessão", () -> sair.run()); }
+    @FXML private void abrirContratos() { atualizar(); }
+
 
     //Pede a navegação para trocar de tela
     private void abrirTela(String telaAdministrador, String telaFuncionario) {
