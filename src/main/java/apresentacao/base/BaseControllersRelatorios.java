@@ -10,6 +10,16 @@ import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+
+import apresentacao.controllers.PreviaPdfController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public abstract class BaseControllersRelatorios {
 
@@ -27,6 +37,26 @@ public abstract class BaseControllersRelatorios {
         if (sistema == null || usuario == null || !usuario.isAtivo()
                 || !(usuario instanceof Administrador || usuario instanceof Funcionario)) {
             throw new SecurityException("Sessão ausente ou sem permissão para relatórios.");
+        }
+    }
+    
+    protected final void mostrarPreviaSeAdministrador(String titulo, String nomeArquivo) {
+        if (!(usuario instanceof Administrador)) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PreviaPdf.fxml"));
+            Parent raiz = loader.load();
+            PreviaPdfController previa = loader.getController();
+            previa.mostrar(titulo, new File("relatorios", nomeArquivo));
+
+            Stage janela = new Stage();
+            janela.setTitle("Prévia - " + titulo);
+            janela.initModality(Modality.APPLICATION_MODAL);   // trava a tela de trás até fechar
+            janela.setScene(new Scene(raiz));
+            janela.showAndWait();
+        } catch (IOException e) {
+            throw new UncheckedIOException("Não foi possível abrir a prévia do PDF.", e);
         }
     }
 

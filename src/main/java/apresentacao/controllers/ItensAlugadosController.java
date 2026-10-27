@@ -128,6 +128,7 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
             }
             sistema.exportarItensAlugados(visiveis.stream().toList());
             Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_alugados.csv");
+        	mostrarPreviaSeAdministrador("Itens alugados", "itens_alugados.pdf");
         });
     }
 
@@ -140,6 +141,7 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
             }
             sistema.exportarPdfItensAlugados(visiveis.stream().toList());
             Mensagens.sucesso(lblAviso, "PDF salvo em relatorios/itens_alugados.pdf");
+        	mostrarPreviaSeAdministrador("Itens alugados", "itens_alugados.pdf");
         });
     }
 

@@ -125,6 +125,7 @@ public final class HistoricoClienteController extends BaseControllersRelatorios 
             }
             sistema.exportarHistoricoCliente(List.copyOf(contratos));
             Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/historico_cliente.csv");
+            mostrarPreviaSeAdministrador("Histórico do cliente", "historico_cliente.pdf");
         });
     }
 

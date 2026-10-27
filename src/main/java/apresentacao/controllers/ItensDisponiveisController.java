@@ -92,6 +92,7 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
             }
             sistema.exportarItensDisponiveis(List.copyOf(visiveis));
             Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/itens_disponiveis.csv");
+            mostrarPreviaSeAdministrador("Itens disponíveis", "itens_disponiveis.pdf");
         });
     }
 

@@ -125,6 +125,7 @@ public final class FaturamentoController extends BaseControllersRelatorios {
             }
             sistema.exportarFaturamento(new ArrayList<>(contratos), inicioGerado.toString(), fimGerado.toString());
             Mensagens.sucesso(lblAviso, "CSV salvo em relatorios/faturamento.csv");
+            mostrarPreviaSeAdministrador("Faturamento", "faturamento.pdf");
         });
     }
 
@@ -137,6 +138,7 @@ public final class FaturamentoController extends BaseControllersRelatorios {
             }
             sistema.exportarPdfFaturamento(new ArrayList<>(contratos), inicioGerado.toString(), fimGerado.toString());
             Mensagens.sucesso(lblAviso, "PDF salvo em relatorios/faturamento.pdf");
+            mostrarPreviaSeAdministrador("Faturamento", "faturamento.pdf");
         });
     }
 
