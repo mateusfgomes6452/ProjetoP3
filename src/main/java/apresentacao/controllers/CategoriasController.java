@@ -19,6 +19,7 @@ public class CategoriasController extends BaseControllers<Categoria> {
 
     @FXML private TextField campoNome;
     @FXML private TextField campoDescricao;
+    private static final String ENTIDADE_CATEGORIA = "categoria";
 
     @FXML
     private void initialize() {
@@ -38,16 +39,16 @@ public class CategoriasController extends BaseControllers<Categoria> {
     @Override protected boolean desativarRegistro(Categoria c) {
         return sistema.desativarCategoria(c.getId());
     }
-    @Override protected String nomeEntidade() { return "categoria"; }
+    @Override protected String nomeEntidade() { return ENTIDADE_CATEGORIA; }
 
     @FXML
     private void novo() {
-        iniciarNovo("categoria", this::limparFormulario);
+        iniciarNovo(ENTIDADE_CATEGORIA, this::limparFormulario);
     }
 
     @FXML
     private void editar() {
-        iniciarEdicao("categoria", c -> {
+        iniciarEdicao(ENTIDADE_CATEGORIA, c -> {
             campoNome.setText(c.getNome());
             campoDescricao.setText(c.getDescricao());
         });
