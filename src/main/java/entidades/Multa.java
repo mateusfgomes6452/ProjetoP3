@@ -5,7 +5,7 @@ public class Multa {
     private int id;
     private int idContrato;
     private String tipo;       
-    private String descricao;
+    private final String descricao;
     private double valor;
     private boolean paga;
     private final String dataCriacao;
