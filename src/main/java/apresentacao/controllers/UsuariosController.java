@@ -1,4 +1,3 @@
-
 package apresentacao.controllers;
 
 import apresentacao.base.*;
@@ -18,12 +17,17 @@ import javafx.scene.control.TextField;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class UsuariosController extends BaseControllers<Usuario> {
 
     private static final String ADMIN = "Administrador";
     private static final String FUNCIONARIO = "Funcionário";
     private static final String CLIENTE = "Cliente";
+    private static final Pattern EMAIL_LOJA = Pattern.compile(
+            "[A-Za-z0-9._%+-]+@loja\\.com", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FORMATO_CPF = Pattern.compile(
+            "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
 
     @FXML private TableColumn<Usuario, Number> colId;
     @FXML private TableColumn<Usuario, String> colNome;
@@ -83,7 +87,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
             comboTipo.setDisable(true);
         }
     }
-    
+
     @Override protected List<Usuario> listarRegistros() {
         return sistema.listarUsuarios().stream().filter(this::podeGerenciar).toList();
     }
@@ -114,7 +118,6 @@ public class UsuariosController extends BaseControllers<Usuario> {
         });
     }
 
-    
     @FXML
     private void salvar() {
         executar("salvar usuario", () -> {
@@ -122,7 +125,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
 
             String nome = validarTexto(campoNome.getText(), "Nome");
             String cpf = validarTexto(campoCPF.getText(), "CPF");
-            String email = validarTexto(campoEmail.getText(), "Email");
+            String email = validarEmailLoja(validarTexto(campoEmail.getText(), "Email"));
             String senha = validarTexto(campoSenha.getText(), "Senha");
             String tipo = comboTipo.getValue();
 
@@ -145,6 +148,8 @@ public class UsuariosController extends BaseControllers<Usuario> {
             String email,
             String senha,
             String tipo) {
+
+        validarCpf(cpf);
 
         Usuario novoUsuario;
         int novoId = sistema.gerarProximoIdUsuario();
@@ -193,6 +198,41 @@ public class UsuariosController extends BaseControllers<Usuario> {
 
         return sistema.atualizarUsuario(
                 idEmEdicao, nome, email, senha);
+    }
+
+    private String validarEmailLoja(String email) {
+        if (!EMAIL_LOJA.matcher(email).matches()) {
+            throw new IllegalArgumentException(
+                    "E-mail inválido. Use um endereço @loja.com.");
+        }
+        return email;
+    }
+
+    private void validarCpf(String cpf) {
+        if (!FORMATO_CPF.matcher(cpf).matches()) {
+            throw new IllegalArgumentException(
+                    "CPF inválido. Use o formato 000.000.000-00.");
+        }
+
+        String digitos = cpf.replace(".", "").replace("-", "");
+        if (digitos.chars().distinct().count() == 1
+                || !digitoVerificadorValido(digitos, 9)
+                || !digitoVerificadorValido(digitos, 10)) {
+            throw new IllegalArgumentException(
+                    "CPF inválido. Confira os dígitos verificadores.");
+        }
+    }
+
+    private boolean digitoVerificadorValido(String digitos, int posicao) {
+        int soma = 0;
+        for (int i = 0; i < posicao; i++) {
+            soma += (digitos.charAt(i) - '0') * (posicao + 1 - i);
+        }
+        int esperado = (soma * 10) % 11;
+        if (esperado == 10) {
+            esperado = 0;
+        }
+        return esperado == digitos.charAt(posicao) - '0';
     }
 
     private void limparFormulario() {
