@@ -31,11 +31,6 @@ import com.lowagie.text.pdf.PdfWriter;
 import entidades.ContratoAluguel;
 import entidades.Item;
 
-/**
- * Gera os relatórios em PDF (pasta "relatorios", relativa ao diretório de execução).
- * Usa as mesmas listas que as telas e o CSV já recebem, sem reler arquivos.
- * Em caso de falha lança exceção de runtime, para a tela poder avisar o usuário.
- */
 public class SalvaRelatorioPdf {
 
     private static final String PASTA = "relatorios";
@@ -56,10 +51,6 @@ public class SalvaRelatorioPdf {
     private static final Font FONTE_CELULA = FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, Color.BLACK);
     private static final Font FONTE_RESUMO = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, Color.BLACK);
     private static final Font FONTE_RESUMO_NEGRITO = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, AZUL);
-
-    // ------------------------------------------------------------------
-    // Os quatro relatórios
-    // ------------------------------------------------------------------
 
     public void salvarItensDisponiveis(List<Item> itens) {
         List<Item> ordenados = new ArrayList<>(itens);
@@ -192,10 +183,6 @@ public class SalvaRelatorioPdf {
                 linhas, resumo);
     }
 
-    // ------------------------------------------------------------------
-    // Montagem do documento (igual para todos os relatórios)
-    // ------------------------------------------------------------------
-
     private void gerar(String nomeArquivo, String titulo, String subtitulo, String[] cabecalhos,
             float[] larguras, boolean[] alinhadoDireita, List<String[]> linhas, List<String[]> resumo) {
 
@@ -293,10 +280,7 @@ public class SalvaRelatorioPdf {
         return direita ? Element.ALIGN_RIGHT : Element.ALIGN_LEFT;
     }
 
-    // ------------------------------------------------------------------
-    // Formatação (padrão brasileiro; não depende das classes de apresentação)
-    // ------------------------------------------------------------------
-
+    
     private String nomeCategoria(Item item) {
         return item.getCategoria() == null ? "Sem categoria" : item.getCategoria().getNome();
     }
