@@ -19,7 +19,7 @@ public class MenuUsuarios {
     private static final String ID_USUARIO_B = "ID do usuário: ";
     private SistemaFacade sistema;
     private Scanner scanner;
-    private boolean acessoTotal;
+    private final boolean acessoTotal;
 
     public MenuUsuarios(SistemaFacade sistema, Scanner scanner, boolean acessoTotal) {
         this.sistema = sistema;
