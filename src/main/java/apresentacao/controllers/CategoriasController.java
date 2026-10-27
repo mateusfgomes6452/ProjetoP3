@@ -1,116 +1,81 @@
 package apresentacao.controllers;
 
-import java.util.List;
-
+import apresentacao.base.*;
 import entidades.Categoria;
-import facade.SistemaFacade;
-import facade.SistemaJavaFX;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 
-public class CategoriasController extends BaseControllersCRUD<Categoria> {
+import java.util.List;
 
-    @FXML private TextField campoNome;
-    @FXML private TextField campoDescricao;
+public class CategoriasController extends BaseControllers<Categoria> {
 
-    @FXML private TableColumn<Categoria, String> colId;
+    @FXML private TableColumn<Categoria, Number> colId;
     @FXML private TableColumn<Categoria, String> colNome;
     @FXML private TableColumn<Categoria, String> colDescricao;
     @FXML private TableColumn<Categoria, String> colStatus;
 
-    private final SistemaFacade sistema = SistemaJavaFX.getSistema();
-    private Categoria categoriaEmEdicao;
+    @FXML private TextField campoNome;
+    @FXML private TextField campoDescricao;
 
     @FXML
     private void initialize() {
-        colId.setCellValueFactory(l -> new SimpleStringProperty(String.valueOf(l.getValue().getId())));
-        colNome.setCellValueFactory(l -> new SimpleStringProperty(l.getValue().getNome()));
-        colDescricao.setCellValueFactory(l -> new SimpleStringProperty(l.getValue().getDescricao()));
-        colStatus.setCellValueFactory(l -> new SimpleStringProperty(l.getValue().isAtiva() ? "Ativo" : "Inativo"));
+        colId.setCellValueFactory(x -> new ReadOnlyIntegerWrapper(x.getValue().getId()));
+        colNome.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getNome()));
+        colDescricao.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getDescricao()));
+        colStatus.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().isAtiva() ? "Ativo" : "Inativo"));
+
         iniciarBase();
     }
 
-    @Override
-    protected List<Categoria> listar() {
-        return sistema.listarCategorias();
-    }
-
-    @Override
-    protected boolean estaAtivo(Categoria c) {
-        return c.isAtiva();
-    }
-
-    @Override
-    protected boolean combinaComBusca(Categoria c, String texto) {
-        return String.valueOf(c.getId()).equals(texto) || c.getNome().toLowerCase().contains(texto);
-    }
-
-    @Override
-    protected String nomeDe(Categoria c) {
-        return "a categoria " + c.getNome();
-    }
-
-    @Override
-    protected void desativarRegistro(Categoria c) {
-        sistema.desativarCategoria(c.getId());
-    }
+    @Override protected List<Categoria> listarRegistros() { return sistema.listarCategorias(); }
+    @Override protected boolean estaAtivo(Categoria c) { return c.isAtiva(); }
+    @Override protected int idDe(Categoria c) { return c.getId(); }
+    @Override protected String nomeDe(Categoria c) { return c.getNome(); }
+    @Override protected String descricaoDe(Categoria c) { return c.getDescricao(); }
+    @Override protected boolean desativarRegistro(Categoria c) { return sistema.excluirItem(c.getId()); }
+    @Override protected String nomeEntidade() { return "categoria"; }
 
     @FXML
     private void novo() {
-        categoriaEmEdicao = null;
-        campoNome.clear();
-        campoDescricao.clear();
-        abrirFormulario("Cadastrar categoria", "Salvar categoria");
+        iniciarNovo("categoria", this::limparFormulario);
     }
 
     @FXML
     private void editar() {
-        Categoria selecionada = selecionado("Selecione uma categoria na tabela.");
-        if (selecionada == null) {
-            return;
-        }
-        categoriaEmEdicao = selecionada;
-        campoNome.setText(selecionada.getNome());
-        campoDescricao.setText(selecionada.getDescricao());
-        abrirFormulario("Editar categoria", "Salvar alterações");
+        iniciarEdicao("categoria", c -> {
+            campoNome.setText(c.getNome());
+            campoDescricao.setText(c.getDescricao());
+        });
     }
 
     @FXML
     private void salvar() {
-    	String nome = campoNome.getText().trim();
-        String descricao = campoDescricao.getText().trim();
+        executar("salvar categoria", () -> {
+            exigirSessao();
+            String nome = validarTexto(campoNome.getText(), "Nome");
+            String descricao = validarTexto(campoDescricao.getText(), "Descrição");
 
-        boolean ok;
-        if (categoriaEmEdicao == null) {
-            ok = sistema.cadastrarCategoria(
-                    new Categoria(sistema.gerarProximoIdCategoria(), nome, descricao));
-        } else {
-            categoriaEmEdicao.setNome(nome);
-            categoriaEmEdicao.setDescricao(descricao);
-            ok = sistema.atualizarCategoria(categoriaEmEdicao);
-        }
-
-        if (!ok) {
-            aviso("Não foi possível salvar a categoria.");
-            return;
-        }
-        
-        if (nome.isEmpty()) {
-            aviso("Informe o nome da categoria.");
-            return;
-        }
-        
-        if (descricao.isEmpty()) {
-            aviso("Informe a descrição da categoria.");
-            return;
-        }
-        voltarParaLista();
+            boolean ok;
+            if (idEmEdicao == null) {
+                ok = sistema.cadastrarCategoria(new Categoria(sistema.gerarProximoIdCategoria(), nome, descricao));
+            } else {
+                Categoria categoria = sistema.buscarCategoria(idEmEdicao);
+                if (categoria == null) throw new IllegalArgumentException("Categoria não encontrada.");
+                categoria.setNome(nome);
+                categoria.setDescricao(descricao);
+                ok = sistema.atualizarCategoria(categoria);
+            }
+            concluirSalvamento(ok, "Categoria salva com sucesso.");
+        });
     }
 
-    @FXML
-    private void abrirCategorias() {
-        voltarParaLista();
+    private void limparFormulario() {
+        campoNome.clear();
+        campoDescricao.clear();
     }
+
 }

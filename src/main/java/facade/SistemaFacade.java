@@ -18,6 +18,15 @@ import entidades.Multa;
 import entidades.Usuario;
 
 public class SistemaFacade {
+	
+    private static SistemaFacade instancia;
+
+    public static SistemaFacade getSistema() {
+        if (instancia == null) {
+            throw new IllegalStateException("SistemaFacade não foi inicializado! Certifique-se de instanciá-lo na classe principal.");
+        }
+        return instancia;
+    }
 
     private IGerenciamentoUsuarios   gerenciamentoUsuarios;
     private IGerenciamentoContratos  gerenciamentoContratos;
@@ -43,6 +52,8 @@ public class SistemaFacade {
         this.gerenciamentoFornecedor = gerenciamentoFornecedor;
         this.gerenciamentoMultas     = gerenciamentoMultas;
         this.geradorRelatorios       = geradorRelatorios;
+        
+        instancia = this;
     }
 
     // =========================================================================
@@ -124,7 +135,6 @@ public class SistemaFacade {
     }
     public double calcularMulta(long diasAtraso, double taxaDiaria){
         return gerenciamentoContratos.calcularMulta(diasAtraso, taxaDiaria);
-
     }
 
     // =========================================================================

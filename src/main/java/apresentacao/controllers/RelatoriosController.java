@@ -1,20 +1,38 @@
 package apresentacao.controllers;
 
+import apresentacao.navegacao.Navegacao;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.function.Consumer;
 
+import apresentacao.base.BaseControllersRelatorios;
+import entidades.Administrador;
+import entidades.Administrador;
+import entidades.Usuario;
+import facade.SistemaFacade;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Label;
 
 /**
- * Controller de Relatorios.fxml: menu lateral, título e as 4 abas.
- * Cada aba é um arquivo FXML próprio (fx:include) com o seu controller:
+ * Controller das telas RelatoriosAdministrador.fxml e RelatoriosFuncionario.fxml:
+ * menu lateral, título e as 4 abas. Segue o mesmo padrão de FornecedoresController e MultasController:
+ * recebe tudo por {@link #configurar}, valida a sessão e navega pelos callbacks.
+ *
+ * Cada aba é um FXML próprio (fx:include) com o seu controller, configurado aqui:
  * ItensDisponiveisController, HistoricoClienteController, ItensAlugadosController e FaturamentoController.
  */
-public class RelatoriosController {
+public final class RelatoriosController extends BaseControllersRelatorios implements Navegacao.ControladorComSessao {
 
-    @FXML private BorderPane raiz;
+    private Consumer<String> navegacao;
+    private Runnable sair;
+    private Runnable recarregarAbaAtiva = () -> { };
+
+    @FXML private Label lblPerfil;
+    @FXML private Label lblNomeUsuario;
+    @FXML private Label lblAvatar;
 
     @FXML private Button btnAbaItens;
     @FXML private Button btnAbaHistorico;
@@ -33,36 +51,63 @@ public class RelatoriosController {
 
     @FXML
     private void initialize() {
-        mostrarAba(btnAbaItens, abaItens);
+        mostrarAba(btnAbaItens, abaItens, () -> abaItensController.atualizar());
+    }
+
+    @Override
+    public void configurar(SistemaFacade sistema, Usuario usuario, Consumer<String> navegacao, Runnable sair) {
+        iniciarSessao(sistema, usuario);
+        this.navegacao = Objects.requireNonNull(navegacao, "Callback de navegação é obrigatório");
+        this.sair = Objects.requireNonNull(sair, "Callback de saída é obrigatório");
+        lblPerfil.setText(usuario.getTipo());
+        lblNomeUsuario.setText(usuario.getNome());
+        lblAvatar.setText(usuario.getNome().isBlank() ? "U" : usuario.getNome().substring(0, 1).toUpperCase(Locale.ROOT));
+
+        abaItensController.configurar(sistema, usuario);
+        abaHistoricoController.configurar(sistema, usuario);
+        abaAlugadosController.configurar(sistema, usuario);
+        abaFaturamentoController.configurar(sistema, usuario);
     }
 
     // ---------- abas ----------
 
     @FXML
     private void abrirAbaItens() {
-        abaItensController.atualizar();
-        mostrarAba(btnAbaItens, abaItens);
+        executar("abrir itens disponíveis", () -> {
+            exigirSessao();
+            abaItensController.atualizar();
+            mostrarAba(btnAbaItens, abaItens, () -> abaItensController.atualizar());
+        });
     }
 
     @FXML
     private void abrirAbaHistorico() {
-        abaHistoricoController.atualizar();
-        mostrarAba(btnAbaHistorico, abaHistorico);
+        executar("abrir histórico do cliente", () -> {
+            exigirSessao();
+            abaHistoricoController.atualizar();
+            mostrarAba(btnAbaHistorico, abaHistorico, () -> abaHistoricoController.atualizar());
+        });
     }
 
     @FXML
     private void abrirAbaAlugados() {
-        abaAlugadosController.atualizar();
-        mostrarAba(btnAbaAlugados, abaAlugados);
+        executar("abrir itens alugados", () -> {
+            exigirSessao();
+            abaAlugadosController.atualizar();
+            mostrarAba(btnAbaAlugados, abaAlugados, () -> abaAlugadosController.atualizar());
+        });
     }
 
     @FXML
     private void abrirAbaFaturamento() {
-        abaFaturamentoController.atualizar();
-        mostrarAba(btnAbaFaturamento, abaFaturamento);
+        executar("abrir faturamento", () -> {
+            exigirSessao();
+            abaFaturamentoController.atualizar();
+            mostrarAba(btnAbaFaturamento, abaFaturamento, () -> abaFaturamentoController.atualizar());
+        });
     }
 
-    private void mostrarAba(Button botaoAtivo, Node abaAtiva) {
+    private void mostrarAba(Button botaoAtivo, Node abaAtiva, Runnable recarregar) {
         for (Button botao : List.of(btnAbaItens, btnAbaHistorico, btnAbaAlugados, btnAbaFaturamento)) {
             botao.getStyleClass().remove("filter-active");
         }
@@ -73,22 +118,65 @@ public class RelatoriosController {
             aba.setVisible(ativa);
             aba.setManaged(ativa);
         }
+        recarregarAbaAtiva = recarregar;
     }
 
     // ---------- menu lateral ----------
 
+    
+    @FXML
+    private void abrirItens() {
+        executar("abrir itens", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "ItensAdministrador"
+                    : "ItensFuncionario");
+        });
+    }
+
+    @FXML
+    private void abrirCategorias() {
+        executar("abrir categorias", () -> {
+            exigirSessao();
+
+            navegacao.accept(usuario instanceof Administrador
+                    ? "CategoriasAdministrador"
+                    : "CategoriasFuncionarios");
+        });
+    }
+
+    @FXML
+    private void abrirRelatorios() {
+        executar("atualizar relatórios", () -> {
+            exigirSessao();
+            recarregarAbaAtiva.run();
+        });
+    }
+
     @FXML
     private void abrirFornecedores() {
-        Navegacao.irPara(raiz, "/fxml/FornecedoresAdministrador.fxml");
+        executar("abrir fornecedores", () -> {
+            exigirSessao();
+            navegacao.accept(usuario instanceof Administrador ? "FornecedoresAdministrador" : "FornecedoresFunccionarios");
+        });
     }
 
     @FXML
     private void abrirMultas() {
-        Navegacao.irPara(raiz, "/fxml/Multas.fxml");
+        executar("abrir multas", () -> {
+            exigirSessao();
+            navegacao.accept(usuario instanceof Administrador
+                    ? "Multasadministrador"
+                    : "MultasFuncionario");
+        });
     }
 
     @FXML
     private void encerrarSessao() {
-        Navegacao.sair();
+        executar("encerrar sessão", () -> {
+            exigirSessao();
+            sair.run();
+        });
     }
 }

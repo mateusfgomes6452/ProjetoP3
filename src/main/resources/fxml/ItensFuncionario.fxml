@@ -27,15 +27,36 @@
       <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
       <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
       <VBox spacing="5">
-        <Label fx:id="lblPerfil" styleClass="role-label" text="FUNCIONÁRIO" />
+        <Label fx:id="lblPerfil" styleClass="role-label" text="FUNCIONÁRIOS" />
         <Region prefHeight="8" />
-     	<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Contratos" />
-     	<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirItens" styleClass="nav-item, nav-selected" text="Itens" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="#abrirCategorias" text="Categorias" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Fornecedores" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Usuários" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Multas" />
-		<Button alignment="TOP_LEFT" maxWidth="Infinity" styleClass="nav-item" text="Relatórios" />
+        <Button text="Usuários"
+                onAction="#abrirUsuarios"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Itens"
+                onAction="#abrirItens"
+                maxWidth="Infinity"
+                styleClass="nav-item, nav-selected"/>
+        <Button text="Categorias"
+                onAction="#abrirCategorias"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Fornecedores"
+                onAction="#abrirFornecedores"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Contratos"
+                disable="true"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Multas"
+                onAction="#abrirMultas"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Relatórios"
+                onAction="#abrirRelatorios"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />
@@ -56,15 +77,15 @@
           <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
 
           <HBox alignment="CENTER_LEFT">
-            <VBox prefHeight="104.0" prefWidth="224.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="ITENS CADASTRADOS" />
               <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
             </VBox>
-            <VBox prefHeight="104.0" prefWidth="311.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="ITENS ATIVOS" />
               <Label fx:id="lblAtivos" styleClass="stat-value" text="0" />
             </VBox>
-            <VBox prefHeight="104.0" prefWidth="235.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="ITENS INATIVOS" />
               <Label fx:id="lblInativos" styleClass="stat-value" text="0" />
             </VBox>
@@ -93,16 +114,6 @@
               <ComboBox fx:id="comboFornecedor" maxWidth="Infinity" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
               <Label styleClass="field-label" text="Valor de reposição *" GridPane.columnIndex="0" GridPane.rowIndex="6" />
               <TextField fx:id="campoReposicao" promptText="Ex.: 300.00" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
             </GridPane>
             <HBox alignment="CENTER_RIGHT" spacing="9">
               <Button onAction="#cancelar" styleClass="secondary-button" text="Cancelar" />
