@@ -8,7 +8,7 @@ import entidades.Multa;
 
 public class MultaRepositorio implements IMultaRepositorio {
 
-    private String arquivo = "dados/multas.csv";
+    private final String arquivo = "dados/multas.csv";
 
     private final List<Multa> multas;
     private final ManipulaArquivo manipulaArquivo;
