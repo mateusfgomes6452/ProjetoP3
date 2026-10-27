@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 
@@ -107,7 +108,7 @@ public final class MeusAlugueisClientesController extends BaseContratosCliente {
         if (!sistema.contratoEstaAtrasado(c)) {
             return 0;
         }
-        return ChronoUnit.DAYS.between(LocalDate.parse(c.getDataDevolucaoPrevista()), LocalDate.now());
+        return ChronoUnit.DAYS.between(LocalDate.parse(c.getDataDevolucaoPrevista()), LocalDate.now(ZoneId.systemDefault()));
     }
 
     
