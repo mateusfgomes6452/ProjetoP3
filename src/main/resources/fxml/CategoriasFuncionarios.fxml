@@ -27,28 +27,36 @@
       <padding><Insets bottom="22" left="16" right="16" top="27" /></padding>
       <ImageView fitWidth="192" preserveRatio="true" smooth="true"><image><Image url="@../imagens/logo-loja.png" /></image></ImageView>
       <VBox spacing="5">
-        <Label fx:id="lblPerfil" styleClass="role-label" text="FUNCIONÁRIO" />
+        <Label fx:id="lblPerfil" styleClass="role-label" text="FUNCIONÁRIOS" />
         <Region prefHeight="8" />
-        <Button text="Contratos" disable="true"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Itens" onAction="#abrirItens"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Categorias" onAction="#abrirCategorias"
-                maxWidth="Infinity" styleClass="nav-item, nav-selected"/>
-
-        <Button text="Fornecedores" onAction="#abrirFornecedores"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Usuários" disable="true"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Multas" onAction="#abrirMultas"
-                maxWidth="Infinity" styleClass="nav-item"/>
-
-        <Button text="Relatórios" onAction="#abrirRelatorios"
-                maxWidth="Infinity" styleClass="nav-item"/>
+        <Button text="Usuários"
+                onAction="#abrirUsuarios"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Itens"
+                onAction="#abrirItens"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Categorias"
+                onAction="#abrirCategorias"
+                maxWidth="Infinity"
+                styleClass="nav-item, nav-selected"/>
+        <Button text="Fornecedores"
+                onAction="#abrirFornecedores"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Contratos"
+                disable="true"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Multas"
+                onAction="#abrirMultas"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Relatórios"
+                onAction="#abrirRelatorios"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />
@@ -69,15 +77,15 @@
           <padding><Insets bottom="34" left="35" right="35" top="32" /></padding>
 
           <HBox alignment="CENTER_LEFT">
-            <VBox prefHeight="104.0" prefWidth="224.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="CATEGORIAS CADASTRADOS" />
               <Label fx:id="lblTotal" styleClass="stat-value" text="0" />
             </VBox>
-            <VBox prefHeight="104.0" prefWidth="282.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="CATEGORIAS ATIVAS" />
               <Label fx:id="lblAtivos" styleClass="stat-value" text="0" />
             </VBox>
-            <VBox prefHeight="104.0" prefWidth="235.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="104.0" prefWidth="250.0" spacing="9" styleClass="stat-card" HBox.hgrow="ALWAYS">
               <Label styleClass="stat-caption" text="CATEGORIAS INATIVAS" />
               <Label fx:id="lblInativos" styleClass="stat-value" text="0" />
             </VBox>
@@ -89,8 +97,7 @@
             <Label fx:id="tituloFormulario" styleClass="section-title" text="Cadastrar categoria" />
             <GridPane hgap="16" vgap="10">
               <columnConstraints>
-                <ColumnConstraints percentWidth="50" />
-                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="100" />
               </columnConstraints>
               <Label styleClass="field-label" text="Nome *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
               <TextField fx:id="campoNome" styleClass="input-field" GridPane.columnIndex="0" GridPane.rowIndex="1" />

@@ -94,6 +94,38 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             throw new SecurityException("Sessão ausente ou sem permissão.");
         }
     }
+    
+    protected void iniciarNovo(String entidade, Runnable limpar) {
+        executar("abrir cadastro de " + entidade, () -> {
+            exigirSessao();
+            idEmEdicao = null;
+            tituloFormulario.setText("Cadastrar " + entidade);
+            limpar.run();
+            btnSalvar.setText("Cadastrar " + entidade);
+            exibirFormulario(true);
+        });
+    }
+
+    protected void iniciarEdicao(String entidade, Consumer<T> preencher) {
+        executar("editar " + entidade, () -> {
+            exigirSessao();
+            T registro = selecionado();
+            idEmEdicao = idDe(registro);
+            tituloFormulario.setText("Editar " + entidade + " #" + idEmEdicao);
+            preencher.accept(registro);
+            btnSalvar.setText("Salvar alterações");
+            exibirFormulario(true);
+        });
+    }
+
+    protected void concluirSalvamento(boolean ok, String mensagemSucesso) {
+        if (!ok) {
+            throw new IllegalArgumentException("Operação não realizada. Verifique dados duplicados.");
+        }
+        cancelar();
+        atualizar();
+        alerta(Alert.AlertType.INFORMATION, "Sucesso", mensagemSucesso);
+    }
 
     @FXML
     protected void atualizar() {
@@ -192,15 +224,13 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         return limpo;
     }
 
-    @FXML
-    private void abrirFornecedores() {
-        executar("navegar para fornecedores", () -> {
-            exigirSessao();
-
-            if (usuario instanceof Administrador) {
-                navegacao.accept("FornecedoresAdministrador");
+    @FXML private void abrirUsuarios() {
+    	executar("navegar para usuarios", () -> { 
+            exigirSessao(); 
+            if (usuario instanceof entidades.Administrador) {
+                navegacao.accept("UsuariosAdministrador"); 
             } else {
-                navegacao.accept("FornecedoresFunccionarios");
+                navegacao.accept("UsuariosFuncionario"); 
             }
         });
     }
@@ -229,6 +259,19 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         });
     }
 
+    @FXML
+    private void abrirFornecedores() {
+        executar("navegar para fornecedores", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("FornecedoresAdministrador");
+            } else {
+                navegacao.accept("FornecedoresFunccionarios");
+            }
+        });
+    }
+    
     @FXML
     protected void abrirMultas() {
         executar("navegar para multas", () -> {

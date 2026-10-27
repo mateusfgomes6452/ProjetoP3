@@ -30,34 +30,29 @@
         <Label fx:id="lblPerfil" styleClass="role-label" text="FUNCIONÁRIOS" />
         <Region prefHeight="8" />
         <Button text="Usuários"
-                disable="true"
+                onAction="#abrirUsuarios"
                 maxWidth="Infinity"
                 styleClass="nav-item"/>
         <Button text="Itens"
                 onAction="#abrirItens"
                 maxWidth="Infinity"
                 styleClass="nav-item, nav-selected"/>
-
         <Button text="Categorias"
                 onAction="#abrirCategorias"
                 maxWidth="Infinity"
                 styleClass="nav-item"/>
-
         <Button text="Fornecedores"
                 onAction="#abrirFornecedores"
                 maxWidth="Infinity"
                 styleClass="nav-item"/>
-
         <Button text="Contratos"
                 disable="true"
                 maxWidth="Infinity"
                 styleClass="nav-item"/>
-
         <Button text="Multas"
                 onAction="#abrirMultas"
                 maxWidth="Infinity"
                 styleClass="nav-item"/>
-
         <Button text="Relatórios"
                 onAction="#abrirRelatorios"
                 maxWidth="Infinity"

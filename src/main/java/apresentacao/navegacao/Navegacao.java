@@ -13,7 +13,6 @@ import javafx.stage.Window;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import apresentacao.base.BaseControllers;
 
 public final class Navegacao {
