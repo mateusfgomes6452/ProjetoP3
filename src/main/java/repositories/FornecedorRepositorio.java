@@ -8,7 +8,7 @@ import entidades.Fornecedor;
 
 public class FornecedorRepositorio implements IFornecedorRepositorio {
 
-    private final String arquivo = "dados/fornecedores.csv";
+    private static final String arquivo = "dados/fornecedores.csv";
 
     private final List<Fornecedor> fornecedores;
     private final ManipulaArquivo manipulaArquivo;
