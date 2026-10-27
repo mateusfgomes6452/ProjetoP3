@@ -430,44 +430,8 @@ public final class ContratosController implements Navegacao.ControladorComSessao
 
             Cliente cliente = comboCliente.getValue();
             Item item = comboItem.getValue();
+            long dias = validarRegistro(cliente,item);
 
-            if (cliente == null) {
-                throw new IllegalArgumentException(
-                        "Selecione o cliente.");
-            }
-            if (!cliente.isAtivo()) {
-                throw new IllegalArgumentException(
-                        "Cliente desativado não pode realizar aluguéis.");
-            }
-
-            if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-                throw new IllegalArgumentException(
-                        "Cliente possui multa pendente e não pode realizar novos aluguéis.");
-            }
-
-            if (item == null) {
-                throw new IllegalArgumentException(
-                        "Selecione um item.");
-            }
-
-            if (!item.estaDisponivel()) {
-                throw new IllegalArgumentException(
-                        "Item indisponível para aluguel. Status atual: "
-                                + item.getStatus());
-            }
-
-            if (dataRetirada.getValue() == null
-                    || dataDevolucao.getValue() == null) {
-                throw new IllegalArgumentException(
-                        "Informe a data de retirada e a de devolução prevista.");
-            }
-
-            long dias = diasDoPeriodo();
-
-            if (dias <= 0) {
-                throw new IllegalArgumentException(
-                        "A data de devolução deve ser posterior à data de retirada.");
-            }
 
             double valorTotal = dias * item.getTaxaDiaria();
             int idContrato = sistema.gerarProximoIdContrato();
@@ -501,6 +465,47 @@ public final class ContratosController implements Navegacao.ControladorComSessao
                             + "Período: " + dias + " dia(s)\n"
                             + "Valor total: " + Formatador.moeda(valorTotal));
         });
+    }
+    
+    private long validarRegistro(Cliente cliente, Item item) {
+        if (cliente == null) {
+            throw new IllegalArgumentException(
+                    "Selecione o cliente.");
+        }
+        if (!cliente.isAtivo()) {
+            throw new IllegalArgumentException(
+                    "Cliente desativado não pode realizar aluguéis.");
+        }
+
+        if (sistema.clientePossuiMultaPendente(cliente.getId())) {
+            throw new IllegalArgumentException(
+                    "Cliente possui multa pendente e não pode realizar novos aluguéis.");
+        }
+
+        if (item == null) {
+            throw new IllegalArgumentException(
+                    "Selecione um item.");
+        }
+
+        if (!item.estaDisponivel()) {
+            throw new IllegalArgumentException(
+                    "Item indisponível para aluguel. Status atual: "
+                            + item.getStatus());
+        }
+
+        if (dataRetirada.getValue() == null
+                || dataDevolucao.getValue() == null) {
+            throw new IllegalArgumentException(
+                    "Informe a data de retirada e a de devolução prevista.");
+        }
+
+        long dias = diasDoPeriodo();
+
+        if (dias <= 0) {
+            throw new IllegalArgumentException(
+                    "A data de devolução deve ser posterior à data de retirada.");
+        }
+        return dias;
     }
 
     @FXML

@@ -2,7 +2,6 @@ package main;
 
 import java.io.IOException;
 
-import facade.SistemaFacade;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
