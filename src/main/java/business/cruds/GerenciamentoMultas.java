@@ -8,7 +8,7 @@ import repositories.IMultaRepositorio;
 
 public class GerenciamentoMultas implements IGerenciamentoMultas {
 
-    private IMultaRepositorio repositorio;
+    private final IMultaRepositorio repositorio;
 
     public GerenciamentoMultas(IMultaRepositorio repositorio) {
         this.repositorio = repositorio;
