@@ -2,10 +2,12 @@ package apresentacao.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 import apresentacao.base.BaseControllersRelatorios;
+import apresentacao.util.Formatador;
 import entidades.ContratoAluguel;
 import entidades.Usuario;
 import facade.SistemaFacade;
@@ -53,7 +55,7 @@ public final class FaturamentoController extends BaseControllersRelatorios {
     private void initialize() {
         configurarDatePicker(dataInicial);
         configurarDatePicker(dataFinal);
-        LocalDate hoje = LocalDate.now();
+        LocalDate hoje = LocalDate.now(ZoneId.systemDefault());
         dataInicial.setValue(hoje.withDayOfMonth(1));
         dataFinal.setValue(hoje);
 

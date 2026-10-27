@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import apresentacao.base.BaseControllersRelatorios;
+import apresentacao.util.Formatador;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Usuario;

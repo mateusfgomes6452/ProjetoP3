@@ -8,8 +8,8 @@ import facade.SistemaFacade;
 @SuppressWarnings("java:S106")
 public class MenuPrincipalAdministrador {
 
-    private SistemaFacade sistema;
-    private Administrador administrador;
+    private final SistemaFacade sistema;
+    private final Administrador administrador;
     private final Scanner scanner;
 
     public MenuPrincipalAdministrador(SistemaFacade sistema, Administrador administrador, Scanner scanner) {

@@ -5,12 +5,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import entidades.ContratoAluguel;
 
 public class SalvaRelatorioHistoricoCliente {
+	private static final Logger LOG = Logger.getLogger(SalvaRelatorioHistoricoCliente.class.getName());
 
     public void salvar(List<ContratoAluguel> contratos) {
+    	
 
         File pastaRelatorios = new File("relatorios");
 
@@ -38,8 +42,7 @@ public class SalvaRelatorioHistoricoCliente {
 
 
         } catch (IOException e) {
-
-            System.out.println("Erro ao gerar relatório");
+        	LOG.log(Level.SEVERE, "Erro ao gerar relatório",e);
 
         }
 

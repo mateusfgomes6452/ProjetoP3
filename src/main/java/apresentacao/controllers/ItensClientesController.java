@@ -1,6 +1,7 @@
 package apresentacao.controllers;
 
 import apresentacao.base.BaseControllerCliente;
+import apresentacao.util.Formatador;
 import entidades.Item;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

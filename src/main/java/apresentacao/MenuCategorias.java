@@ -10,8 +10,8 @@ import facade.SistemaFacade;
 public class MenuCategorias {
 	private static final String MENSAGEM_ID_CATEGORIA = "Id da categoria: ";
 	
-    private SistemaFacade sistema;
-    private Scanner scanner;
+    private final SistemaFacade sistema;
+    private final Scanner scanner;
 
     public MenuCategorias(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;

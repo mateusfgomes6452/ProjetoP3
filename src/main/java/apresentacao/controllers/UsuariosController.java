@@ -10,18 +10,15 @@ import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 public class UsuariosController extends BaseControllers<Usuario> {
-	private Consumer<String> navegacao;
 	private static final String ADMIN = "Administrador";
 	private static final String FUNCIONARIO = "Funcionário";
 	private static final String CLIENTE = "Cliente";

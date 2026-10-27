@@ -86,10 +86,7 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
             String nome = validarTexto(razao.getText(), "Razão social");
             String mail = validarTexto(email.getText(), "E-mail");
             String phone = validarTexto(telefone.getText(), "Telefone");
-            if (!mail.toLowerCase(Locale.ROOT).endsWith("@loja.com"))
-                throw new IllegalArgumentException("O sistema atual exige e-mail @loja.com.");
-            if (!(CELULAR.matcher(phone).matches() || FIXO.matcher(phone).matches()))
-                throw new IllegalArgumentException("Telefone: use (81) 9 9999-9999 ou (81) 9999-9999.");
+            validarContato(mail,phone);
 
             final boolean sucesso;
             if (idEmEdicao == null) {
@@ -110,5 +107,11 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
             atualizar();
             alerta(Alert.AlertType.INFORMATION, "Sucesso", "Fornecedor salvo com sucesso.");
         });
+    }
+    private void validarContato(String mail, String phone) {
+        if (!mail.toLowerCase(Locale.ROOT).endsWith("@loja.com"))
+            throw new IllegalArgumentException("O sistema atual exige e-mail @loja.com.");
+        if (!(CELULAR.matcher(phone).matches() || FIXO.matcher(phone).matches()))
+            throw new IllegalArgumentException("Telefone: use (81) 9 9999-9999 ou (81) 9999-9999.");
     }
 }
