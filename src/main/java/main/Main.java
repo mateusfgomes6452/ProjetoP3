@@ -43,6 +43,7 @@ public class Main {
                 new GerenciamentoFornecedor(fornecedores),
                 new GerenciamentoMultas(multas),
                 new GeradorRelatorios(gItens, gContratos, gUsuarios));
+        SistemaFacade.registrar(sistema);
 
         if (sistema.buscarUsuarioPorEmail(EMAIL_PADRAO) == null) {
             sistema.cadastrarUsuario(new Administrador(sistema.gerarProximoIdUsuario(),
