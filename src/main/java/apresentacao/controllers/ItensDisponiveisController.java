@@ -44,6 +44,7 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
     private final ObservableList<Item> todos = FXCollections.observableArrayList();
     private final FilteredList<Item> visiveis = new FilteredList<>(todos);
     private String categoriaSelecionada = TODAS;
+    private static final String FILTER_ACTIVE = "filter-active";
 
     @FXML
     private void initialize() {
@@ -112,12 +113,12 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
         Button botao = new Button(categoria);
         botao.getStyleClass().add("filter-button");
         if (categoria.equals(categoriaSelecionada)) {
-            botao.getStyleClass().add("filter-active");
+            botao.getStyleClass().add(FILTER_ACTIVE);
         }
         botao.setOnAction(e -> {
             categoriaSelecionada = categoria;
-            filtrosCategoria.getChildren().forEach(no -> no.getStyleClass().remove("filter-active"));
-            botao.getStyleClass().add("filter-active");
+            filtrosCategoria.getChildren().forEach(no -> no.getStyleClass().remove(FILTER_ACTIVE));
+            botao.getStyleClass().add(FILTER_ACTIVE);
             aplicarFiltro();
         });
         return botao;
