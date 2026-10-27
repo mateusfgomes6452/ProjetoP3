@@ -19,7 +19,7 @@ import entidades.Usuario;
 
 public class SistemaFacade {
 	
-    private final static SistemaFacade instancia;
+    private static SistemaFacade instancia;
 
     public static SistemaFacade getSistema() {
         if (instancia == null) {
