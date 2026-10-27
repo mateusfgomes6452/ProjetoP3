@@ -94,6 +94,38 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             throw new SecurityException("Sessão ausente ou sem permissão.");
         }
     }
+    
+    protected void iniciarNovo(String entidade, Runnable limpar) {
+        executar("abrir cadastro de " + entidade, () -> {
+            exigirSessao();
+            idEmEdicao = null;
+            tituloFormulario.setText("Cadastrar " + entidade);
+            limpar.run();
+            btnSalvar.setText("Cadastrar " + entidade);
+            exibirFormulario(true);
+        });
+    }
+
+    protected void iniciarEdicao(String entidade, Consumer<T> preencher) {
+        executar("editar " + entidade, () -> {
+            exigirSessao();
+            T registro = selecionado();
+            idEmEdicao = idDe(registro);
+            tituloFormulario.setText("Editar " + entidade + " #" + idEmEdicao);
+            preencher.accept(registro);
+            btnSalvar.setText("Salvar alterações");
+            exibirFormulario(true);
+        });
+    }
+
+    protected void concluirSalvamento(boolean ok, String mensagemSucesso) {
+        if (!ok) {
+            throw new IllegalArgumentException("Operação não realizada. Verifique dados duplicados.");
+        }
+        cancelar();
+        atualizar();
+        alerta(Alert.AlertType.INFORMATION, "Sucesso", mensagemSucesso);
+    }
 
     @FXML
     protected void atualizar() {
@@ -192,16 +224,17 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         return limpo;
     }
 
-    @FXML private void abrirFornecedores() {
-    	executar("navegar para fornecedores", () -> { 
+    @FXML private void abrirUsuarios() {
+    	executar("navegar para usuarios", () -> { 
             exigirSessao(); 
             if (usuario instanceof entidades.Administrador) {
-                navegacao.accept("FornecedoresAdministrador"); 
+                navegacao.accept("UsuariosAdministrador"); 
             } else {
-                navegacao.accept("FornecedoresFuncionario"); 
+                navegacao.accept("UsuariosFuncionario"); 
             }
-        }); 
+        });
     }
+
     @FXML private void abrirItens() { 
         executar("navegar para itens", () -> { 
             exigirSessao(); 
@@ -212,10 +245,61 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
             }
         }); 
     }
-    @FXML private void abrirCategorias() { executar("navegar para categorias", () -> { exigirSessao(); navegacao.accept("categorias"); }); }
-    @FXML protected void abrirMultas() {
-        executar("navegar para multas", () -> { exigirSessao(); navegacao.accept("multas"); });
+
+    @FXML
+    private void abrirCategorias() {
+        executar("navegar para categorias", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("CategoriasAdministrador");
+            } else {
+                navegacao.accept("CategoriasFuncionarios");
+            }
+        });
     }
+
+    @FXML
+    private void abrirFornecedores() {
+        executar("navegar para fornecedores", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("FornecedoresAdministrador");
+            } else {
+                navegacao.accept("FornecedoresFunccionarios");
+            }
+        });
+    }
+    
+    @FXML
+    protected void abrirMultas() {
+        executar("navegar para multas", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("Multasadministrador");
+            } else {
+                navegacao.accept("MultasFuncionario");
+            }
+        });
+    }
+
+    
+    @FXML
+    protected void abrirRelatorios() {
+        executar("navegar para relatórios", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("RelatoriosAdministrador");
+            } else {
+                navegacao.accept("RelatoriosFuncionario");
+            }
+        });
+    }
+
+    
     @FXML protected void encerrarSessao() {
         executar("encerrar sessão", () -> { exigirSessao(); sair.run(); });
     }

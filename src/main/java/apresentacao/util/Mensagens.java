@@ -1,4 +1,4 @@
-package apresentacao.controllers;
+package apresentacao.util;
 
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Label;

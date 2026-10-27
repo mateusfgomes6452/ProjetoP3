@@ -14,7 +14,34 @@
       <VBox spacing="5">
         <Label fx:id="lblPerfil" text="FUNCIONARIO" styleClass="role-label"/>
         <Region prefHeight="8"/>
-        <Label text="Contratos" styleClass="nav-item" maxWidth="Infinity"/><Label text="Itens" styleClass="nav-item" maxWidth="Infinity"/><Label text="Categorias" styleClass="nav-item" maxWidth="Infinity"/><Button text="Fornecedores" onAction="#abrirFornecedores" maxWidth="Infinity" styleClass="nav-item, nav-selected" /><Label text="Usuários" styleClass="nav-item" maxWidth="Infinity" /><Button text="Multas" onAction="#abrirMultas" maxWidth="Infinity" styleClass="nav-item" /><Label text="Relatórios" styleClass="nav-item" maxWidth="Infinity" />
+         <Button text="Usuários"
+                onAction="#abrirUsuarios"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Itens"
+                onAction="#abrirItens"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Categorias"
+                onAction="#abrirCategorias"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Fornecedores"
+                onAction="#abrirFornecedores"
+                maxWidth="Infinity"
+                styleClass="nav-item, nav-selected"/>
+        <Button text="Contratos"
+                disable="true"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Multas"
+                onAction="#abrirMultas"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
+        <Button text="Relatórios"
+                onAction="#abrirRelatorios"
+                maxWidth="Infinity"
+                styleClass="nav-item"/>
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator/>

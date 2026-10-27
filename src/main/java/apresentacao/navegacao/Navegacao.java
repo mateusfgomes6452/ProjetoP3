@@ -13,7 +13,6 @@ import javafx.stage.Window;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import apresentacao.base.BaseControllers;
 
 public final class Navegacao {
@@ -38,10 +37,10 @@ public final class Navegacao {
 
             if (controller instanceof ControladorComSessao c) {
                 c.configurar(
-                    SistemaFacade.getSistema(), 
-                    usuarioLogado, 
+                    SistemaFacade.getSistema(),
+                    usuarioLogado,
                     destino -> irPara(origem, "/fxml/" + destino + ".fxml"),
-                    () -> irPara(origem, "/fxml/Login.fxml")
+                    () -> encerrarSessao(origem)
                 );
             }
 
@@ -67,6 +66,11 @@ public final class Navegacao {
             aviso.setHeaderText(null);
             aviso.showAndWait();
         }
+    }
+
+    private static void encerrarSessao(Node origem) {
+        usuarioLogado = null;
+        irPara(origem, "/fxml/Login.fxml");
     }
 
     public static void sair() {
