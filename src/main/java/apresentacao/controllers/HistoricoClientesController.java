@@ -2,6 +2,7 @@ package apresentacao.controllers;
 
 import apresentacao.base.BaseContratosCliente;
 import apresentacao.util.Formatador;
+import apresentacao.util.Pilulas;
 import entidades.ContratoAluguel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
