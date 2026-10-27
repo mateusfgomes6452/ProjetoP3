@@ -36,6 +36,7 @@
      	<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirContratos" styleClass="nav-item" text="Contratos" />
 		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />
 		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirRelatorios" styleClass="nav-item" text="Relatórios" />
+		</VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />
       <HBox alignment="CENTER_LEFT" spacing="9">
