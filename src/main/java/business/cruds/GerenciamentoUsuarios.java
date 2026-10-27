@@ -9,7 +9,7 @@ import repositories.IUsuarioRepositorio;
 
 public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
-    private IUsuarioRepositorio repositorio;
+    private final IUsuarioRepositorio repositorio;
     private final IGerenciamentoContratos gerenciamentoContratos;
 
     public GerenciamentoUsuarios(IUsuarioRepositorio repositorio,

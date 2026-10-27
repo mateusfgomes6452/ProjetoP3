@@ -17,9 +17,9 @@ public class MenuUsuarios {
     private static final String NOME_B = "Nome: ";
     private static final String ERRO_CADASTRO = "Erro: CPF ou e-mail já cadastrado";
     private static final String ID_USUARIO_B = "ID do usuário: ";
-    private SistemaFacade sistema;
-    private Scanner scanner;
-    private boolean acessoTotal;
+    private final SistemaFacade sistema;
+    private final Scanner scanner;
+    private final boolean acessoTotal;
 
     public MenuUsuarios(SistemaFacade sistema, Scanner scanner, boolean acessoTotal) {
         this.sistema = sistema;

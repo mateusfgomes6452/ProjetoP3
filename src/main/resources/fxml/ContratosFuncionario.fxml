@@ -31,18 +31,13 @@
       <VBox spacing="5">
         <Label fx:id="lblPerfil" styleClass="role-label" text="FUNCIONÁRIO" />
         <Region prefHeight="8" />
-        <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#atualizar" text="Contratos">
-   <styleClass>
-      <String fx:value="nav-item" />
-      <String fx:value="nav-selected" />
-   </styleClass>
-</Button>
-<Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirItens" styleClass="nav-item" text="Itens" />
-<Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item" text="Categorias" />
-<Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" />
-<Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirUsuarios" styleClass="nav-item" text="Usuários" />
-<Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />
-<Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirRelatorios" styleClass="nav-item" text="Relatórios" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirUsuarios" styleClass="nav-item" text="Usuários" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirItens" styleClass="nav-item" text="Itens" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" styleClass="nav-item" text="Categorias" />
+        <Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" styleClass="nav-item" text="Fornecedores" />
+     	<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirContratos" styleClass="nav-item, nav-selected" text="Contratos" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirMultas" styleClass="nav-item" text="Multas" />
+		<Button alignment="TOP_LEFT" maxWidth="Infinity" onAction="#abrirRelatorios" styleClass="nav-item" text="Relatórios" />
       </VBox>
       <Region VBox.vgrow="ALWAYS" />
       <Separator />

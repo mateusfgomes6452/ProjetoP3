@@ -11,27 +11,18 @@ import facade.SistemaFacade;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
-/**
- * Comportamento comum dos controllers da tela de Relatórios (a tela e as 4 abas):
- * sessão do usuário autenticado, execução protegida de ações e alertas.
- * Segue o mesmo modelo de FornecedoresController e MultasController
- * (exigirSessao / executar / alerta), sem repetir esse código em cada aba.
- */
 public abstract class BaseControllersRelatorios {
 
     private static final Logger LOG = Logger.getLogger(BaseControllersRelatorios.class.getName());
-
     protected SistemaFacade sistema;
     protected Usuario usuario;
 
-    /** Guarda o sistema e o usuário autenticado e confere se ele pode ver relatórios. */
     protected final void iniciarSessao(SistemaFacade sistema, Usuario usuario) {
         this.sistema = Objects.requireNonNull(sistema, "SistemaFacade é obrigatório");
         this.usuario = Objects.requireNonNull(usuario, "Usuário autenticado é obrigatório");
         exigirSessao();
     }
 
-    /** Somente administrador ou funcionário ativo vê relatórios (igual ao menu de console). */
     protected final void exigirSessao() {
         if (sistema == null || usuario == null || !usuario.isAtivo()
                 || !(usuario instanceof Administrador || usuario instanceof Funcionario)) {
@@ -39,7 +30,6 @@ public abstract class BaseControllersRelatorios {
         }
     }
 
-    /** Executa uma ação da tela: mostra alerta de aviso/erro em vez de deixar a exceção estourar. */
     protected final void executar(String acao, Runnable operacao) {
         try {
             operacao.run();

@@ -8,7 +8,7 @@ import repositories.IItemRepositorio;
 
 public class GerenciamentoItens implements IGerenciamentoItens {
 
-    private IItemRepositorio repositorio;
+    private final IItemRepositorio repositorio;
 
     public GerenciamentoItens(IItemRepositorio repositorio) {
         this.repositorio = repositorio;
