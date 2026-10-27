@@ -12,7 +12,7 @@ import facade.SistemaFacade;
 public class MenuCliente {
 
     private final SistemaFacade sistema;
-    private Cliente cliente;
+    private final Cliente cliente;
     private Scanner scanner;
 
     public MenuCliente(SistemaFacade sistema, Cliente cliente, Scanner scanner) {
