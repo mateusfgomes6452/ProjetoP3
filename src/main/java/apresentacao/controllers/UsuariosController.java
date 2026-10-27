@@ -114,29 +114,31 @@ public class UsuariosController extends BaseControllers<Usuario> {
         });
     }
 
+    
     @FXML
     private void salvar() {
         executar("salvar usuario", () -> {
             exigirSessao();
 
-            String nome = validarTexto(
-                    campoNome.getText(), "Nome");
-
-            String cpf = validarTexto(
-                    campoCPF.getText(), "CPF");
-
-            String email = validarTexto(
-                    campoEmail.getText(), "Email");
-
-            String senha = validarTexto(
-                    campoSenha.getText(), "Senha");
-
+            String nome = validarTexto(campoNome.getText(), "Nome");
+            String cpf = validarTexto(campoCPF.getText(), "CPF");
+            String email = validarTexto(campoEmail.getText(), "Email");
+            String senha = validarTexto(campoSenha.getText(), "Senha");
             String tipo = comboTipo.getValue();
 
             if (tipo == null || tipo.isBlank()) {
                 throw new IllegalArgumentException(
                         "Selecione o tipo de usuário.");
             }
+
+            boolean ok = idEmEdicao == null
+                    ? cadastrarNovoUsuario(nome, cpf, email, senha, tipo)
+                    : atualizarUsuarioExistente(nome, email, senha);
+
+            concluirSalvamento(ok, "Usuário salvo com sucesso.");
+        });
+    }
+
 
             boolean ok;
             if (idEmEdicao == null) {
