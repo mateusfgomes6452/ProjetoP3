@@ -15,6 +15,7 @@ import repositories.SalvaRelatorioFaturamento;
 import repositories.SalvaRelatorioHistoricoCliente;
 import repositories.SalvaRelatorioItensAlugados;
 import repositories.SalvaRelatorioItensDisponiveis;
+import repositories.SalvaRelatorioPdf;
 
 @SuppressWarnings("java:S106")
 public class GeradorRelatorios implements IRelatorios {
@@ -268,22 +269,27 @@ public class GeradorRelatorios implements IRelatorios {
 
     @Override
     public void exportarItensDisponiveis(List<Item> itens) {
-        new SalvaRelatorioItensDisponiveis().salvar(new ArrayList<>(itens));
+        List<Item> copia = new ArrayList<>(itens);
+        new SalvaRelatorioItensDisponiveis().salvar(copia);
+        new SalvaRelatorioPdf().salvarItensDisponiveis(copia);
     }
 
     @Override
     public void exportarHistoricoCliente(List<ContratoAluguel> historico) {
         new SalvaRelatorioHistoricoCliente().salvar(historico);
+        new SalvaRelatorioPdf().salvarHistoricoCliente(historico);
     }
 
     @Override
     public void exportarItensAlugados(List<ContratoAluguel> contratosAtivos) {
         new SalvaRelatorioItensAlugados().salvar(contratosAtivos);
+        new SalvaRelatorioPdf().salvarItensAlugados(contratosAtivos);
     }
 
     @Override
     public void exportarFaturamento(List<ContratoAluguel> contratos, String dataInicial, String dataFinal) {
         new SalvaRelatorioFaturamento().salvar(contratos, dataInicial, dataFinal);
+        new SalvaRelatorioPdf().salvarFaturamento(contratos, dataInicial, dataFinal);
     }
 
 }
