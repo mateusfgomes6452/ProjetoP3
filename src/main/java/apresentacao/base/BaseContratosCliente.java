@@ -1,6 +1,6 @@
 package apresentacao.base;
 
-import apresentacao.controllers.Formatador;
+import apresentacao.util.Formatador;
 import entidades.ContratoAluguel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

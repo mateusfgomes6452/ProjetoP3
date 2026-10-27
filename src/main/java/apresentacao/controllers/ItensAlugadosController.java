@@ -6,6 +6,7 @@ import java.util.List;
 import java.time.ZoneId;
 
 import apresentacao.base.BaseControllersRelatorios;
+import apresentacao.util.Formatador;
 import entidades.ContratoAluguel;
 import entidades.Usuario;
 import facade.SistemaFacade;

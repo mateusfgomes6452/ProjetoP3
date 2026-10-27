@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import apresentacao.base.BaseControllersRelatorios;
+import apresentacao.util.Formatador;
 import entidades.ContratoAluguel;
 import entidades.Usuario;
 import facade.SistemaFacade;

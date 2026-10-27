@@ -1,4 +1,4 @@
-package apresentacao.controllers;
+package apresentacao.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

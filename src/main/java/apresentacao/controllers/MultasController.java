@@ -1,6 +1,7 @@
 package apresentacao.controllers;
 
 import apresentacao.navegacao.Navegacao;
+import apresentacao.util.Formatador;
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
