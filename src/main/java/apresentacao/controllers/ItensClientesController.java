@@ -23,6 +23,7 @@ import java.util.TreeSet;
 public final class ItensClientesController extends BaseControllerCliente {
 
     private static final String TODAS = "Todas";
+    private static final String FILTRO_ATIVO = "filter-active";
 
     @FXML private Label lblTotal;
     @FXML private Label lblCategorias;
@@ -116,12 +117,12 @@ public final class ItensClientesController extends BaseControllerCliente {
         Button botao = new Button(categoria);
         botao.getStyleClass().add("filter-button");
         if (categoria.equals(categoriaAtiva)) {
-            botao.getStyleClass().add("filter-active");
+            botao.getStyleClass().add(FILTRO_ATIVO);
         }
         botao.setOnAction(e -> {
             categoriaAtiva = categoria;
-            filtrosCategoria.getChildren().forEach(no -> no.getStyleClass().remove("filter-active"));
-            botao.getStyleClass().add("filter-active");
+            filtrosCategoria.getChildren().forEach(no -> no.getStyleClass().remove(FILTRO_ATIVO));
+            botao.getStyleClass().add(FILTRO_ATIVO);
             filtrar();
         });
         return botao;
