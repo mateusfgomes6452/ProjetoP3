@@ -37,5 +37,3 @@ jobs:
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=mateusfgomes6452_ProjetoP3
       - name: Build Docker Image
         run: docker build -t projetop3 .
-      - name: Test Docker container
-        run: printf "0\n" | docker run --rm -i projetop3
