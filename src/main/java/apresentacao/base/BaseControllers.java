@@ -246,8 +246,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         }); 
     }
 
-    @FXML
-    private void abrirCategorias() {
+    @FXML private void abrirCategorias() {
         executar("navegar para categorias", () -> {
             exigirSessao();
 
@@ -259,8 +258,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         });
     }
 
-    @FXML
-    private void abrirFornecedores() {
+    @FXML private void abrirFornecedores() {
         executar("navegar para fornecedores", () -> {
             exigirSessao();
 
@@ -272,8 +270,19 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
         });
     }
     
-    @FXML
-    protected void abrirMultas() {
+    @FXML private void abrirContratos() {
+        executar("navegar para contratos", () -> {
+            exigirSessao();
+
+            if (usuario instanceof Administrador) {
+                navegacao.accept("ContratosAdministrador");
+            } else {
+                navegacao.accept("ContratosFuncionario");
+            }
+        });
+    }
+    
+    @FXML private void abrirMultas() {
         executar("navegar para multas", () -> {
             exigirSessao();
 
@@ -286,8 +295,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
     }
 
     
-    @FXML
-    protected void abrirRelatorios() {
+    @FXML public void abrirRelatorios() {
         executar("navegar para relatórios", () -> {
             exigirSessao();
 
