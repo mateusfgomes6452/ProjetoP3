@@ -26,6 +26,8 @@ import apresentacao.util.Mensagens;
 public final class ItensDisponiveisController extends BaseControllersRelatorios {
 
     private static final String TODAS = "Todas";
+    private static final String FILTER_ACTIVE = "filter-active";
+    private static final String FILTER_BUTTON = "filter-button";
 
     @FXML private Label lblTotal;
     @FXML private Label lblCategorias;
@@ -109,14 +111,14 @@ public final class ItensDisponiveisController extends BaseControllersRelatorios 
 
     private Button novoFiltro(String categoria) {
         Button botao = new Button(categoria);
-        botao.getStyleClass().add("filter-button");
+        botao.getStyleClass().add(FILTER_BUTTON );
         if (categoria.equals(categoriaSelecionada)) {
-            botao.getStyleClass().add("filter-active");
+            botao.getStyleClass().add(FILTER_ACTIVE);
         }
         botao.setOnAction(e -> {
             categoriaSelecionada = categoria;
-            filtrosCategoria.getChildren().forEach(no -> no.getStyleClass().remove("filter-active"));
-            botao.getStyleClass().add("filter-active");
+            filtrosCategoria.getChildren().forEach(no -> no.getStyleClass().remove(FILTER_ACTIVE));
+            botao.getStyleClass().add(FILTER_ACTIVE);
             aplicarFiltro();
         });
         return botao;
