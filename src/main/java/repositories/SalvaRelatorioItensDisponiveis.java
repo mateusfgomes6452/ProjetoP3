@@ -5,10 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import entidades.Item;
 
 public class SalvaRelatorioItensDisponiveis {
+	
+	private static final Logger LOGGER = Logger.getLogger(SalvaRelatorioItensDisponiveis.class.getName());
 
     public void salvar(List<Item> itens) {
 
@@ -59,8 +63,8 @@ public class SalvaRelatorioItensDisponiveis {
 
             
         } catch (IOException e) {
-
-            System.out.println("Erro ao gerar relatório de itens disponíveis");
+            //System.out.println("Erro ao gerar relatório de itens disponíveis");
+            LOGGER.log(Level.SEVERE, "Erro ao gerar relatório de itens disponíveis", e);
 
         }
 

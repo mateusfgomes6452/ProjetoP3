@@ -23,7 +23,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import apresentacao.util.Mensagens;
 
-/** Aba "Itens disponíveis" (RelatorioItensDisponiveis.fxml): itens com status DISPONIVEL, filtrados por categoria. */
 public final class ItensDisponiveisController extends BaseControllersRelatorios {
 
     private static final String TODAS = "Todas";

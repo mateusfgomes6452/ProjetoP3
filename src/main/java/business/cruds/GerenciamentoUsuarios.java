@@ -74,7 +74,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
         }
 
         if (gerenciamentoContratos.clientePossuiMultaPendente(id)) {
-            System.out.println("Usuário possui multas pendentes e não pode ser desativado.");
+            //System.out.println("Usuário possui multas pendentes e não pode ser desativado.");
             return false;
         }
 
