@@ -24,7 +24,6 @@ import javafx.scene.control.TableView;
 import apresentacao.util.Mensagens;
 import apresentacao.util.Pilulas;
 
-/** Aba "Itens alugados" (RelatorioItensAlugados.fxml): contratos ativos, com destaque para devoluções atrasadas. */
 public final class ItensAlugadosController extends BaseControllersRelatorios {
 
     private enum Filtro { TODOS, EM_DIA, ATRASADOS }
@@ -79,13 +78,11 @@ public final class ItensAlugadosController extends BaseControllersRelatorios {
         Mensagens.esconder(lblAviso);
     }
 
-    /** Chamado por RelatoriosController.configurar: guarda a sessão e carrega os dados. */
     public void configurar(SistemaFacade sistema, Usuario usuario) {
         iniciarSessao(sistema, usuario);
         atualizar();
     }
 
-    /** Recarrega os contratos ativos do back-end. */
     @FXML
     public void atualizar() {
         executar("consultar itens alugados", () -> {

@@ -436,13 +436,8 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             double valorTotal = dias * item.getTaxaDiaria();
             int idContrato = sistema.gerarProximoIdContrato();
 
-            ContratoAluguel contrato = new ContratoAluguel(
-                    idContrato,
-                    cliente,
-                    item,
-                    dataRetirada.getValue().toString(),
-                    dataDevolucao.getValue().toString(),
-                    valorTotal);
+            ContratoAluguel contrato = new ContratoAluguel(idContrato, cliente, item,
+                    new ContratoAluguel.Datas(dataRetirada.getValue().toString(), dataDevolucao.getValue().toString()), valorTotal);
 
             if (!sistema.cadastrarContrato(contrato)) {
                 throw new IllegalArgumentException(
@@ -665,20 +660,18 @@ public final class ContratosController implements Navegacao.ControladorComSessao
 
             esconder(painelFinalizacao);
             atualizar();
-
-            String mensagem = diasAtraso > 0
-                    ? "Devolução com " + diasAtraso
-                            + " dia(s) de atraso.\n"
-                            + "Multa gerada: "
-                            + Formatador.moeda(multa)
-                            + " (pendente).\n"
-                    : "Devolução dentro do prazo.\n";
-
-            alerta(
-                    Alert.AlertType.INFORMATION,
-                    "Contrato finalizado",
-                    mensagem + "Item devolvido ao estoque.");
+            alerta(Alert.AlertType.INFORMATION, "Contrato finalizado",
+                   mensagemDevolucao(diasAtraso, multa) + "Item devolvido ao estoque.");
         });
+    }
+    
+    private String mensagemDevolucao(long diasAtraso, double multa) {
+    	if(diasAtraso <= 0) {
+    		return "Devolução dentro do prazo.\n";
+    	} else {
+    		return "Devolução com " + diasAtraso + " dia(s) de atraso.\n"
+                 + "Multa gerada: " + Formatador.moeda(multa) + " (pendente).\n";
+    	}
     }
 
     @FXML

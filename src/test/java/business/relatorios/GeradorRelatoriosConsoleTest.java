@@ -29,10 +29,6 @@ import support.FakeContratoRepositorio;
 import support.FakeItemRepositorio;
 import support.FakeUsuarioRepositorio;
 
-/**
- * Cobre os relatórios impressos no console e a exportação para CSV.
- * Os CSVs vão para "relatorios/" dentro do diretório de execução dos testes (target/, ver pom.xml).
- */
 @DisplayName("GeradorRelatorios - saída no console e exportação")
 class GeradorRelatoriosConsoleTest {
 
@@ -64,8 +60,8 @@ class GeradorRelatoriosConsoleTest {
         GerenciamentoUsuarios gerenciamentoUsuarios = new GerenciamentoUsuarios(usuarios, gerenciamentoContratos);
         relatorios = new GeradorRelatorios(gerenciamentoItens, gerenciamentoContratos, gerenciamentoUsuarios);
 
-        categoria = new Categoria(1, "Ferramentas", "Ferramentas em geral");
-        fornecedor = new Fornecedor(1, "Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
+        categoria = new Categoria(1, new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
+        fornecedor = new Fornecedor(1, new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
         ana = new Cliente(3, "Ana Souza", "ana@loja.com", "333.333.333-33", "123456");
         usuarios.adicionar(ana);
 
@@ -85,14 +81,14 @@ class GeradorRelatoriosConsoleTest {
     }
 
     private Item novoItem(int id, Categoria cat) {
-        Item item = new Item(id, "Item " + id, "descrição", 20.0, "BOM", 500.0, cat, fornecedor);
+        Item item = new Item(id, new Item.Infos("Item " + id, "descrição", "BOM"), new Item.ValoresItem(20.0, 500.0), cat, fornecedor);
         itens.adicionar(item);
         return item;
     }
 
     private ContratoAluguel novoContrato(int id, LocalDate retirada, LocalDate prevista) {
-        ContratoAluguel contrato = new ContratoAluguel(id, ana, novoItem(100 + id, categoria),
-                retirada.toString(), prevista.toString(), 100.0);
+        ContratoAluguel contrato = new ContratoAluguel(id, ana, novoItem(100 + id, categoria), new ContratoAluguel.Datas(
+                retirada.toString(), prevista.toString()), 100.0);
         contratos.adicionar(contrato);
         return contrato;
     }

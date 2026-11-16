@@ -8,13 +8,15 @@ public abstract class Usuario {
     private String email;
     private String senha;
     private boolean ativo;
+    
+    public record Infos(String nome, String email, String cpf, String senha) {}
 
-    protected Usuario(int id, String nome, String email, String cpf, String senha) {
+    protected Usuario(int id, Infos infos) {
         this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.cpf = cpf;
-        this.senha = senha;
+        this.nome = infos.nome();
+        this.email = infos.email();
+        this.cpf = infos.cpf();
+        this.senha = infos.senha();
         this.ativo = true;
     }
 

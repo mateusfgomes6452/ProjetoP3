@@ -33,18 +33,16 @@ class GerenciamentoContratosTest {
         repositorio = new FakeContratoRepositorio();
         gerenciamentoContratos = new GerenciamentoContratos(repositorio);
 
-        Categoria categoria = new Categoria(1, "Ferramentas", "Ferramentas em geral");
-        Fornecedor fornecedor = new Fornecedor(1, "Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
+        Categoria categoria = new Categoria(1, new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
+        Fornecedor fornecedor = new Fornecedor(1, new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
 
         cliente = new Cliente(1, "Maria Silva", "maria@email.com", "111.111.111-11", "senha123");
-        item = new Item(1, "Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+        item = new Item(1, new Item.Infos("Furadeira", "Furadeira de impacto", "BOM"), new Item.ValoresItem(20.0, 500.0), categoria, fornecedor);
     }
 
     private ContratoAluguel novoContrato(int id) {
-        return new ContratoAluguel(id, cliente, item, "2026-01-01", "2026-01-10", 100.0);
+        return new ContratoAluguel(id, cliente, item, new ContratoAluguel.Datas("2026-01-01", "2026-01-10"), 100.0);
     }
-
-   
 
     @Test
     @DisplayName("cadastrarContrato deve cadastrar quando o contrato é novo e o item está livre")
@@ -91,8 +89,6 @@ class GerenciamentoContratosTest {
         assertTrue(resultado, "Item deveria estar disponível para novo contrato após a finalização do anterior");
     }
 
-    
-
     @Test
     @DisplayName("buscarContrato deve retornar o contrato quando existir")
     void deveRetornarContratoExistente() {
@@ -106,8 +102,6 @@ class GerenciamentoContratosTest {
     void deveRetornarNullAoBuscarContratoInexistente() {
         assertNull(gerenciamentoContratos.buscarContrato(999));
     }
-
-    
 
     @Test
     @DisplayName("finalizarContrato deve retornar false quando o contrato não existe")
@@ -126,8 +120,6 @@ class GerenciamentoContratosTest {
         assertTrue(gerenciamentoContratos.buscarContrato(1).estaFinalizado());
     }
 
-    
-
     @Test
     @DisplayName("cancelarContrato deve retornar false quando o contrato não existe")
     void deveRetornarFalseAoCancelarContratoInexistente() {
@@ -144,8 +136,6 @@ class GerenciamentoContratosTest {
         assertTrue(resultado);
         assertTrue(gerenciamentoContratos.buscarContrato(1).estaCancelado());
     }
-
-   
 
     @Test
     @DisplayName("quitarMultaContrato deve retornar false quando o contrato não existe")
@@ -235,8 +225,6 @@ class GerenciamentoContratosTest {
         assertFalse(gerenciamentoContratos.clientePossuiHistorico(cliente.getId()));
     }
 
-    
-
     @ParameterizedTest(name = "{0} dia(s) de atraso, taxa diária R$ {1} -> multa R$ {2}")
     @DisplayName("calcularMulta deve aplicar multa fixa de R$10 + 5% da taxa diária por dia de atraso")
     @CsvSource({
@@ -245,6 +233,7 @@ class GerenciamentoContratosTest {
             "10, 100.0, 60.0",
             "2, 0.0, 10.0"
     })
+    
     void deveCalcularMultaComAtraso(long diasAtraso, double taxaDiaria, double multaEsperada) {
         double multa = gerenciamentoContratos.calcularMulta(diasAtraso, taxaDiaria);
 
