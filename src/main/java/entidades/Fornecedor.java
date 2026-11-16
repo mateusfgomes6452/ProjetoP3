@@ -1,7 +1,13 @@
 package entidades;
- 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Fornecedor {
  
+	@Id @GeneratedValue
     private int id;
     private String razaoSocial;
     private final String cnpj;

@@ -1,7 +1,13 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Multa {
 
+	@Id @GeneratedValue
     private final int id;
     private final int idContrato;
     private final String tipo;       

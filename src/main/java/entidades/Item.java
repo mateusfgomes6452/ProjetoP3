@@ -1,7 +1,13 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Item {
 	
+	@Id @GeneratedValue
 	private static final String STATUS_DISPONIVEL = "DISPONIVEL";
 	private static final String STATUS_ALUGADO = "ALUGADO";
 	private static final String STATUS_MANUTENCAO = "MANUTENCAO";
