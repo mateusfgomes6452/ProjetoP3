@@ -30,7 +30,7 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
                 String telefone = campos[4].trim();
                 boolean ativo = Boolean.parseBoolean(campos[5].trim());
 
-                Fornecedor fornecedor = new Fornecedor(id, razaoSocial, cnpj, email, telefone);
+                Fornecedor fornecedor = new Fornecedor(id, new Fornecedor.Infos(razaoSocial, cnpj, email, telefone));
 
                 fornecedor.setAtivo(ativo);
 
