@@ -436,13 +436,8 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             double valorTotal = dias * item.getTaxaDiaria();
             int idContrato = sistema.gerarProximoIdContrato();
 
-            ContratoAluguel contrato = new ContratoAluguel(
-                    idContrato,
-                    cliente,
-                    item,
-                    dataRetirada.getValue().toString(),
-                    dataDevolucao.getValue().toString(),
-                    valorTotal);
+            ContratoAluguel contrato = new ContratoAluguel(idContrato, cliente, item,
+                    new ContratoAluguel.Datas(dataRetirada.getValue().toString(), dataDevolucao.getValue().toString()), valorTotal);
 
             if (!sistema.cadastrarContrato(contrato)) {
                 throw new IllegalArgumentException(
