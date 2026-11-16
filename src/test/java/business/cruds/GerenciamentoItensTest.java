@@ -29,12 +29,12 @@ class GerenciamentoItensTest {
         repositorio = new FakeItemRepositorio();
         gerenciamentoItens = new GerenciamentoItens(repositorio);
 
-        categoria = new Categoria(1, "Ferramentas", "Ferramentas em geral");
-        fornecedor = new Fornecedor(1, "Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
+        categoria = new Categoria(1, new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
+        fornecedor = new Fornecedor(1, new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
     }
 
     private Item novoItem(int id) {
-        return new Item(id, "Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+        return new Item(id, new Item.Infos("Furadeira", "Furadeira de impacto", "BOM"), new Item.ValoresItem(20.0, 500.0), categoria, fornecedor);
     }
 
     
@@ -81,7 +81,7 @@ class GerenciamentoItensTest {
     @Test
     @DisplayName("atualizarItem deve retornar false quando o item não existe")
     void deveRetornarFalseAoAtualizarItemInexistente() {
-        Item itemNovo = new Item(999, "Novo nome", "Nova descrição", 30.0, "OTIMO", 600.0, null, null);
+        Item itemNovo = new Item(999, new Item.Infos("Novo nome", "Nova descrição", "OTIMO"), new Item.ValoresItem(30.0, 600.0), null, null);
         boolean resultado = gerenciamentoItens.atualizarItem(itemNovo);
 
         assertFalse(resultado);
@@ -92,7 +92,7 @@ class GerenciamentoItensTest {
     void deveAtualizarCamposDoItem() {
         gerenciamentoItens.cadastrarItem(novoItem(1));
 
-        Item itemNovo = new Item(1, "Serra Elétrica", "Serra circular", 35.0, "OTIMO", 800.0, categoria, fornecedor);
+        Item itemNovo = new Item(1, new Item.Infos("Serra Elétrica", "Serra circular", "OTIMO"), new Item.ValoresItem(35.0, 800.0), categoria, fornecedor);
         boolean resultado = gerenciamentoItens.atualizarItem(itemNovo);
 
         Item atualizado = gerenciamentoItens.buscarItem(1);
@@ -104,8 +104,6 @@ class GerenciamentoItensTest {
         assertEquals("OTIMO", atualizado.getEstadoConservacao());
         assertEquals(800.0, atualizado.getValorReposicao(), 0.0001);
     }
-
-  
 
     @Test
     @DisplayName("excluirItem deve retornar false quando o item não existe")
@@ -125,8 +123,6 @@ class GerenciamentoItensTest {
         assertFalse(item.isAtivo());
         assertFalse(item.estaDisponivel(), "Item desativado não pode estar disponível para aluguel");
     }
-
-   
 
     @Test
     @DisplayName("gerarProximoId deve retornar 1 quando não há itens cadastrados")
