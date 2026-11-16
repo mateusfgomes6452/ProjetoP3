@@ -20,8 +20,6 @@ public class Multa {
         this.dataCriacao = dataCriacao;
     }
 
-   
-
     public int getId() {
         return id;
     }

@@ -105,7 +105,6 @@ public final class HistoricoClienteController extends BaseControllersRelatorios 
                     .toList();
             cbCliente.setItems(FXCollections.observableArrayList(clientes));
 
-            // mantém o cliente escolhido (se ainda existir)
             Usuario mantido = anterior == null ? null
                     : clientes.stream().filter(c -> c.getId() == anterior.getId()).findFirst().orElse(null);
             cbCliente.setValue(mantido);

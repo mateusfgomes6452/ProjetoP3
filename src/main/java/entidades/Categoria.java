@@ -7,10 +7,12 @@ public class Categoria {
     private String descricao;
     private boolean ativa;
  
-    public Categoria(int id, String nome, String descricao) {
+    public record Infos(String nome, String descricao) {}
+    
+    public Categoria(int id, Infos infos) {
         this.id = id;
-        this.nome = nome;
-        this.descricao = descricao;
+        this.nome = infos.nome();
+        this.descricao = infos.descricao();
         this.ativa = true;
     }
 

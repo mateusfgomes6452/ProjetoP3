@@ -20,10 +20,6 @@ import entidades.ContratoAluguel;
 import entidades.Fornecedor;
 import entidades.Item;
 
-/**
- * As classes SalvaRelatorio* gravam na pasta "relatorios" (relativa ao diretório de execução).
- * O pom.xml configura o surefire para rodar em target/, então nada aqui suja a pasta versionada.
- */
 @DisplayName("SalvaRelatorio* - exportação de CSV")
 class SalvaRelatoriosTest {
 
@@ -35,8 +31,8 @@ class SalvaRelatoriosTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        categoria = new Categoria(1, "Ferramentas", "Ferramentas em geral");
-        fornecedor = new Fornecedor(1, "Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
+        categoria = new Categoria(1, new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
+        fornecedor = new Fornecedor(1, new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
         ana = new Cliente(3, "Ana Souza", "ana@loja.com", "333.333.333-33", "123456");
 
         for (String nome : List.of("faturamento.csv", "historico_cliente.csv",
@@ -46,11 +42,11 @@ class SalvaRelatoriosTest {
     }
 
     private Item item(int id, String nome, Categoria cat) {
-        return new Item(id, nome, "descrição", 20.0, "BOM", 500.0, cat, fornecedor);
+        return new Item(id, new Item.Infos(nome, "descrição", "BOM"), new Item.ValoresItem(20.0, 500.0), cat, fornecedor);
     }
 
     private ContratoAluguel contrato(int id, Item item, LocalDate retirada, LocalDate prevista) {
-        return new ContratoAluguel(id, ana, item, retirada.toString(), prevista.toString(), 100.0);
+        return new ContratoAluguel(id, ana, item, new ContratoAluguel.Datas(retirada.toString(), prevista.toString()), 100.0);
     }
 
     private List<String> ler(String arquivo) throws IOException {
@@ -60,8 +56,8 @@ class SalvaRelatoriosTest {
     @Test
     @DisplayName("itens disponíveis: cria pasta, grava cabeçalho e ordena por categoria")
     void itensDisponiveisOrdenadosPorCategoria() throws IOException {
-        Categoria zebra = new Categoria(2, "Zebra", "última");
-        Categoria abelha = new Categoria(3, "abelha", "primeira");
+        Categoria zebra = new Categoria(2, new Categoria.Infos("Zebra", "última"));
+        Categoria abelha = new Categoria(3, new Categoria.Infos("abelha", "primeira"));
 
         List<Item> itens = new ArrayList<>(List.of(
                 item(1, "Item Z", zebra),

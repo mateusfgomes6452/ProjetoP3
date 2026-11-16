@@ -84,9 +84,9 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
         executar("salvar fornecedor", () -> {
             exigirSessao();
             String nome = validarTexto(razao.getText(), "Razão social");
-            String mail = validarTexto(email.getText(), "E-mail");
-            String phone = validarTexto(telefone.getText(), "Telefone");
-            validarContato(mail,phone);
+            String emailFor = validarTexto(email.getText(), "E-mail");
+            String telefoneFor = validarTexto(telefone.getText(), "Telefone");
+            validarContato(emailFor, telefoneFor);
 
             final boolean sucesso;
             if (idEmEdicao == null) {
@@ -94,11 +94,11 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
                 if (!FORMATO_CNPJ.matcher(documento).matches())
                     throw new IllegalArgumentException("CNPJ: use XX.XXX.XXX/XXXX-XX.");
                 sucesso = sistema.cadastrarFornecedor(
-                        new Fornecedor(sistema.gerarProximoIdFornecedor(), nome, documento, mail, phone));
+                        new Fornecedor(sistema.gerarProximoIdFornecedor(), new Fornecedor.Infos(nome, documento, emailFor, telefoneFor)));
             } else {
                 Fornecedor atual = sistema.buscarFornecedor(idEmEdicao);
                 if (atual == null) throw new IllegalArgumentException("Fornecedor não encontrado.");
-                Fornecedor modificado = new Fornecedor(atual.getId(), nome, atual.getCnpj(), mail, phone);
+                Fornecedor modificado = new Fornecedor(atual.getId(), new Fornecedor.Infos(nome, atual.getCnpj(), emailFor, telefoneFor));
                 modificado.setAtivo(atual.isAtivo());
                 sucesso = sistema.atualizarFornecedor(modificado);
             }

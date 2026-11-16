@@ -119,7 +119,6 @@ public final class MeusAlugueisClientesController extends BaseContratosCliente {
         }
         String texto = ATRASADO + " há " + dias + " dia(s).";
         if (c.getItem() != null) {
-            // A multa é calculada pelo próprio sistema (mesma regra usada ao finalizar o contrato)
             double multa = sistema.calcularMulta(dias, c.getItem().getTaxaDiaria());
             texto += " Se devolvido hoje, a multa será de " + Formatador.moeda(multa) + ".";
         }

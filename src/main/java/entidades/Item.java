@@ -17,16 +17,17 @@ public class Item {
     private String status;
     private boolean ativo;
 
-    public Item(int id, String nome, String descricao, double taxaDiaria,
-                String estadoConservacao, double valorReposicao,
-                Categoria categoria, Fornecedor fornecedor) {
+    public record Infos(String nome, String descricao, String estadoConservacao) {}
+    public record ValoresItem(double taxaDiaria, double valorReposicao) {}
+    
+    public Item(int id, Infos infos, ValoresItem valores, Categoria categoria, Fornecedor fornecedor) {
 
         this.id = id;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.taxaDiaria = taxaDiaria;
-        this.estadoConservacao = estadoConservacao;
-        this.valorReposicao = valorReposicao;
+        this.nome = infos.nome();
+        this.descricao = infos.descricao();
+        this.taxaDiaria = valores.taxaDiaria();
+        this.estadoConservacao = infos.estadoConservacao();
+        this.valorReposicao = valores.valorReposicao();
         this.categoria = categoria;
         this.fornecedor = fornecedor;
         this.status = STATUS_DISPONIVEL;

@@ -31,7 +31,6 @@ public final class RelatoriosController extends BaseControllersRelatorios implem
     @FXML private Button btnAbaAlugados;
     @FXML private Button btnAbaFaturamento;
 
-    // preenchidos automaticamente pelo fx:include (fx:id = abaItens -> abaItensController)
     @FXML private Node abaItens;
     @FXML private Node abaHistorico;
     @FXML private Node abaAlugados;
