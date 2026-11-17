@@ -13,6 +13,7 @@ public class Item {
 	private static final String STATUS_MANUTENCAO = "MANUTENCAO";
 	
     private final int id;
+    
     private String nome;
     private String descricao;
     private double taxaDiaria;

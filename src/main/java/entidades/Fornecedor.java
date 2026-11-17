@@ -9,6 +9,7 @@ public class Fornecedor {
  
 	@Id @GeneratedValue
     private int id;
+	
     private String razaoSocial;
     private final String cnpj;
     private String email;

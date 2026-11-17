@@ -2,6 +2,7 @@ package entidades;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
@@ -9,6 +10,7 @@ public abstract class Usuario {
 
 	@Id @GeneratedValue
     private int id;
+	
     private String nome;
     private final String cpf;
     private String email;

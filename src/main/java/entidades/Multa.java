@@ -9,6 +9,7 @@ public class Multa {
 
 	@Id @GeneratedValue
     private final int id;
+	
     private final int idContrato;
     private final String tipo;       
     private final String descricao;
@@ -25,8 +26,6 @@ public class Multa {
         this.paga = false;
         this.dataCriacao = dataCriacao;
     }
-
-   
 
     public int getId() {
         return id;
