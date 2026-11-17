@@ -68,9 +68,22 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
-		
-    </dependencies>
+        
+        <!-- JPA (banco de dados) -->
+	    <dependency>
+	        <groupId>org.hibernate</groupId>
+	        <artifactId>hibernate-entitymanager</artifactId>
+	        <version>4.1.8.Final</version>
+    	</dependency>
+    
+   	 	<dependency>
+	        <groupId>mysql</groupId>
+	        <artifactId>mysql-connector-java</artifactId>
+	        <version>8.0.33</version>
+    	</dependency>
 
+    </dependencies>
+    
     <build>
         <pluginManagement>
             <plugins>

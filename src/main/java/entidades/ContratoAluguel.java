@@ -1,7 +1,15 @@
 package entidades;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class ContratoAluguel {
 
+	@Id @GeneratedValue
     private final int id;
+	
     private final Cliente cliente;
     private final Item item;
     private final String dataRetirada;

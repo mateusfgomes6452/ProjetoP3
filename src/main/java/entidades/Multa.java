@@ -1,8 +1,15 @@
 package entidades;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Multa {
 
+	@Id @GeneratedValue
     private final int id;
+	
     private final int idContrato;
     private final String tipo;       
     private final String descricao;

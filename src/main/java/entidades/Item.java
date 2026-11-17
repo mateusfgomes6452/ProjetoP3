@@ -1,12 +1,19 @@
 package entidades;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Item {
 	
+	@Id @GeneratedValue
 	private static final String STATUS_DISPONIVEL = "DISPONIVEL";
 	private static final String STATUS_ALUGADO = "ALUGADO";
 	private static final String STATUS_MANUTENCAO = "MANUTENCAO";
 	
     private final int id;
+    
     private String nome;
     private String descricao;
     private double taxaDiaria;
