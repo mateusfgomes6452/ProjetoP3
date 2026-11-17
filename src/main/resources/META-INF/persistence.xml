@@ -1,27 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0"
-    xmlns="http://java.sun.com/xml/ns/persistence"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
 
     <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
-    	<class>entidades.Categoria</class>
-    	<class>entidades.ContratoAluguel</class>
-    	<class>entidades.Fornecedor</class>
-    	<class>entidades.Item</class>
-    	<class>entidades.Multa</class>
-    	<class>entidades.Usuario</class>
-    	<class>entidades.Administrador</class>
-    	<class>entidades.Funcionario</class>
-    	<class>entidades.Cliente</class>
-    
-        <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/automoveis" />
-            <property name="javax.persistence.jdbc.user" value="root" />
-            <property name="javax.persistence.jdbc.password" value="password" />
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
-            <property name="hibernate.hbm2ddl.auto" value="update" />
+       
+        <class>entidades.Categoria</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <!-- URL, usuário e senha vêm das variáveis DB_URL, DB_USER e DB_PASSWORD (ver JPAUtil) -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

@@ -69,18 +69,17 @@
             <scope>test</scope>
         </dependency>
         
-        <!-- JPA (banco de dados) -->
-	    <dependency>
-	        <groupId>org.hibernate</groupId>
-	        <artifactId>hibernate-entitymanager</artifactId>
-	        <version>4.1.8.Final</version>
-    	</dependency>
-    
-   	 	<dependency>
-	        <groupId>mysql</groupId>
-	        <artifactId>mysql-connector-java</artifactId>
-	        <version>8.0.33</version>
-    	</dependency>
+        <!-- JPA (banco de dados): Hibernate 6 + PostgreSQL -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.6.3.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.4</version>
+        </dependency>
 
     </dependencies>
     
