@@ -91,4 +91,16 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
         }
         return maiorId + 1;
     }
+
+	@Override
+	public void atualizar(Categoria categoria) {
+		for (int i = 0; i<categorias.size(); i++) {
+			if (categorias.get(i).getId() == categoria.getId()) {
+				categorias.set(i, categoria);
+				salvar();
+				return;
+			}
+		}
+		
+	}
 }
