@@ -20,13 +20,15 @@ public class ContratoAluguel {
     private boolean ativo;
     private double valorMulta;
     private boolean multaPaga;
+    
+    public record Datas(String dataRetirada, String dataDevolucaoPrevista) {}
 
-    public ContratoAluguel(int id, Cliente cliente, Item item, String dataRetirada, String dataDevolucaoPrevista, double valorTotal) {
+    public ContratoAluguel(int id, Cliente cliente, Item item, Datas datas, double valorTotal) {
         this.id = id;
         this.cliente = cliente;
         this.item = item;
-        this.dataRetirada = dataRetirada;
-        this.dataDevolucaoPrevista = dataDevolucaoPrevista;
+        this.dataRetirada = datas.dataRetirada();
+        this.dataDevolucaoPrevista = datas.dataDevolucaoPrevista();
         this.dataDevolucaoReal = "";
         this.valorTotal = valorTotal;
         this.status = "ATIVO";

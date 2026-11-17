@@ -70,7 +70,7 @@ public class ItemRepositorio implements IItemRepositorio {
 
                 }
 
-                Item item = new Item(id, nome, descricao, taxaDiaria, estado, valorReposicao, categoria, fornecedor);
+                Item item = new Item(id, new Item.Infos(nome, descricao, estado), new Item.ValoresItem(taxaDiaria, valorReposicao), categoria, fornecedor);
 
                 item.setStatus(status);
                 item.setAtivo(ativo);

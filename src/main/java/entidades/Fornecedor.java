@@ -16,12 +16,14 @@ public class Fornecedor {
     private String telefone;
     private boolean ativo;
  
-    public Fornecedor(int id, String razaoSocial, String cnpj, String email, String telefone) {
+    public record Infos(String razaoSocial, String cnpj, String email, String telefone) {}
+    
+    public Fornecedor(int id, Infos infos) {
         this.id = id;
-        this.razaoSocial = razaoSocial;
-        this.cnpj = cnpj;
-        this.email = email;
-        this.telefone = telefone;
+        this.razaoSocial = infos.razaoSocial();
+        this.cnpj = infos.cnpj();
+        this.email = infos.email();
+        this.telefone = infos.telefone();
         this.ativo = true;
     }
 

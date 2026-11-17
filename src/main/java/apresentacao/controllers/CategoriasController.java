@@ -63,7 +63,7 @@ public class CategoriasController extends BaseControllers<Categoria> {
 
             boolean ok;
             if (idEmEdicao == null) {
-                ok = sistema.cadastrarCategoria(new Categoria(sistema.gerarProximoIdCategoria(), nome, descricao));
+                ok = sistema.cadastrarCategoria(new Categoria(sistema.gerarProximoIdCategoria(), new Categoria.Infos(nome, descricao)));
             } else {
                 Categoria categoria = sistema.buscarCategoria(idEmEdicao);
                 if (categoria == null) throw new IllegalArgumentException("Categoria não encontrada.");

@@ -21,11 +21,6 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Padrão de sessão, alertas e navegação das telas exclusivas de clientes.
- * Não herda de BaseControllers ou BaseControllersRelatorios: ambas restringem
- * o acesso a administrador/funcionário.
- */
 public abstract class BaseControllerCliente implements Navegacao.ControladorComSessao {
 
     private static final Logger LOG = Logger.getLogger(BaseControllerCliente.class.getName());
@@ -40,7 +35,6 @@ public abstract class BaseControllerCliente implements Navegacao.ControladorComS
     @FXML protected Label lblNomeUsuario;
     @FXML protected Label lblAvatar;
 
-    // Componentes que as 3 telas do cliente têm (mesmo fx:id em todos os FXML)
     @FXML protected TextField busca;
     @FXML protected Label lblResultado;
     @FXML protected Button btnDetalhes;
@@ -70,7 +64,6 @@ public abstract class BaseControllerCliente implements Navegacao.ControladorComS
         }
     }
 
-    /** Implementada por cada tela para consultar novamente o repositório via fachada. */
     protected abstract void atualizar();
 
     @FXML

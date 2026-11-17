@@ -138,7 +138,7 @@ public class GeradorRelatorios implements IRelatorios {
             System.out.println(
                     "Formato de data inválido.");
 
-            return; //perguntar a jackson se pode usar isso
+            return; 
 
         }
 

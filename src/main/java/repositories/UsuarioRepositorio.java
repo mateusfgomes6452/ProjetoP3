@@ -18,10 +18,8 @@ public class UsuarioRepositorio implements IUsuarioRepositorio {
  private final ManipulaArquivo manipulaArquivo;
 
     public UsuarioRepositorio() {
-
         manipulaArquivo = new ManipulaArquivo(ARQUIVO);
         usuarios = carregar();
-
     }
 
 
