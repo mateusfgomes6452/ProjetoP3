@@ -434,7 +434,6 @@ public final class ContratosController implements Navegacao.ControladorComSessao
 
 
             double valorTotal = dias * item.getTaxaDiaria();
-            int idContrato = sistema.gerarProximoIdContrato();
 
             ContratoAluguel contrato = new ContratoAluguel(cliente, item,
                     new ContratoAluguel.Datas(dataRetirada.getValue().toString(), dataDevolucao.getValue().toString()), valorTotal);
@@ -453,7 +452,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             alerta(
                     Alert.AlertType.INFORMATION,
                     "Aluguel registrado",
-                    PREFIXO_CONTRATO + idContrato
+                    PREFIXO_CONTRATO //aqui tinha o idContrato, ver como resolver isso depois - Fabi
                             + " registrado com sucesso.\n"
                             + "Cliente: " + cliente.getNome() + "\n"
                             + "Item: " + item.getNome() + "\n"
