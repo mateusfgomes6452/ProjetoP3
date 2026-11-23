@@ -42,7 +42,7 @@ class SalvaRelatoriosTest {
         }
     }
 
-    private Item item(String nome, Categoria cat) {
+    private Item item(Long id, String nome, Categoria cat) {
         return new Item(new Item.Infos(nome, "descrição", "BOM"), new Item.ValoresItem(20.0, 500.0), cat, fornecedor);
     }
 
