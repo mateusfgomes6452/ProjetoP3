@@ -60,9 +60,9 @@ class GeradorRelatoriosConsoleTest {
         GerenciamentoUsuarios gerenciamentoUsuarios = new GerenciamentoUsuarios(usuarios, gerenciamentoContratos);
         relatorios = new GeradorRelatorios(gerenciamentoItens, gerenciamentoContratos, gerenciamentoUsuarios);
 
-        categoria = new Categoria(1, new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
-        fornecedor = new Fornecedor(1, new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
-        ana = new Cliente(3, "Ana Souza", "ana@loja.com", "333.333.333-33", "123456");
+        categoria = new Categoria(new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
+        fornecedor = new Fornecedor(new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
+        ana = new Cliente(new Cliente.Infos("Ana Souza", "ana@loja.com", "333.333.333-33", "123456"));
         usuarios.adicionar(ana);
 
         for (String nome : List.of("faturamento.csv", "historico_cliente.csv",
@@ -80,14 +80,14 @@ class GeradorRelatoriosConsoleTest {
         return saida.toString(StandardCharsets.UTF_8);
     }
 
-    private Item novoItem(int id, Categoria cat) {
-        Item item = new Item(id, new Item.Infos("Item " + id, "descrição", "BOM"), new Item.ValoresItem(20.0, 500.0), cat, fornecedor);
+    private Item novoItem(Long id, Categoria cat) {
+        Item item = new Item(new Item.Infos("Item " + id, "descrição", "BOM"), new Item.ValoresItem(20.0, 500.0), cat, fornecedor);
         itens.adicionar(item);
         return item;
     }
 
-    private ContratoAluguel novoContrato(int id, LocalDate retirada, LocalDate prevista) {
-        ContratoAluguel contrato = new ContratoAluguel(id, ana, novoItem(100 + id, categoria), new ContratoAluguel.Datas(
+    private ContratoAluguel novoContrato(Long id, LocalDate retirada, LocalDate prevista) {
+        ContratoAluguel contrato = new ContratoAluguel(ana, novoItem((long) 100 + id, categoria), new ContratoAluguel.Datas(
                 retirada.toString(), prevista.toString()), 100.0);
         contratos.adicionar(contrato);
         return contrato;
@@ -98,8 +98,8 @@ class GeradorRelatoriosConsoleTest {
     @Test
     @DisplayName("itens disponíveis: imprime a tabela e gera o CSV")
     void itensDisponiveis() {
-        novoItem(1, categoria);
-        novoItem(2, null);
+        novoItem((long) 1, categoria);
+        novoItem((long) 2, null);
 
         relatorios.gerarRelatorioItensDisponiveis();
 
@@ -115,7 +115,7 @@ class GeradorRelatoriosConsoleTest {
     @Test
     @DisplayName("histórico: avisa quando o cliente não existe")
     void historicoClienteInexistente() {
-        relatorios.gerarHistoricoCliente(999);
+        relatorios.gerarHistoricoCliente((long) 999);
 
         assertTrue(console().contains("Cliente não encontrado"));
     }
@@ -132,7 +132,7 @@ class GeradorRelatoriosConsoleTest {
     @DisplayName("histórico: imprime os contratos e gera o CSV")
     void historicoComContratos() {
         LocalDate hoje = LocalDate.now();
-        novoContrato(1, hoje, hoje.plusDays(2));
+        novoContrato((long) 1, hoje, hoje.plusDays(2));
 
         relatorios.gerarHistoricoCliente(ana.getId());
 
@@ -156,8 +156,8 @@ class GeradorRelatoriosConsoleTest {
     @DisplayName("itens alugados: mostra ATRASADO e EM DIA e gera o CSV")
     void itensAlugadosComContratos() {
         LocalDate hoje = LocalDate.now();
-        novoContrato(1, hoje.minusDays(10), hoje.minusDays(3));
-        novoContrato(2, hoje, hoje.plusDays(10));
+        novoContrato((long) 1, hoje.minusDays(10), hoje.minusDays(3));
+        novoContrato((long) 2, hoje, hoje.plusDays(10));
 
         relatorios.gerarRelatorioItensAlugados();
 
@@ -190,7 +190,7 @@ class GeradorRelatoriosConsoleTest {
     @DisplayName("faturamento: imprime totais e gera o CSV")
     void faturamentoComContratos() {
         LocalDate dia = LocalDate.of(2026, 10, 5);
-        ContratoAluguel c = novoContrato(1, dia, dia.plusDays(2));
+        ContratoAluguel c = novoContrato((long) 1, dia, dia.plusDays(2));
         c.setValorMulta(10.0);
 
         relatorios.gerarRelatorioFaturamento("2026-10-01", "2026-10-31");
@@ -207,8 +207,8 @@ class GeradorRelatoriosConsoleTest {
     @DisplayName("exportar* grava os arquivos sem passar pelo console")
     void exportacoesDiretas() {
         LocalDate hoje = LocalDate.now();
-        ContratoAluguel c = novoContrato(1, hoje, hoje.plusDays(2));
-        Item item = novoItem(50, categoria);
+        ContratoAluguel c = novoContrato((long) 1, hoje, hoje.plusDays(2));
+        Item item = novoItem((long) 50, categoria);
 
         relatorios.exportarItensDisponiveis(List.of(item));
         relatorios.exportarHistoricoCliente(List.of(c));

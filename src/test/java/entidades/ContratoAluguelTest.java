@@ -14,12 +14,12 @@ class ContratoAluguelTest {
 
     @BeforeEach
     void setUp() {
-        Categoria categoria = new Categoria(1, new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
-        Fornecedor fornecedor = new Fornecedor(1, new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
-        Item item = new Item(1, new Item.Infos("Furadeira", "Furadeira de impacto", "BOM"), new Item.ValoresItem(20.0, 500.0), categoria, fornecedor);
-        Cliente cliente = new Cliente(1, "Maria Silva", "maria@email.com", "111.111.111-11", "senha123");
+        Categoria categoria = new Categoria(new Categoria.Infos("Ferramentas", "Ferramentas em geral"));
+        Fornecedor fornecedor = new Fornecedor(new Fornecedor.Infos("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999"));
+        Item item = new Item(new Item.Infos("Furadeira", "Furadeira de impacto", "BOM"), new Item.ValoresItem(20.0, 500.0), categoria, fornecedor);
+        Cliente cliente = new Cliente(new Cliente.Infos("Maria Silva", "maria@email.com", "111.111.111-11", "senha123"));
 
-        contrato = new ContratoAluguel(1, cliente, item, new ContratoAluguel.Datas("2026-01-01", "2026-01-10"), 100.0);
+        contrato = new ContratoAluguel(cliente, item, new ContratoAluguel.Datas("2026-01-01", "2026-01-10"), 100.0);
     }
 
     @Test
