@@ -5,6 +5,7 @@ import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -36,7 +37,7 @@ public class ItensController extends BaseControllers<Item> {
 
     @FXML
     private void initialize() {
-        colId.setCellValueFactory(x -> new ReadOnlyIntegerWrapper(x.getValue().getId()));
+       	colId.setCellValueFactory(x -> new ReadOnlyObjectWrapper<>(x.getValue().getId()));
         colNome.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getNome()));
         colDescricao.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getDescricao()));
         colTaxa.setCellValueFactory(x -> new ReadOnlyStringWrapper(String.format("R$ %.2f", x.getValue().getTaxaDiaria())));
@@ -58,7 +59,7 @@ public class ItensController extends BaseControllers<Item> {
 
     @Override protected List<Item> listarRegistros() { return sistema.listarItens(); }
     @Override protected boolean estaAtivo(Item i) { return i.isAtivo(); }
-    @Override protected int idDe(Item i) { return i.getId(); }
+    @Override protected Long idDe(Item i) { return i.getId(); }
     @Override protected String nomeDe(Item i) { return i.getNome(); }
     @Override protected String descricaoDe(Item i) { return i.getDescricao(); }
     @Override protected boolean desativarRegistro(Item i) { return sistema.excluirItem(i.getId()); }
@@ -113,7 +114,7 @@ public class ItensController extends BaseControllers<Item> {
                 throw new IllegalArgumentException("Estado, categoria e fornecedor são obrigatórios.");
 
             Item item = (idEmEdicao == null)
-                    ? new Item(sistema.gerarProximoIdItem(), new Item.Infos(nome, descricao, estado), new Item.ValoresItem(taxa, reposicao), categoria, fornecedor)
+                    ? new Item(new Item.Infos(nome, descricao, estado), new Item.ValoresItem(taxa, reposicao), categoria, fornecedor)
                     : sistema.buscarItem(idEmEdicao);
             if (item == null) throw new IllegalArgumentException("Item não encontrado.");
 

@@ -59,7 +59,7 @@ public final class HistoricoClientesController extends BaseContratosCliente {
             exigirSessao();
             List<ContratoAluguel> doCliente = sistema.listarHistoricoCliente(cliente.getId()).stream()
                     .filter(this::pertenceAoCliente)
-                    .sorted(Comparator.comparingInt(ContratoAluguel::getId).reversed())
+                    .sorted(Comparator.comparingLong(ContratoAluguel::getId).reversed())
                     .toList();
             contratos.setAll(doCliente);
             lblTotal.setText(String.valueOf(contratos.size()));

@@ -2,11 +2,13 @@ package entidades;
 
 public class Administrador extends Usuario {
 
-    public Administrador(int id, String nome, String email, String cpf, String senha) {
+	protected Administrador() {}
 
-        super(id, new Usuario.Infos(nome, email, cpf, senha));
+    public Administrador(Usuario.Infos infos) {
+        super(infos);
     }
-    @Override
+
+	@Override
     public String getTipo() {
         return "ADMINISTRADOR";
     }

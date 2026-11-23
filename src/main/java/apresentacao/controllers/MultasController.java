@@ -51,13 +51,13 @@ public final class MultasController implements Navegacao.ControladorComSessao {
     // Uma representação visual para as duas origens de multa.
     public record LinhaMulta(
             String referencia,
-            int idContrato,
+            Long idContrato,
             String tipo,
             String descricao,
             double valor,
             String data,
             boolean paga,
-            Integer idMulta,
+            Long idMulta,
             boolean doContrato
     ) { }
 
@@ -168,7 +168,7 @@ public final class MultasController implements Navegacao.ControladorComSessao {
             exigirSessao();
             List<ContratoAluguel> contratos = new ArrayList<>(sistema.listarContratos());
             List<LinhaMulta> linhas = carregarLinhas(contratos);
-            linhas.sort(Comparator.comparingInt(LinhaMulta::idContrato)
+            linhas.sort(Comparator.comparingLong(LinhaMulta::idContrato)
                     .thenComparing(LinhaMulta::referencia));
             todas = List.copyOf(linhas);
             atualizarIndicadores();
@@ -182,7 +182,7 @@ public final class MultasController implements Navegacao.ControladorComSessao {
         // O terminal do cliente consulta/quita multas contratuais.
         // As multas manuais continuam acessíveis para administração e funcionários.
         if (!(usuario instanceof Cliente)) {
-            Map<Integer, ContratoAluguel> porId = contratos.stream()
+            Map<Long, ContratoAluguel> porId = contratos.stream()
                     .collect(Collectors.toMap(ContratoAluguel::getId,
                             Function.identity(), (primeiro, segundo) -> primeiro));
             adicionarMultasManuais(linhas, porId);
@@ -192,9 +192,9 @@ public final class MultasController implements Navegacao.ControladorComSessao {
     }
 
     private void adicionarMultasManuais(List<LinhaMulta> linhas,
-                                       Map<Integer, ContratoAluguel> contratosPorId) {
+                                       Map<Long, ContratoAluguel> porId) {
         for (Multa multa : sistema.listarMultas()) {
-            ContratoAluguel contrato = contratosPorId.get(multa.getIdContrato());
+            ContratoAluguel contrato = porId.get(multa.getIdContrato());
             if (contrato == null) {
                 LOG.warning(() -> "Contrato " + multa.getIdContrato()
                         + " não encontrado para a multa manual " + multa.getId());
@@ -316,7 +316,7 @@ public final class MultasController implements Navegacao.ControladorComSessao {
     private void registrar() {
         executar("registrar multa", () -> {
             exigirOperador();
-            int idContrato = inteiroPositivo(campoContrato.getText(), "ID do contrato");
+            Long idContrato = inteiroPositivo(campoContrato.getText(), "ID do contrato");
             if (sistema.buscarContrato(idContrato) == null) {
                 throw new IllegalArgumentException("Contrato não encontrado.");
             }
@@ -327,8 +327,7 @@ public final class MultasController implements Navegacao.ControladorComSessao {
             String descricao = textoObrigatorio(campoDescricao.getText(), "Descrição");
             double valor = valorPositivo(campoValor.getText());
             String data = LocalDate.now(ZONA_LOJA).toString();
-            Multa multa = new Multa(
-                    sistema.gerarProximoIdMulta(), idContrato, tipo, descricao, valor, data);
+            Multa multa = new Multa(idContrato, tipo, descricao, valor, data);
             if (!sistema.registrarMulta(multa)) {
                 throw new IllegalArgumentException("Não foi possível registrar a multa. Verifique o ID.");
             }
@@ -404,9 +403,9 @@ public final class MultasController implements Navegacao.ControladorComSessao {
         return sistema.quitarMulta(linha.idMulta());
     }
 
-    private int inteiroPositivo(String texto, String campo) {
+    private Long inteiroPositivo(String texto, String campo) {
         try {
-            int numero = Integer.parseInt(texto == null ? "" : texto.strip());
+            Long numero = Long.parseLong(texto == null ? "" : texto.strip());
             if (numero > 0) {
                 return numero;
             }

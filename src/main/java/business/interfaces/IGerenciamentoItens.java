@@ -8,13 +8,13 @@ public interface IGerenciamentoItens {
 
     public abstract boolean cadastrarItem(Item item);
 
-    public abstract Item buscarItem(int id);
+    public abstract Item buscarItem(Long id);
 
     public abstract List<Item> listarItens();
 
     public abstract boolean atualizarItem(Item itemNovo);
 
-    public abstract boolean excluirItem(int id);
+    public abstract boolean excluirItem(Long id);
 
     public abstract int gerarProximoId();
 }

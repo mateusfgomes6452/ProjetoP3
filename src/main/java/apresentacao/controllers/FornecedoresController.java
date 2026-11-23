@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +20,7 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
     private static final Pattern CELULAR = Pattern.compile("\\(\\d{2}\\) 9 \\d{4}-\\d{4}");
     private static final Pattern FIXO = Pattern.compile("\\(\\d{2}\\) \\d{4}-\\d{4}");
 
-    @FXML private TableColumn<Fornecedor, Number> colId;
+    @FXML private TableColumn<Fornecedor, Long> colId;
     @FXML private TableColumn<Fornecedor, String> colRazao;
     @FXML private TableColumn<Fornecedor, String> colCnpj;
     @FXML private TableColumn<Fornecedor, String> colEmail;
@@ -32,7 +33,7 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
 
     @FXML
     private void initialize() {
-        colId.setCellValueFactory(x -> new ReadOnlyIntegerWrapper(x.getValue().getId()));
+    	colId.setCellValueFactory(x -> new ReadOnlyObjectWrapper<>(x.getValue().getId()));
         colRazao.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getRazaoSocial()));
         colCnpj.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getCnpj()));
         colEmail.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getEmail()));
@@ -43,7 +44,7 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
 
     @Override protected List<Fornecedor> listarRegistros() { return sistema.listarFornecedores(); }
     @Override protected boolean estaAtivo(Fornecedor f) { return f.isAtivo(); }
-    @Override protected int idDe(Fornecedor f) { return f.getId(); }
+    @Override protected Long idDe(Fornecedor f) { return f.getId(); }
     @Override protected String nomeDe(Fornecedor f) { return f.getRazaoSocial(); }
     @Override protected String descricaoDe(Fornecedor f) { return f.getCnpj() + " " + f.getEmail() + " " + f.getTelefone(); }
     @Override protected boolean desativarRegistro(Fornecedor f) { return sistema.desativarFornecedor(f.getId()); }
@@ -94,13 +95,16 @@ public class FornecedoresController extends BaseControllers<Fornecedor> {
                 if (!FORMATO_CNPJ.matcher(documento).matches())
                     throw new IllegalArgumentException("CNPJ: use XX.XXX.XXX/XXXX-XX.");
                 sucesso = sistema.cadastrarFornecedor(
-                        new Fornecedor(sistema.gerarProximoIdFornecedor(), new Fornecedor.Infos(nome, documento, emailFor, telefoneFor)));
+                        new Fornecedor(new Fornecedor.Infos(nome, documento, emailFor, telefoneFor)));
             } else {
                 Fornecedor atual = sistema.buscarFornecedor(idEmEdicao);
                 if (atual == null) throw new IllegalArgumentException("Fornecedor não encontrado.");
-                Fornecedor modificado = new Fornecedor(atual.getId(), new Fornecedor.Infos(nome, atual.getCnpj(), emailFor, telefoneFor));
-                modificado.setAtivo(atual.isAtivo());
-                sucesso = sistema.atualizarFornecedor(modificado);
+                
+                atual.setRazaoSocial(nome);
+                atual.setEmail(emailFor);
+                atual.setTelefone(telefoneFor);
+                
+                sucesso = sistema.atualizarFornecedor(atual);
             }
             if (!sucesso) throw new IllegalArgumentException("Operação não realizada. Verifique ID/CNPJ duplicado.");
             cancelar();

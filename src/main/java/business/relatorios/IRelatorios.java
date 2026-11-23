@@ -12,7 +12,7 @@ public interface IRelatorios {
 
     public abstract void gerarRelatorioItensDisponiveis();
 
-    public abstract void gerarHistoricoCliente(int idCliente);
+    public abstract void gerarHistoricoCliente(Long idCliente);
 
     public abstract void gerarRelatorioItensAlugados();
 
@@ -24,7 +24,7 @@ public interface IRelatorios {
     public abstract List<Item> listarItensDisponiveis();
 
     /** Todos os contratos do cliente (lista vazia se não houver). */
-    public abstract List<ContratoAluguel> listarHistoricoCliente(int idCliente);
+    public abstract List<ContratoAluguel> listarHistoricoCliente(Long idCliente);
 
     /** Contratos com status ATIVO (itens alugados no momento). */
     public abstract List<ContratoAluguel> listarContratosAtivos();

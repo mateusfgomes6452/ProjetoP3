@@ -3,21 +3,24 @@ package entidades;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "fornecedores")
 public class Fornecedor {
  
-	@Id @GeneratedValue
-    private int id;
+	@Id 
+    private Long id;
+	@Column(nullable = false, unique = true)
 	
     private String razaoSocial;
-    private final String cnpj;
+    private String cnpj; //não deve ser modificada (final, não criar set)
     private String email;
     private String telefone;
     private boolean ativo;
+    
+    protected Fornecedor() {}
  
     public record Infos(String razaoSocial, String cnpj, String email, String telefone) {}
     
-    public Fornecedor(int id, Infos infos) {
-        this.id = id;
+    public Fornecedor(Infos infos) {
         this.razaoSocial = infos.razaoSocial();
         this.cnpj = infos.cnpj();
         this.email = infos.email();
@@ -25,11 +28,11 @@ public class Fornecedor {
         this.ativo = true;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -3,16 +3,17 @@ package entidades;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "itens")
 public class Item {
-	
 	
 	private static final String STATUS_DISPONIVEL = "DISPONIVEL";
 	private static final String STATUS_ALUGADO = "ALUGADO";
 	private static final String STATUS_MANUTENCAO = "MANUTENCAO";
 	
-	@Id @GeneratedValue
-    private final int id;
-    
+	@Id 
+    private Long id; //não deve ser modificada (final, não criar set)
+	@Column(nullable = false, unique = true)
+	
     private String nome;
     private String descricao;
     private double taxaDiaria;
@@ -22,13 +23,13 @@ public class Item {
     private Fornecedor fornecedor;
     private String status;
     private boolean ativo;
+    
+    protected Item() {}
 
     public record Infos(String nome, String descricao, String estadoConservacao) {}
     public record ValoresItem(double taxaDiaria, double valorReposicao) {}
     
-    public Item(int id, Infos infos, ValoresItem valores, Categoria categoria, Fornecedor fornecedor) {
-
-        this.id = id;
+    public Item(Infos infos, ValoresItem valores, Categoria categoria, Fornecedor fornecedor) {
         this.nome = infos.nome();
         this.descricao = infos.descricao();
         this.taxaDiaria = valores.taxaDiaria();
@@ -40,7 +41,7 @@ public class Item {
         this.ativo = true;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

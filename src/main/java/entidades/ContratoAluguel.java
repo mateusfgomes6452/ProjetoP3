@@ -3,26 +3,29 @@ package entidades;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "contratosAluguel")
 public class ContratoAluguel {
 
-	@Id @GeneratedValue
-    private final int id;
+	@Id 
+    private Long id; //não deve ser modificada (final)
+	@Column(nullable = false, unique = true)
 	
-    private final Cliente cliente;
-    private final Item item;
-    private final String dataRetirada;
+    private Cliente cliente; //não deve ser modificada (final, não criar set)
+    private Item item; //não deve ser modificada (final, não criar set)
+    private String dataRetirada; //não deve ser modificada (final, não criar set)
     private String dataDevolucaoPrevista;
     private String dataDevolucaoReal;
-    private final double valorTotal;
+    private double valorTotal; //não deve ser modificada (final, não criar set)
     private String status;
     private boolean ativo;
     private double valorMulta;
     private boolean multaPaga;
     
+    protected ContratoAluguel() {}
+    
     public record Datas(String dataRetirada, String dataDevolucaoPrevista) {}
 
-    public ContratoAluguel(int id, Cliente cliente, Item item, Datas datas, double valorTotal) {
-        this.id = id;
+    public ContratoAluguel(Cliente cliente, Item item, Datas datas, double valorTotal) {
         this.cliente = cliente;
         this.item = item;
         this.dataRetirada = datas.dataRetirada();
@@ -35,7 +38,7 @@ public class ContratoAluguel {
         this.multaPaga = true;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

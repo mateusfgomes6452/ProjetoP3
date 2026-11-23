@@ -7,6 +7,7 @@ import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -27,7 +28,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
     private static final Pattern EMAIL_LOJA = Pattern.compile("[\\w.%+-]+@loja\\.com", Pattern.CASE_INSENSITIVE);
     private static final Pattern FORMATO_CPF = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
 
-    @FXML private TableColumn<Usuario, Number> colId;
+    @FXML private TableColumn<Usuario, Long> colId;
     @FXML private TableColumn<Usuario, String> colNome;
     @FXML private TableColumn<Usuario, String> colCPF;
     @FXML private TableColumn<Usuario, String> colEmail;
@@ -42,25 +43,12 @@ public class UsuariosController extends BaseControllers<Usuario> {
 
     @FXML
     private void initialize() {
-        colId.setCellValueFactory(x ->
-                new ReadOnlyIntegerWrapper(x.getValue().getId()));
-
-        colNome.setCellValueFactory(x ->
-                new ReadOnlyStringWrapper(x.getValue().getNome()));
-
-        colCPF.setCellValueFactory(x ->
-                new ReadOnlyStringWrapper(
-                        String.valueOf(x.getValue().getCpf())));
-
-        colEmail.setCellValueFactory(x ->
-                new ReadOnlyStringWrapper(x.getValue().getEmail()));
-
-        colTipo.setCellValueFactory(x ->
-                new ReadOnlyStringWrapper(x.getValue().getTipo()));
-
-        colStatus.setCellValueFactory(x ->
-                new ReadOnlyStringWrapper(
-                        x.getValue().isAtivo() ? "Ativo" : "Inativo"));
+       	colId.setCellValueFactory(x -> new ReadOnlyObjectWrapper<>(x.getValue().getId()));
+       	colNome.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getNome()));
+        colCPF.setCellValueFactory(x -> new ReadOnlyStringWrapper(String.valueOf(x.getValue().getCpf())));
+        colEmail.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getEmail()));
+        colTipo.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getTipo()));
+        colStatus.setCellValueFactory(x -> new ReadOnlyStringWrapper( x.getValue().isAtivo() ? "Ativo" : "Inativo"));
 
         iniciarBase();
     }
@@ -90,7 +78,7 @@ public class UsuariosController extends BaseControllers<Usuario> {
         return sistema.listarUsuarios().stream().filter(this::podeGerenciar).toList();
     }
     @Override protected boolean estaAtivo(Usuario u) { return u.isAtivo(); }
-    @Override protected int idDe(Usuario u) { return u.getId(); }
+    @Override protected Long idDe(Usuario u) { return u.getId(); }
     @Override protected String nomeDe(Usuario u) { return u.getNome(); }
     @Override protected String descricaoDe(Usuario u) { return u.getCpf() + " " + u.getEmail(); }
     @Override protected boolean desativarRegistro(Usuario u) { return sistema.desativaUsuario(u.getId()); }
@@ -147,22 +135,17 @@ public class UsuariosController extends BaseControllers<Usuario> {
             String senha,
             String tipo) {
 
-        validarCpf(cpf);
+    	validarCpf(cpf);
+
+        Usuario.Infos infos = new Usuario.Infos(nome, email, cpf, senha);
 
         Usuario novoUsuario;
-        int novoId = sistema.gerarProximoIdUsuario();
-
         if (tipo.equals(ADMIN)) {
-            novoUsuario = new Administrador(
-                    novoId, nome, email, cpf, senha);
-
+            novoUsuario = new Administrador(infos);
         } else if (tipo.equals(FUNCIONARIO)) {
-            novoUsuario = new Funcionario(
-                    novoId, nome, email, cpf, senha);
-
+            novoUsuario = new Funcionario(infos);
         } else {
-            novoUsuario = new Cliente(
-                    novoId, nome, email, cpf, senha);
+            novoUsuario = new Cliente(infos);
         }
 
         return sistema.cadastrarUsuario(novoUsuario);

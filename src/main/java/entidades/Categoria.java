@@ -7,8 +7,9 @@ import jakarta.persistence.*;
 public class Categoria {
  
 	@Id
-    private int id;
+    private Long id;
 	@Column(nullable = false, unique = true)
+	
     private String nome;
     private String descricao;
     private boolean ativa;
@@ -19,18 +20,17 @@ public class Categoria {
  
     public record Infos(String nome, String descricao) {}
     
-    public Categoria(int id, Infos infos) {
-        this.id = id;
+    public Categoria(Infos infos) {
         this.nome = infos.nome();
         this.descricao = infos.descricao();
         this.ativa = true;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

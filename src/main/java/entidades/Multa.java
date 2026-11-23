@@ -3,21 +3,24 @@ package entidades;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "multas")
 public class Multa {
 
-	@Id @GeneratedValue
-    private final int id;
+	@Id
+    private Long id; //não deve ser modificada (final, não criar set)
+	@Column(nullable = false, unique = true)
 	
-    private final int idContrato;
-    private final String tipo;       
-    private final String descricao;
+    private Long idContrato; //não deve ser modificada (final, não criar set)
+    private String tipo; //não deve ser modificada (final, não criar set)
+    private String descricao; //não deve ser modificada (final, não criar set)
     private double valor;
     private boolean paga;
-    private final String dataCriacao;
+    private String dataCriacao; //não deve ser modificada (final, não criar set)
+    
+    protected Multa() {}
 
-    public Multa(int id, int idContrato, String tipo, String descricao, double valor, String dataCriacao) {
-        this.id = id;
-        this.idContrato = idContrato;
+    public Multa(Long idContrato, String tipo, String descricao, double valor, String dataCriacao) {
+    	this.idContrato = idContrato;
         this.tipo = tipo;
         this.descricao = descricao;
         this.valor = valor;
@@ -25,11 +28,11 @@ public class Multa {
         this.dataCriacao = dataCriacao;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public int getIdContrato() {
+    public Long getIdContrato() {
         return idContrato;
     }
 
@@ -61,8 +64,6 @@ public class Multa {
     public void setPaga(boolean paga) {
         this.paga = paga;
     }
-
-    
 
     public void pagar() {
         this.paga = true;
