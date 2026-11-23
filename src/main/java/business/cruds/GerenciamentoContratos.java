@@ -31,7 +31,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
-    public ContratoAluguel buscarContrato(int id) {
+    public ContratoAluguel buscarContrato(Long id) {
         return repositorio.buscarPorId(id);
     }
 
@@ -41,7 +41,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
-    public boolean finalizarContrato(int id) {
+    public boolean finalizarContrato(Long id) {
 
         ContratoAluguel contrato = repositorio.buscarPorId(id);
 
@@ -57,7 +57,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
-    public boolean cancelarContrato(int id) {
+    public boolean cancelarContrato(Long id) {
 
         ContratoAluguel contrato = repositorio.buscarPorId(id);
 
@@ -73,7 +73,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
-    public boolean quitarMultaContrato(int idContrato) {
+    public boolean quitarMultaContrato(Long idContrato) {
     
         ContratoAluguel contrato = repositorio.buscarPorId(idContrato);
     
@@ -93,7 +93,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
-    public boolean clientePossuiMultaPendente(int idCliente) {
+    public boolean clientePossuiMultaPendente(Long idCliente) {
 
         for (ContratoAluguel contrato : repositorio.listarTodos()) {
 
@@ -108,7 +108,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
-    public boolean clientePossuiHistorico(int idCliente) {
+    public boolean clientePossuiHistorico(Long idCliente) {
 
         for (ContratoAluguel contrato : repositorio.listarTodos()) {
 
@@ -118,11 +118,6 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         }
 
         return false;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
     }
 
     @Override

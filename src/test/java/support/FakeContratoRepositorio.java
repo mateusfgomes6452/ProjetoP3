@@ -23,7 +23,7 @@ public class FakeContratoRepositorio implements IContratoRepositorio {
     }
 
     @Override
-    public ContratoAluguel buscarPorId(int id) {
+    public ContratoAluguel buscarPorId(Long id) {
         for (ContratoAluguel contrato : contratos) {
             if (contrato.getId() == id) {
                 return contrato;
@@ -33,7 +33,7 @@ public class FakeContratoRepositorio implements IContratoRepositorio {
     }
 
     @Override
-    public List<ContratoAluguel> buscarPorCliente(int idCliente) {
+    public List<ContratoAluguel> buscarPorCliente(Long idCliente) {
         List<ContratoAluguel> resultado = new ArrayList<>();
         for (ContratoAluguel contrato : contratos) {
             if (contrato.getCliente().getId() == idCliente) {
@@ -44,7 +44,7 @@ public class FakeContratoRepositorio implements IContratoRepositorio {
     }
 
     @Override
-    public ContratoAluguel buscarContratoAtivoPorItem(int idItem) {
+    public ContratoAluguel buscarContratoAtivoPorItem(Long idItem) {
         for (ContratoAluguel contrato : contratos) {
             if (contrato.getItem().getId() == idItem && contrato.estaAtivo()) {
                 return contrato;
@@ -56,17 +56,6 @@ public class FakeContratoRepositorio implements IContratoRepositorio {
     @Override
     public void remover(ContratoAluguel contrato) {
         contratos.remove(contrato);
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-        for (ContratoAluguel contrato : contratos) {
-            if (contrato.getId() > maiorId) {
-                maiorId = contrato.getId();
-            }
-        }
-        return maiorId + 1;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class GeradorRelatorios implements IRelatorios {
     }
 
     @Override
-    public void gerarHistoricoCliente(int idCliente) {
+    public void gerarHistoricoCliente(Long idCliente) {
 
         Usuario usuario = gerenciamentoUsuarios.buscarUsuario(idCliente);
 
@@ -81,9 +81,7 @@ public class GeradorRelatorios implements IRelatorios {
 
                 System.out.println("\nArquivo CSV gerado na pasta relatorios");
                 exportarHistoricoCliente(historico);
-
             }
-
         }
     }
 
@@ -206,7 +204,7 @@ public class GeradorRelatorios implements IRelatorios {
     }
 
     @Override
-    public List<ContratoAluguel> listarHistoricoCliente(int idCliente) {
+    public List<ContratoAluguel> listarHistoricoCliente(Long idCliente) {
 
         List<ContratoAluguel> historico = new ArrayList<>();
 

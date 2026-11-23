@@ -23,7 +23,7 @@ public class FakeItemRepositorio implements IItemRepositorio {
     }
 
     @Override
-    public Item buscarPorId(int id) {
+    public Item buscarPorId(Long id) {
         for (Item item : itens) {
             if (item.getId() == id) {
                 return item;
@@ -35,17 +35,6 @@ public class FakeItemRepositorio implements IItemRepositorio {
     @Override
     public void remover(Item item) {
         itens.remove(item);
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-        for (Item item : itens) {
-            if (item.getId() > maiorId) {
-                maiorId = item.getId();
-            }
-        }
-        return maiorId + 1;
     }
 
     @Override

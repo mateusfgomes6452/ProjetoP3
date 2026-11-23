@@ -1,9 +1,12 @@
-package repositories;
+package coisas_antigas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import entidades.Fornecedor;
+import repositories.IFornecedorRepositorio;
+import repositories.ManipulaArquivo;
 
 public class FornecedorRepositorio implements IFornecedorRepositorio {
 
@@ -23,14 +26,13 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
         for (String[] campos : manipulaArquivo.carregar()) {
 
             if (campos.length >= 6) {
-                int id = Integer.parseInt(campos[0].trim());
                 String razaoSocial = campos[1].trim();
                 String cnpj = campos[2].trim();
                 String email = campos[3].trim();
                 String telefone = campos[4].trim();
                 boolean ativo = Boolean.parseBoolean(campos[5].trim());
 
-                Fornecedor fornecedor = new Fornecedor(id, new Fornecedor.Infos(razaoSocial, cnpj, email, telefone));
+                Fornecedor fornecedor = new Fornecedor(new Fornecedor.Infos(razaoSocial, cnpj, email, telefone));
 
                 fornecedor.setAtivo(ativo);
 
@@ -66,7 +68,7 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
     }
 
     @Override
-    public void desativar(int id) {
+    public void desativar(Long id) {
         Fornecedor fornecedor = buscarPorId(id);
 
         if (fornecedor != null) {
@@ -86,24 +88,12 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
     }
 
     @Override
-    public Fornecedor buscarPorId(int id) {
+    public Fornecedor buscarPorId(Long id) {
         for (Fornecedor fornecedor : fornecedores) {
-            if (fornecedor.getId() == id) {
+            if (Objects.equals(fornecedor.getId(), id)) {
                 return fornecedor;
             }
         }
         return null;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-
-        for (Fornecedor fornecedor : fornecedores) {
-            if (fornecedor.getId() > maiorId) {
-                maiorId = fornecedor.getId();
-            }
-        }
-        return maiorId + 1;
     }
 }

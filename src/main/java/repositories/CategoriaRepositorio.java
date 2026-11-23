@@ -22,12 +22,11 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
 
         for (String[] campos : manipulaArquivo.carregar()) {
             if (campos.length >= 4) {
-                int id = Integer.parseInt(campos[0].trim());
                 String nome = campos[1].trim();
                 String descricao = campos[2].trim();
                 boolean ativa = Boolean.parseBoolean(campos[3].trim());
 
-                Categoria categoria = new Categoria(id, new Categoria.Infos(nome, descricao));
+                Categoria categoria = new Categoria(new Categoria.Infos(nome, descricao));
 
                 categoria.setAtiva(ativa);
 
@@ -61,7 +60,7 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
     }
 
     @Override
-    public Categoria buscarPorId(int id) {
+    public Categoria buscarPorId(Long id) {
         for (Categoria categoria : categorias) {
             if (categoria.getId() == id) {
                 return categoria;
@@ -78,17 +77,5 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
             }
         }
         return null;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-
-        for (Categoria categoria : categorias) {
-            if (categoria.getId() > maiorId) {
-                maiorId = categoria.getId();
-            }
-        }
-        return maiorId + 1;
     }
 }

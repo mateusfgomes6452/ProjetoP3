@@ -16,7 +16,6 @@ public class GerenciamentoItens implements IGerenciamentoItens {
 
     @Override
     public boolean cadastrarItem(Item item) {
-
         if (repositorio.buscarPorId(item.getId()) != null) {
             return false;
         }
@@ -27,7 +26,7 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     }
 
     @Override
-    public Item buscarItem(int id) {
+    public Item buscarItem(Long id) {
         return repositorio.buscarPorId(id);
     }
 
@@ -38,7 +37,6 @@ public class GerenciamentoItens implements IGerenciamentoItens {
 
     @Override
     public boolean atualizarItem(Item itemNovo) {
-
         List<Item> items = repositorio.listarTodos();
         
         for (int i = 0; i < items.size(); i++){
@@ -52,8 +50,7 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     }
 
     @Override
-    public boolean excluirItem(int id) {
-
+    public boolean excluirItem(Long id) {
         Item item = repositorio.buscarPorId(id);
 
         if (item == null || item.getStatus().equals("ALUGADO")) {
@@ -65,10 +62,5 @@ public class GerenciamentoItens implements IGerenciamentoItens {
         repositorio.salvar();
 
         return true;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
     }
 }

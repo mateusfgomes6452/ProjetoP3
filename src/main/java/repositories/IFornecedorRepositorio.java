@@ -9,14 +9,11 @@ public interface IFornecedorRepositorio {
 
     public abstract List<Fornecedor> listarTodos();
 
-    public abstract void desativar(int id);
+    public abstract void desativar(Long id);
 
     public abstract Fornecedor buscarPorCnpj(String cnpj);
 
-    public abstract Fornecedor buscarPorId(int id);
+    public abstract Fornecedor buscarPorId(Long id);
 
     public abstract void salvar();
-
-    public abstract int gerarProximoId();
-
 }

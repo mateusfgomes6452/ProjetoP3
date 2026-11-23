@@ -66,7 +66,7 @@ public class SistemaFacade {
         return gerenciamentoUsuarios.cadastrarUsuario(usuario);
     }
 
-    public Usuario buscarUsuario(int id) {
+    public Usuario buscarUsuario(Long id) {
         return gerenciamentoUsuarios.buscarUsuario(id);
     }
 
@@ -81,11 +81,11 @@ public class SistemaFacade {
         return gerenciamentoUsuarios.listarUsuarios();
     }
 
-    public boolean atualizarUsuario(int id, String nome, String email, String senha) {
+    public boolean atualizarUsuario(Long id, String nome, String email, String senha) {
         return gerenciamentoUsuarios.atualizarUsuario(id, nome, email, senha);
     }
 
-    public boolean desativaUsuario(int id) {
+    public boolean desativaUsuario(Long id) {
         return gerenciamentoUsuarios.desativaUsuario(id);
     }
 
@@ -93,9 +93,6 @@ public class SistemaFacade {
         return gerenciamentoUsuarios.realizarLogin(email, senha);
     }
 
-    public int gerarProximoIdUsuario() {
-        return gerenciamentoUsuarios.gerarProximoId();
-    }
 
     // =========================================================================
     // CONTRATOS
@@ -105,7 +102,7 @@ public class SistemaFacade {
         return gerenciamentoContratos.cadastrarContrato(contrato);
     }
 
-    public ContratoAluguel buscarContrato(int id) {
+    public ContratoAluguel buscarContrato(Long id) {
         return gerenciamentoContratos.buscarContrato(id);
     }
 
@@ -113,28 +110,26 @@ public class SistemaFacade {
         return gerenciamentoContratos.listarContratos();
     }
 
-    public boolean finalizarContrato(int id) {
+    public boolean finalizarContrato(Long id) {
         return gerenciamentoContratos.finalizarContrato(id);
     }
 
-    public boolean cancelarContrato(int id) {
+    public boolean cancelarContrato(Long id) {
         return gerenciamentoContratos.cancelarContrato(id);
     }
 
-    public boolean clientePossuiMultaPendente(int idCliente) {
-        return gerenciamentoContratos.clientePossuiMultaPendente(idCliente);
+    public boolean clientePossuiMultaPendente(Long long1) {
+        return gerenciamentoContratos.clientePossuiMultaPendente(long1);
     }
 
-    public boolean clientePossuiHistorico(int idCliente) {
+    public boolean clientePossuiHistorico(Long idCliente) {
         return gerenciamentoContratos.clientePossuiHistorico(idCliente);
     }
 
-    public int gerarProximoIdContrato() {
-        return gerenciamentoContratos.gerarProximoId();
-    }
-    public boolean quitarMultaContrato(int idContrato) {
+    public boolean quitarMultaContrato(Long idContrato) {
         return gerenciamentoContratos.quitarMultaContrato(idContrato);
     }
+    
     public double calcularMulta(long diasAtraso, double taxaDiaria){
         return gerenciamentoContratos.calcularMulta(diasAtraso, taxaDiaria);
     }
@@ -147,7 +142,7 @@ public class SistemaFacade {
         return gerenciamentoItens.cadastrarItem(item);
     }
 
-    public Item buscarItem(int id) {
+    public Item buscarItem(Long id) {
         return gerenciamentoItens.buscarItem(id);
     }
 
@@ -159,12 +154,8 @@ public class SistemaFacade {
         return gerenciamentoItens.atualizarItem(itemNovo);
     }
 
-    public boolean excluirItem(int id) {
+    public boolean excluirItem(Long id) {
         return gerenciamentoItens.excluirItem(id);
-    }
-
-    public int gerarProximoIdItem() {
-        return gerenciamentoItens.gerarProximoId();
     }
 
     // =========================================================================
@@ -175,8 +166,8 @@ public class SistemaFacade {
         return gerenciamentoCategoria.cadastrarCategoria(categoria);
     }
 
-    public Categoria buscarCategoria(int id) {
-        return gerenciamentoCategoria.buscarCategoria(id);
+    public Categoria buscarCategoria(Long idEmEdicao) {
+        return gerenciamentoCategoria.buscarCategoria(idEmEdicao);
     }
 
     public List<Categoria> listarCategorias() {
@@ -187,12 +178,8 @@ public class SistemaFacade {
         return gerenciamentoCategoria.atualizarCategoria(categoriaNova);
     }
 
-    public boolean desativarCategoria(int id) {
+    public boolean desativarCategoria(Long id) {
         return gerenciamentoCategoria.desativarCategoria(id);
-    }
-
-    public int gerarProximoIdCategoria() {
-        return gerenciamentoCategoria.gerarProximoId();
     }
 
     // =========================================================================
@@ -203,7 +190,7 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.cadastrarFornecedor(fornecedor);
     }
 
-    public Fornecedor buscarFornecedor(int id) {
+    public Fornecedor buscarFornecedor(Long id) {
         return gerenciamentoFornecedor.buscarFornecedor(id);
     }
 
@@ -215,12 +202,8 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.atualizarFornecedor(fornecedorNovo);
     }
 
-    public boolean desativarFornecedor(int id) {
+    public boolean desativarFornecedor(Long id) {
         return gerenciamentoFornecedor.desativarFornecedor(id);
-    }
-
-    public int gerarProximoIdFornecedor() {
-        return gerenciamentoFornecedor.gerarProximoId();
     }
 
     // =========================================================================
@@ -231,7 +214,7 @@ public class SistemaFacade {
         return gerenciamentoMultas.registrarMulta(multa);
     }
 
-    public Multa buscarMulta(int id) {
+    public Multa buscarMulta(Long id) {
         return gerenciamentoMultas.buscarMulta(id);
     }
 
@@ -239,7 +222,7 @@ public class SistemaFacade {
         return gerenciamentoMultas.listarMultas();
     }
 
-    public List<Multa> listarMultasPorContrato(int idContrato) {
+    public List<Multa> listarMultasPorContrato(Long idContrato) {
         return gerenciamentoMultas.listarMultasPorContrato(idContrato);
     }
 
@@ -247,12 +230,8 @@ public class SistemaFacade {
         return gerenciamentoMultas.listarMultasPendentes();
     }
 
-    public boolean quitarMulta(int id) {
+    public boolean quitarMulta(Long id) {
         return gerenciamentoMultas.quitarMulta(id);
-    }
-
-    public int gerarProximoIdMulta() {
-        return gerenciamentoMultas.gerarProximoId();
     }
 
     // =========================================================================
@@ -263,7 +242,7 @@ public class SistemaFacade {
         geradorRelatorios.gerarRelatorioItensDisponiveis();
     }
 
-    public void gerarHistoricoCliente(int idCliente) {
+    public void gerarHistoricoCliente(Long idCliente) {
         geradorRelatorios.gerarHistoricoCliente(idCliente);
     }
 
@@ -281,7 +260,7 @@ public class SistemaFacade {
         return geradorRelatorios.listarItensDisponiveis();
     }
 
-    public List<ContratoAluguel> listarHistoricoCliente(int idCliente) {
+    public List<ContratoAluguel> listarHistoricoCliente(Long idCliente) {
         return geradorRelatorios.listarHistoricoCliente(idCliente);
     }
 

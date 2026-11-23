@@ -2,7 +2,7 @@ package apresentacao.controllers;
 
 import apresentacao.base.*;
 import entidades.Categoria;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CategoriasController extends BaseControllers<Categoria> {
 
-    @FXML private TableColumn<Categoria, Number> colId;
+    @FXML private TableColumn<Categoria, Long> colId;
     @FXML private TableColumn<Categoria, String> colNome;
     @FXML private TableColumn<Categoria, String> colDescricao;
     @FXML private TableColumn<Categoria, String> colStatus;
@@ -23,7 +23,7 @@ public class CategoriasController extends BaseControllers<Categoria> {
 
     @FXML
     private void initialize() {
-        colId.setCellValueFactory(x -> new ReadOnlyIntegerWrapper(x.getValue().getId()));
+    	colId.setCellValueFactory(x -> new ReadOnlyObjectWrapper<>(x.getValue().getId()));
         colNome.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getNome()));
         colDescricao.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getDescricao()));
         colStatus.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().isAtiva() ? "Ativo" : "Inativo"));
@@ -33,7 +33,7 @@ public class CategoriasController extends BaseControllers<Categoria> {
 
     @Override protected List<Categoria> listarRegistros() { return sistema.listarCategorias(); }
     @Override protected boolean estaAtivo(Categoria c) { return c.isAtiva(); }
-    @Override protected int idDe(Categoria c) { return c.getId(); }
+    @Override protected Long idDe(Categoria c) { return c.getId(); }
     @Override protected String nomeDe(Categoria c) { return c.getNome(); }
     @Override protected String descricaoDe(Categoria c) { return c.getDescricao(); }
     @Override protected boolean desativarRegistro(Categoria c) {
@@ -63,7 +63,7 @@ public class CategoriasController extends BaseControllers<Categoria> {
 
             boolean ok;
             if (idEmEdicao == null) {
-                ok = sistema.cadastrarCategoria(new Categoria(sistema.gerarProximoIdCategoria(), new Categoria.Infos(nome, descricao)));
+                ok = sistema.cadastrarCategoria(new Categoria(new Categoria.Infos(nome, descricao)));
             } else {
                 Categoria categoria = sistema.buscarCategoria(idEmEdicao);
                 if (categoria == null) throw new IllegalArgumentException("Categoria não encontrada.");

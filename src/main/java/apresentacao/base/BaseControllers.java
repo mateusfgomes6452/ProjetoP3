@@ -32,7 +32,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
 
     protected SistemaFacade sistema;
     protected Usuario usuario;
-    protected Integer idEmEdicao;
+    protected Long idEmEdicao;
     private Consumer<String> navegacao;
     private Runnable sair;
     private Filtro filtro = Filtro.TODOS;
@@ -58,7 +58,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
 
     protected abstract List<T> listarRegistros();
     protected abstract boolean estaAtivo(T registro);
-    protected abstract int idDe(T registro);
+    protected abstract Long idDe(T registro);
     protected abstract String nomeDe(T registro);
     protected abstract String descricaoDe(T registro);
     protected abstract boolean desativarRegistro(T registro);

@@ -1,7 +1,6 @@
 package main;
 
 import java.io.IOException;
-
 import business.cruds.GerenciamentoCategoria;
 import business.cruds.GerenciamentoContratos;
 import business.cruds.GerenciamentoFornecedor;
@@ -12,6 +11,7 @@ import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoItens;
 import business.interfaces.IGerenciamentoUsuarios;
 import business.relatorios.GeradorRelatorios;
+import coisas_antigas.FornecedorRepositorio;
 import entidades.Administrador;
 import facade.SistemaFacade;
 import javafx.application.Application;
@@ -21,7 +21,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import repositories.CategoriaRepositorio;
 import repositories.ContratoRepositorio;
-import repositories.FornecedorRepositorio;
 import repositories.ItemRepositorio;
 import repositories.MultaRepositorio;
 import repositories.UsuarioRepositorio;
@@ -60,8 +59,7 @@ public class Main extends Application {
         SistemaFacade.registrar(sistema);
 
         if (sistema.buscarUsuarioPorEmail(EMAIL_PADRAO) == null) {
-            sistema.cadastrarUsuario(new Administrador(sistema.gerarProximoIdUsuario(),
-                    "Jackson-Raniel", EMAIL_PADRAO, "000.000.000-00", "obrigadojackson"));
+            sistema.cadastrarUsuario(new Administrador(new Administrador.Infos("Jackson-Raniel", EMAIL_PADRAO, "000.000.000-00", "obrigadojackson")));
         }
         return sistema;
     }

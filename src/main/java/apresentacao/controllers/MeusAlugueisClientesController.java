@@ -62,7 +62,7 @@ public final class MeusAlugueisClientesController extends BaseContratosCliente {
             exigirSessao();
             List<ContratoAluguel> ativos = sistema.listarContratosAtivos().stream()
                     .filter(c -> c.estaAtivo() && pertenceAoCliente(c))
-                    .sorted(Comparator.comparingInt(ContratoAluguel::getId).reversed())
+                    .sorted(Comparator.comparingLong(ContratoAluguel::getId).reversed())
                     .toList();
             contratos.setAll(ativos);
             long atrasados = contratos.stream().filter(sistema::contratoEstaAtrasado).count();

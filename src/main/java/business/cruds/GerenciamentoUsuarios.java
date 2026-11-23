@@ -20,7 +20,6 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
     @Override
     public boolean cadastrarUsuario(Usuario usuario) {
-
         if (repositorio.buscarPorId(usuario.getId()) != null) {
             return false;
         }
@@ -39,7 +38,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
     }
 
     @Override
-    public Usuario buscarUsuario(int id) {
+    public Usuario buscarUsuario(Long id) {
         return repositorio.buscarPorId(id);
     }
 
@@ -49,8 +48,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
     }
 
     @Override
-    public boolean atualizarUsuario(int id, String nome, String email, String senha) {
-        
+    public boolean atualizarUsuario(Long id, String nome, String email, String senha) {
         Usuario usuario = repositorio.buscarPorId(id);
         if (usuario == null) {
             return false;
@@ -65,8 +63,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
     }
 
     @Override
-    public boolean desativaUsuario(int id) {
-
+    public boolean desativaUsuario(Long id) {
         Usuario usuario = repositorio.buscarPorId(id);
 
         if (usuario == null) {
@@ -86,7 +83,6 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
     @Override
     public Usuario realizarLogin(String email, String senha) {
-
         Usuario usuario = repositorio.buscarPorEmail(email);
 
         if (usuario == null || !usuario.isAtivo()) {
@@ -98,10 +94,5 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
         }
 
         return usuario;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
     }
 }

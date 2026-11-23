@@ -199,7 +199,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             List<ContratoAluguel> lista =
                     new ArrayList<>(sistema.listarContratos());
 
-            lista.sort(Comparator.comparingInt(ContratoAluguel::getId));
+            lista.sort(Comparator.comparingLong(ContratoAluguel::getId));
             todos = List.copyOf(lista);
 
             atualizarIndicadores();
@@ -434,9 +434,8 @@ public final class ContratosController implements Navegacao.ControladorComSessao
 
 
             double valorTotal = dias * item.getTaxaDiaria();
-            int idContrato = sistema.gerarProximoIdContrato();
 
-            ContratoAluguel contrato = new ContratoAluguel(idContrato, cliente, item,
+            ContratoAluguel contrato = new ContratoAluguel(cliente, item,
                     new ContratoAluguel.Datas(dataRetirada.getValue().toString(), dataDevolucao.getValue().toString()), valorTotal);
 
             if (!sistema.cadastrarContrato(contrato)) {
@@ -445,7 +444,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             }
 
             item.alugar();
-            salvarStatusDoItem(item);   // grava ALUGADO no itens.csv
+            salvarStatusDoItem(item); // grava ALUGADO no itens.csv
 
             esconder(painelRegistro);
             atualizar();
@@ -453,7 +452,7 @@ public final class ContratosController implements Navegacao.ControladorComSessao
             alerta(
                     Alert.AlertType.INFORMATION,
                     "Aluguel registrado",
-                    PREFIXO_CONTRATO + idContrato
+                    PREFIXO_CONTRATO //aqui tinha o idContrato, ver como resolver isso depois - Fabi
                             + " registrado com sucesso.\n"
                             + "Cliente: " + cliente.getNome() + "\n"
                             + "Item: " + item.getNome() + "\n"

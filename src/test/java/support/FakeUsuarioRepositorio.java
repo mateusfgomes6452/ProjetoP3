@@ -37,7 +37,7 @@ public class FakeUsuarioRepositorio implements IUsuarioRepositorio {
     }
 
     @Override
-    public Usuario buscarPorId(int id) {
+    public Usuario buscarPorId(Long id) {
         for (Usuario usuario : usuarios) {
             if (usuario.getId() == id) {
                 return usuario;
@@ -54,17 +54,6 @@ public class FakeUsuarioRepositorio implements IUsuarioRepositorio {
             }
         }
         return null;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-        for (Usuario usuario : usuarios) {
-            if (usuario.getId() > maiorId) {
-                maiorId = usuario.getId();
-            }
-        }
-        return maiorId + 1;
     }
  
     @Override

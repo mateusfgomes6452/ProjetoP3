@@ -31,9 +31,8 @@ public class ContratoRepositorio implements IContratoRepositorio {
 
         for (String[] campos : manipulaArquivo.carregar()) {
             if (campos.length >= 9) {
-                int id = Integer.parseInt(campos[0].trim());
-                int idCliente = Integer.parseInt(campos[1].trim());
-                int idItem = Integer.parseInt(campos[2].trim());
+                Long idCliente = Long.parseLong(campos[1].trim());
+                Long idItem = Long.parseLong(campos[2].trim());
                 String dataRetirada = campos[3].trim();
                 String dataPrevista = campos[4].trim();
                 String dataReal = campos[5].trim();
@@ -51,7 +50,7 @@ public class ContratoRepositorio implements IContratoRepositorio {
                 Item item = itemRepositorio.buscarPorId(idItem);
 
                 if (usuario instanceof Cliente cliente&& item != null) {
-                    ContratoAluguel contrato = new ContratoAluguel(id, cliente, item, new ContratoAluguel.Datas(dataRetirada, dataPrevista), valorTotal);
+                    ContratoAluguel contrato = new ContratoAluguel(cliente, item, new ContratoAluguel.Datas(dataRetirada, dataPrevista), valorTotal);
 
                     if (dataReal.equals("-")) {
                         contrato.setDataDevolucaoReal(null);
@@ -99,7 +98,7 @@ public class ContratoRepositorio implements IContratoRepositorio {
     }
 
     @Override
-    public ContratoAluguel buscarPorId(int id) {
+    public ContratoAluguel buscarPorId(Long id) {
         for (ContratoAluguel contrato : contratos) {
             if (contrato.getId() == id) {
                 return contrato;
@@ -116,7 +115,7 @@ public class ContratoRepositorio implements IContratoRepositorio {
     }
 
     @Override
-    public List<ContratoAluguel> buscarPorCliente(int idCliente) {
+    public List<ContratoAluguel> buscarPorCliente(Long idCliente) {
         List<ContratoAluguel> resultado = new ArrayList<>();
 
         for (ContratoAluguel contrato : contratos) {
@@ -128,24 +127,12 @@ public class ContratoRepositorio implements IContratoRepositorio {
     }
 
     @Override
-    public ContratoAluguel buscarContratoAtivoPorItem(int idItem) {
+    public ContratoAluguel buscarContratoAtivoPorItem(Long idItem) {
         for (ContratoAluguel contrato : contratos) {
             if (contrato.getItem().getId() == idItem && contrato.estaAtivo()) {
                 return contrato;
             }
         }
         return null;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-
-        for (ContratoAluguel contrato : contratos) {
-            if (contrato.getId() > maiorId) {
-                maiorId = contrato.getId();
-            }
-        }
-        return maiorId + 1;
     }
 }

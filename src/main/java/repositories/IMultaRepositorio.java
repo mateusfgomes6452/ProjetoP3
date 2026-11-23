@@ -9,13 +9,11 @@ public interface IMultaRepositorio {
 
     public abstract List<Multa> listarTodos();
 
-    public abstract Multa buscarPorId(int id);
+    public abstract Multa buscarPorId(Long id);
 
-    public abstract List<Multa> buscarPorContrato(int idContrato);
+    public abstract List<Multa> buscarPorContrato(Long idContrato);
 
     public abstract List<Multa> buscarPendentes();
 
     public abstract void salvar();
-
-    public abstract int gerarProximoId();
 }

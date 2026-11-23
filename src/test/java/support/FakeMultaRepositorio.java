@@ -22,7 +22,7 @@ public class FakeMultaRepositorio implements IMultaRepositorio {
     }
 
     @Override
-    public Multa buscarPorId(int id) {
+    public Multa buscarPorId(Long id) {
         for (Multa multa : multas) {
             if (multa.getId() == id) {
                 return multa;
@@ -32,7 +32,7 @@ public class FakeMultaRepositorio implements IMultaRepositorio {
     }
 
     @Override
-    public List<Multa> buscarPorContrato(int idContrato) {
+    public List<Multa> buscarPorContrato(Long idContrato) {
         List<Multa> resultado = new ArrayList<>();
         for (Multa multa : multas) {
             if (multa.getIdContrato() == idContrato) {
@@ -51,17 +51,6 @@ public class FakeMultaRepositorio implements IMultaRepositorio {
             }
         }
         return resultado;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-        for (Multa multa : multas) {
-            if (multa.getId() > maiorId) {
-                maiorId = multa.getId();
-            }
-        }
-        return maiorId + 1;
     }
 
     @Override
