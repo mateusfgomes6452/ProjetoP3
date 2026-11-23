@@ -33,7 +33,6 @@ public class ItemRepositorio implements IItemRepositorio {
         for (String[] campos : manipulaArquivo.carregar()) {
 
             if (campos.length >= 9) {
-                Long id = Long.parseLong(campos[0].trim());
                 String nome = campos[1].trim();
                 String descricao = campos[2].trim();
                 double taxaDiaria = Double.parseDouble(campos[3].trim());

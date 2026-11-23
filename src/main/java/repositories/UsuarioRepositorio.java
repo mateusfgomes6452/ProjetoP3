@@ -26,10 +26,7 @@ public class UsuarioRepositorio implements IUsuarioRepositorio {
         List<Usuario> lista = new ArrayList<>();
 
         for (String[] campos : manipulaArquivo.carregar()) {
-
             if (campos.length >= 7) {
-
-                Long id = Long.parseLong(campos[0].trim());
                 String tipo = campos[1].trim();
                 String nome = campos[2].trim();
                 String email = campos[3].trim();

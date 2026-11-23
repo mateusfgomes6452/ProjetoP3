@@ -22,7 +22,6 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
 
         for (String[] campos : manipulaArquivo.carregar()) {
             if (campos.length >= 4) {
-                Long id = Long.parseLong(campos[0].trim());
                 String nome = campos[1].trim();
                 String descricao = campos[2].trim();
                 boolean ativa = Boolean.parseBoolean(campos[3].trim());

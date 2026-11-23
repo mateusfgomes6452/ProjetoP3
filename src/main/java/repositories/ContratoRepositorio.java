@@ -31,7 +31,6 @@ public class ContratoRepositorio implements IContratoRepositorio {
 
         for (String[] campos : manipulaArquivo.carregar()) {
             if (campos.length >= 9) {
-                Long id = Long.parseLong(campos[0].trim());
                 Long idCliente = Long.parseLong(campos[1].trim());
                 Long idItem = Long.parseLong(campos[2].trim());
                 String dataRetirada = campos[3].trim();

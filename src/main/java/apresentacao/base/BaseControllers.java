@@ -98,7 +98,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
     protected void iniciarNovo(String entidade, Runnable limpar) {
         executar("abrir cadastro de " + entidade, () -> {
             exigirSessao();
-            idEmEdicao =(Long) null;
+            idEmEdicao = null;
             tituloFormulario.setText("Cadastrar " + entidade);
             limpar.run();
             btnSalvar.setText("Cadastrar " + entidade);

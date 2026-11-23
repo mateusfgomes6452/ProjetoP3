@@ -2,6 +2,7 @@ package coisas_antigas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import entidades.Fornecedor;
 import repositories.IFornecedorRepositorio;
@@ -25,7 +26,6 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
         for (String[] campos : manipulaArquivo.carregar()) {
 
             if (campos.length >= 6) {
-                int id = Integer.parseInt(campos[0].trim());
                 String razaoSocial = campos[1].trim();
                 String cnpj = campos[2].trim();
                 String email = campos[3].trim();
@@ -90,7 +90,7 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
     @Override
     public Fornecedor buscarPorId(Long id) {
         for (Fornecedor fornecedor : fornecedores) {
-            if (fornecedor.getId() == id) {
+            if (Objects.equals(fornecedor.getId(), id)) {
                 return fornecedor;
             }
         }
