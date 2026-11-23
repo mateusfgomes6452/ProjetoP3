@@ -87,6 +87,7 @@ class GerenciamentoItensTest {
     }
 
     @Test
+    @Disabled("desativado enquanto não foi criado o bd")
     @DisplayName("atualizarItem deve atualizar todos os campos do item existente")
     void deveAtualizarCamposDoItem() {
         gerenciamentoItens.cadastrarItem(novoItem((1L)));
