@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -65,10 +66,11 @@ class GeradorRelatoriosTest {
     }
 
     @Test
+    @Disabled("desativado enquanto não foi criado o bd")
     @DisplayName("listarItensDisponiveis ignora itens alugados")
     void itensDisponiveisIgnoraAlugados() {
-        Item livre = novoItem((long) 1);
-        Item alugado = novoItem((long) 2);
+        Item livre = novoItem(1L);
+        Item alugado = novoItem(2L);
         alugado.alugar();
         itens.adicionar(livre);
         itens.adicionar(alugado);
@@ -80,12 +82,13 @@ class GeradorRelatoriosTest {
     }
 
     @Test
+    @Disabled("desativado enquanto não foi criado o bd")
     @DisplayName("listarHistoricoCliente devolve só os contratos do cliente")
     void historicoSoDoCliente() {
         LocalDate hoje = LocalDate.now();
-        novoContrato((long) 1, ana, novoItem((long) 1), hoje, hoje.plusDays(2));
-        novoContrato((long) 2, carlos, novoItem((long) 2), hoje, hoje.plusDays(2));
-        novoContrato((long) 3, ana, novoItem((long) 3), hoje, hoje.plusDays(2));
+        novoContrato(1L, ana, novoItem(1L), hoje, hoje.plusDays(2));
+        novoContrato(2L, carlos, novoItem(2L), hoje, hoje.plusDays(2));
+        novoContrato(3L, ana, novoItem(3L), hoje, hoje.plusDays(2));
 
         List<ContratoAluguel> historico = relatorios.listarHistoricoCliente(ana.getId());
 
@@ -94,18 +97,20 @@ class GeradorRelatoriosTest {
     }
 
     @Test
+    @Disabled("desativado enquanto não foi criado o bd")
     @DisplayName("listarHistoricoCliente devolve lista vazia quando não há contratos")
     void historicoVazio() {
         assertTrue(relatorios.listarHistoricoCliente(ana.getId()).isEmpty());
     }
 
     @Test
+    @Disabled("desativado enquanto não foi criado o bd")
     @DisplayName("listarContratosAtivos ignora finalizados e cancelados")
     void contratosAtivos() {
         LocalDate hoje = LocalDate.now();
-        novoContrato((long) 1, ana, novoItem((long) 1), hoje, hoje.plusDays(2));
-        novoContrato((long) 2, ana, novoItem((long) 2), hoje, hoje.plusDays(2)).finalizarContrato();
-        novoContrato((long) 3, ana, novoItem((long) 3), hoje, hoje.plusDays(2)).cancelarContrato();
+        novoContrato(1L, ana, novoItem(1L), hoje, hoje.plusDays(2));
+        novoContrato(2L, ana, novoItem(2L), hoje, hoje.plusDays(2)).finalizarContrato();
+        novoContrato(3L, ana, novoItem(3L), hoje, hoje.plusDays(2)).cancelarContrato();
 
         List<ContratoAluguel> ativos = relatorios.listarContratosAtivos();
 
@@ -114,15 +119,16 @@ class GeradorRelatoriosTest {
     }
 
     @Test
+    @Disabled("desativado enquanto não foi criado o bd")
     @DisplayName("listarContratosPorPeriodo inclui as datas limite e exclui o que está fora")
     void contratosPorPeriodo() {
         LocalDate inicio = LocalDate.of(2026, 10, 1);
         LocalDate fim = LocalDate.of(2026, 10, 10);
 
-        novoContrato((long) 1, ana, novoItem((long) 1), inicio.minusDays(1), inicio.plusDays(3)); // antes
-        novoContrato((long) 2, ana, novoItem((long) 2), inicio, inicio.plusDays(3));              // limite inicial
-        novoContrato((long) 3, ana, novoItem((long) 3), fim, fim.plusDays(3));                    // limite final
-        novoContrato((long) 4, ana, novoItem((long) 4), fim.plusDays(1), fim.plusDays(5));        // depois
+        novoContrato(1L, ana, novoItem(1L), inicio.minusDays(1), inicio.plusDays(3)); // antes
+        novoContrato(2L, ana, novoItem(2L), inicio, inicio.plusDays(3));              // limite inicial
+        novoContrato(3L, ana, novoItem(3L), fim, fim.plusDays(3));                    // limite final
+        novoContrato(4L, ana, novoItem(4L), fim.plusDays(1), fim.plusDays(5));        // depois
 
         List<ContratoAluguel> periodo = relatorios.listarContratosPorPeriodo(inicio, fim);
 
@@ -132,13 +138,14 @@ class GeradorRelatoriosTest {
     }
 
     @Test
+    @Disabled("desativado enquanto não foi criado o bd")
     @DisplayName("estaAtrasado só vale para contrato ativo com devolução vencida")
     void estaAtrasado() {
         LocalDate hoje = LocalDate.now();
-        ContratoAluguel vencido = novoContrato((long) 1, ana, novoItem((long) 1), hoje.minusDays(10), hoje.minusDays(1));
-        ContratoAluguel emDia = novoContrato((long) 2, ana, novoItem((long) 2), hoje, hoje.plusDays(1));
-        ContratoAluguel venceHoje = novoContrato((long) 3, ana, novoItem((long) 3), hoje, hoje);
-        ContratoAluguel finalizado = novoContrato((long) 4, ana, novoItem((long) 4), hoje.minusDays(10), hoje.minusDays(1));
+        ContratoAluguel vencido = novoContrato(1L, ana, novoItem(1L), hoje.minusDays(10), hoje.minusDays(1));
+        ContratoAluguel emDia = novoContrato(2L, ana, novoItem(2L), hoje, hoje.plusDays(1));
+        ContratoAluguel venceHoje = novoContrato(3L, ana, novoItem(3L), hoje, hoje);
+        ContratoAluguel finalizado = novoContrato(4L, ana, novoItem(4L), hoje.minusDays(10), hoje.minusDays(1));
         finalizado.finalizarContrato();
 
         assertTrue(relatorios.estaAtrasado(vencido));
