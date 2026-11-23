@@ -12,12 +12,9 @@ public interface IUsuarioRepositorio {
 
     public abstract Usuario buscarPorCpf(String cpf);
 
-    public abstract Usuario buscarPorId(int id);
+    public abstract Usuario buscarPorId(Long id);
 
     public abstract Usuario buscarPorEmail(String email);
 
     public abstract void salvar();
-
-    public abstract int gerarProximoId();
-    
 }

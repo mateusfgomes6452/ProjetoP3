@@ -14,6 +14,4 @@ public interface IGerenciamentoCategoria {
     public abstract boolean atualizarCategoria(Categoria categoriaNova);
  
     public abstract boolean desativarCategoria(Long id);
- 
-    public abstract int gerarProximoId();
 }

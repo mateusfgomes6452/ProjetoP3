@@ -9,16 +9,13 @@ public interface IContratoRepositorio {
 
     public abstract List<ContratoAluguel> listarTodos();
 
-    public abstract ContratoAluguel buscarPorId(int id);
+    public abstract ContratoAluguel buscarPorId(Long id);
 
-    public abstract List<ContratoAluguel> buscarPorCliente(int idCliente);
+    public abstract List<ContratoAluguel> buscarPorCliente(Long idCliente);
 
-    public abstract ContratoAluguel buscarContratoAtivoPorItem(int idItem);
+    public abstract ContratoAluguel buscarContratoAtivoPorItem(Long idItem);
 
     public abstract void remover(ContratoAluguel contrato);
     
     public abstract void salvar();
-
-    public abstract int gerarProximoId();
-
 }

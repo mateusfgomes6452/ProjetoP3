@@ -30,7 +30,7 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
                 String telefone = campos[4].trim();
                 boolean ativo = Boolean.parseBoolean(campos[5].trim());
 
-                Fornecedor fornecedor = new Fornecedor(id, new Fornecedor.Infos(razaoSocial, cnpj, email, telefone));
+                Fornecedor fornecedor = new Fornecedor(new Fornecedor.Infos(razaoSocial, cnpj, email, telefone));
 
                 fornecedor.setAtivo(ativo);
 
@@ -66,7 +66,7 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
     }
 
     @Override
-    public void desativar(int id) {
+    public void desativar(Long id) {
         Fornecedor fornecedor = buscarPorId(id);
 
         if (fornecedor != null) {
@@ -86,24 +86,12 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
     }
 
     @Override
-    public Fornecedor buscarPorId(int id) {
+    public Fornecedor buscarPorId(Long id) {
         for (Fornecedor fornecedor : fornecedores) {
             if (fornecedor.getId() == id) {
                 return fornecedor;
             }
         }
         return null;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-
-        for (Fornecedor fornecedor : fornecedores) {
-            if (fornecedor.getId() > maiorId) {
-                maiorId = fornecedor.getId();
-            }
-        }
-        return maiorId + 1;
     }
 }

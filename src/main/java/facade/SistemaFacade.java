@@ -93,9 +93,6 @@ public class SistemaFacade {
         return gerenciamentoUsuarios.realizarLogin(email, senha);
     }
 
-    public int gerarProximoIdUsuario() {
-        return gerenciamentoUsuarios.gerarProximoId();
-    }
 
     // =========================================================================
     // CONTRATOS
@@ -129,12 +126,10 @@ public class SistemaFacade {
         return gerenciamentoContratos.clientePossuiHistorico(idCliente);
     }
 
-    public int gerarProximoIdContrato() {
-        return gerenciamentoContratos.gerarProximoId();
-    }
     public boolean quitarMultaContrato(Long idContrato) {
         return gerenciamentoContratos.quitarMultaContrato(idContrato);
     }
+    
     public double calcularMulta(long diasAtraso, double taxaDiaria){
         return gerenciamentoContratos.calcularMulta(diasAtraso, taxaDiaria);
     }
@@ -163,10 +158,6 @@ public class SistemaFacade {
         return gerenciamentoItens.excluirItem(id);
     }
 
-    public int gerarProximoIdItem() {
-        return gerenciamentoItens.gerarProximoId();
-    }
-
     // =========================================================================
     // CATEGORIAS
     // =========================================================================
@@ -191,10 +182,6 @@ public class SistemaFacade {
         return gerenciamentoCategoria.desativarCategoria(id);
     }
 
-    public int gerarProximoIdCategoria() {
-        return gerenciamentoCategoria.gerarProximoId();
-    }
-
     // =========================================================================
     // FORNECEDORES
     // =========================================================================
@@ -217,10 +204,6 @@ public class SistemaFacade {
 
     public boolean desativarFornecedor(Long id) {
         return gerenciamentoFornecedor.desativarFornecedor(id);
-    }
-
-    public int gerarProximoIdFornecedor() {
-        return gerenciamentoFornecedor.gerarProximoId();
     }
 
     // =========================================================================
@@ -249,10 +232,6 @@ public class SistemaFacade {
 
     public boolean quitarMulta(Long id) {
         return gerenciamentoMultas.quitarMulta(id);
-    }
-
-    public int gerarProximoIdMulta() {
-        return gerenciamentoMultas.gerarProximoId();
     }
 
     // =========================================================================

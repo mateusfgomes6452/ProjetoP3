@@ -10,11 +10,9 @@ public interface IItemRepositorio {
 
     public abstract List<Item> listarTodos();
 
-    public abstract Item buscarPorId(int id);
+    public abstract Item buscarPorId(Long id);
 
     public abstract void remover(Item item);
 
     public abstract void salvar();
-
-    public abstract int gerarProximoId();
 }

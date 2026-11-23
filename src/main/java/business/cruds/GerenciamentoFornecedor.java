@@ -16,7 +16,6 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
     @Override
     public boolean cadastrarFornecedor(Fornecedor fornecedor) {
-
         if (repositorio.buscarPorId(fornecedor.getId()) != null) {
             return false;
         }
@@ -31,7 +30,7 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
     }
 
     @Override
-    public Fornecedor buscarFornecedor(int id) {
+    public Fornecedor buscarFornecedor(Long id) {
         return repositorio.buscarPorId(id);
     }
 
@@ -42,7 +41,6 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
     @Override
     public boolean atualizarFornecedor(Fornecedor fornecedorNovo) {
-
         List<Fornecedor> fornecedores = repositorio.listarTodos();
 
         for (int i = 0; i < fornecedores.size(); i++){
@@ -56,8 +54,7 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
     }
 
     @Override
-    public boolean desativarFornecedor(int id) {
-
+    public boolean desativarFornecedor(Long id) {
         Fornecedor fornecedor = repositorio.buscarPorId(id);
 
         if (fornecedor == null) {
@@ -67,10 +64,5 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
         repositorio.desativar(id); 
 
         return true;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
     }
 }

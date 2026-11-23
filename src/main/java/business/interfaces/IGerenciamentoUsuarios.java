@@ -16,7 +16,4 @@ public interface IGerenciamentoUsuarios {
     public abstract boolean desativaUsuario(Long id);
 
     public abstract Usuario realizarLogin(String email, String senha);
-    
-    public abstract int gerarProximoId();
-
 }

@@ -16,7 +16,6 @@ public class GerenciamentoMultas implements IGerenciamentoMultas {
 
     @Override
     public boolean registrarMulta(Multa multa) {
-
         if (repositorio.buscarPorId(multa.getId()) != null) {
             return false;
         }
@@ -27,7 +26,7 @@ public class GerenciamentoMultas implements IGerenciamentoMultas {
     }
 
     @Override
-    public Multa buscarMulta(int id) {
+    public Multa buscarMulta(Long id) {
         return repositorio.buscarPorId(id);
     }
 
@@ -37,7 +36,7 @@ public class GerenciamentoMultas implements IGerenciamentoMultas {
     }
 
     @Override
-    public List<Multa> listarMultasPorContrato(int idContrato) {
+    public List<Multa> listarMultasPorContrato(Long idContrato) {
         return repositorio.buscarPorContrato(idContrato);
     }
 
@@ -47,8 +46,7 @@ public class GerenciamentoMultas implements IGerenciamentoMultas {
     }
 
     @Override
-    public boolean quitarMulta(int id) {
-
+    public boolean quitarMulta(Long id) {
         Multa multa = repositorio.buscarPorId(id);
 
         if (multa == null || multa.isPaga()) {
@@ -60,11 +58,5 @@ public class GerenciamentoMultas implements IGerenciamentoMultas {
         repositorio.salvar();
 
         return true;
-    }
-
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
     }
 }

@@ -60,8 +60,7 @@ public class Main extends Application {
         SistemaFacade.registrar(sistema);
 
         if (sistema.buscarUsuarioPorEmail(EMAIL_PADRAO) == null) {
-            sistema.cadastrarUsuario(new Administrador(sistema.gerarProximoIdUsuario(),
-                    "Jackson-Raniel", EMAIL_PADRAO, "000.000.000-00", "obrigadojackson"));
+            sistema.cadastrarUsuario(new Administrador(new Administrador.Infos("Jackson-Raniel", EMAIL_PADRAO, "000.000.000-00", "obrigadojackson")));
         }
         return sistema;
     }

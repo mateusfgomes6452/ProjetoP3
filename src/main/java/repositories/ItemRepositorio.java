@@ -28,14 +28,12 @@ public class ItemRepositorio implements IItemRepositorio {
     }
 
     public List<Item> carregar() {
-
         List<Item> lista = new ArrayList<>();
 
         for (String[] campos : manipulaArquivo.carregar()) {
 
             if (campos.length >= 9) {
-
-                int id = Integer.parseInt(campos[0].trim());
+                Long id = Long.parseLong(campos[0].trim());
                 String nome = campos[1].trim();
                 String descricao = campos[2].trim();
                 double taxaDiaria = Double.parseDouble(campos[3].trim());
@@ -44,49 +42,39 @@ public class ItemRepositorio implements IItemRepositorio {
                 String status = campos[6].trim();
                 boolean ativo = Boolean.parseBoolean(campos[7].trim());
 
-                int idCategoria = Integer.parseInt(campos[8].trim());
+                Long idCategoria = Long.parseLong(campos[8].trim());
 
-                int idFornecedor = 0;
+                Long idFornecedor = (long) 0;
 
                 if (campos.length > 9) {
-
-                    idFornecedor = Integer.parseInt(campos[9].trim());
-
+                    idFornecedor = Long.parseLong(campos[9].trim());
                 }
 
                 Categoria categoria = null;
 
                 if (idCategoria > 0) {
-
                     categoria = categoriaRepositorio.buscarPorId(idCategoria);
-
                 }
 
                 Fornecedor fornecedor = null;
 
                 if (idFornecedor > 0) {
-
                     fornecedor = fornecedorRepositorio.buscarPorId(idFornecedor);
-
                 }
 
-                Item item = new Item(id, new Item.Infos(nome, descricao, estado), new Item.ValoresItem(taxaDiaria, valorReposicao), categoria, fornecedor);
+                Item item = new Item(new Item.Infos(nome, descricao, estado), new Item.ValoresItem(taxaDiaria, valorReposicao), categoria, fornecedor);
 
                 item.setStatus(status);
                 item.setAtivo(ativo);
 
                 lista.add(item);
-
             }
-
         }
-
         return lista;
-
     }
+    
     @Override
     public void salvar() {
-
         List<String[]> linhas = new ArrayList<>();
 
         linhas.add(new String[]{"id","nome","descricao","taxaDiaria","estadoConservacao","valorReposicao","status","ativo","idCategoria","idFornecedor"});
@@ -98,68 +86,37 @@ public class ItemRepositorio implements IItemRepositorio {
         }
 
         manipulaArquivo.salvar(linhas);
-
     }
 
     @Override
     public void adicionar(Item item) {
-
         itens.add(item);
 
         salvar();
-
     }
 
     @Override
     public List<Item> listarTodos() {
-
         return itens;
 
     }
 
     @Override
-    public Item buscarPorId(int id) {
-
+    public Item buscarPorId(Long id) {
         for (Item item : itens) {
 
             if (item.getId() == id) {
-
                 return item;
-
             }
-
         }
-
         return null;
-
     }
 
     @Override
     public void remover(Item item) {
-
         itens.remove(item);
 
         salvar();
 
     }
-
-    @Override
-    public int gerarProximoId() {
-
-        int maiorId = 0;
-
-        for (Item item : itens) {
-
-            if (item.getId() > maiorId) {
-
-                maiorId = item.getId();
-
-            }
-
-        }
-
-        return maiorId + 1;
-
-    }
-
 }

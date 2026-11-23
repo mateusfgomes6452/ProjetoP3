@@ -17,6 +17,4 @@ public interface IGerenciamentoMultas {
     public abstract List<Multa> listarMultasPendentes();
 
     public abstract boolean quitarMulta(Long id);
-
-    public abstract int gerarProximoId();
 }

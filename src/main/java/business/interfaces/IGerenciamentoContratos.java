@@ -17,12 +17,9 @@ public interface IGerenciamentoContratos {
 
     public abstract boolean quitarMultaContrato(Long idContrato);
 
-    public abstract int gerarProximoId();
-
     public boolean clientePossuiMultaPendente(Long idCliente);
 
     public boolean clientePossuiHistorico(Long idCliente);
 
     public double calcularMulta(long diasAtraso, double taxaDiaria);
-
 }

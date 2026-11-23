@@ -15,6 +15,4 @@ public interface IGerenciamentoItens {
     public abstract boolean atualizarItem(Item itemNovo);
 
     public abstract boolean excluirItem(Long id);
-
-    public abstract int gerarProximoId();
 }

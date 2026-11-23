@@ -10,12 +10,9 @@ public interface ICategoriaRepositorio {
 
     public abstract List<Categoria> listarTodos();
 
-    public abstract Categoria buscarPorId(int id);
+    public abstract Categoria buscarPorId(Long id);
 
     public abstract Categoria buscarPorNome(String nome);
 
     public abstract void salvar();
-
-    public abstract int gerarProximoId();
-
 }

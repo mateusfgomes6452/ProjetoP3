@@ -31,7 +31,7 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     }
 
     @Override
-    public Categoria buscarCategoria(int id) {
+    public Categoria buscarCategoria(Long id) {
         return repositorio.buscarPorId(id);
     }
 
@@ -57,7 +57,7 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     }
 
     @Override
-    public boolean desativarCategoria(int id) {
+    public boolean desativarCategoria(Long id) {
 
         Categoria categoria = repositorio.buscarPorId(id);
 
@@ -70,10 +70,5 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
         repositorio.salvar();
 
         return true;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
     }
 }

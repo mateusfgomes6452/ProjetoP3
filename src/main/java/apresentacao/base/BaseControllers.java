@@ -98,7 +98,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
     protected void iniciarNovo(String entidade, Runnable limpar) {
         executar("abrir cadastro de " + entidade, () -> {
             exigirSessao();
-            idEmEdicao = (Integer) null;
+            idEmEdicao =(Long) null;
             tituloFormulario.setText("Cadastrar " + entidade);
             limpar.run();
             btnSalvar.setText("Cadastrar " + entidade);
@@ -186,7 +186,7 @@ public abstract class BaseControllers<T> implements Navegacao.ControladorComSess
 
     @FXML
     protected void cancelar() {
-        idEmEdicao = (Integer) null;
+        idEmEdicao = null;
         exibirFormulario(false);
     }
 

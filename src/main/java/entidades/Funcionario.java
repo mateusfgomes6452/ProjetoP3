@@ -1,11 +1,16 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Funcionario extends Usuario {
 
-    public Funcionario(String nome, String email, String cpf, String senha) {
+	protected Funcionario() {}
 
-    	super(new Usuario.Infos(nome, email, cpf, senha));
+    public Funcionario(Usuario.Infos infos) {
+        super(infos);
     }
+    
     @Override
     public String getTipo() {
         return "FUNCIONARIO";
