@@ -1,9 +1,11 @@
-package repositories;
+package coisas_antigas;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import entidades.Fornecedor;
+import repositories.IFornecedorRepositorio;
+import repositories.ManipulaArquivo;
 
 public class FornecedorRepositorio implements IFornecedorRepositorio {
 

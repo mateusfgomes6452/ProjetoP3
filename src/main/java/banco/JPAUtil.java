@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 public class JPAUtil {
 	private static final EntityManagerFactory emf = 
-			Persistence.createEntityManagerFactory("atividadep3");
+			Persistence.createEntityManagerFactory("default");
 	
 	public static EntityManager getEntityManager() {
 		return emf.createEntityManager();

@@ -2,7 +2,6 @@ package apresentacao.controllers;
 
 import apresentacao.base.*;
 import entidades.Categoria;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;

@@ -81,6 +81,5 @@ public class JPAFornecedorDAO implements IFornecedorRepositorio{
 	@Override
 	public void salvar() {
 		// TODO Auto-generated method stub
-		
 	}
 }

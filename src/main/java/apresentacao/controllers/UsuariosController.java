@@ -6,7 +6,6 @@ import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
