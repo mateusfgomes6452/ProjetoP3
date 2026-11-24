@@ -16,7 +16,7 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
     @Override
     public boolean cadastrarFornecedor(Fornecedor fornecedor) {
-        if (repositorio.buscarPorId(fornecedor.getId()) != null) {
+        if (fornecedor.getId() != null && repositorio.buscarPorId(fornecedor.getId()) != null) {
             return false;
         }
 
@@ -41,16 +41,11 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
     @Override
     public boolean atualizarFornecedor(Fornecedor fornecedorNovo) {
-        List<Fornecedor> fornecedores = repositorio.listarTodos();
-
-        for (int i = 0; i < fornecedores.size(); i++){
-            if (fornecedores.get(i).getId() == fornecedorNovo.getId()){
-                fornecedores.set(i, fornecedorNovo);
-                repositorio.salvar();
-                return true;
-            }
+    	if (fornecedorNovo.getId() == null || repositorio.buscarPorId(fornecedorNovo.getId()) == null) {
+            return false;
         }
-        return false;
+    	repositorio.atualizar(fornecedorNovo);
+    	return true;
     }
 
     @Override
