@@ -80,13 +80,14 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
     }
 
 	@Override
-	public void atualizar(Categoria categoria) {
+	public Categoria atualizar(Categoria categoria) {
 		for (int i = 0; i<categorias.size(); i++) {
 			if (Objects.equals(categorias.get(i).getId(), categoria.getId())) {
 				categorias.set(i, categoria);
 				salvar();
-				return;
+				return categoria;
 			}
 		}	
+		return null;
 	}
 }

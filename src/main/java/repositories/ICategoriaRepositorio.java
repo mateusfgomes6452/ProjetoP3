@@ -14,6 +14,6 @@ public interface ICategoriaRepositorio {
 
     public abstract Categoria buscarPorNome(String nome);
     
-    public abstract void atualizar(Categoria categoria);
+    public abstract Categoria atualizar(Categoria categoria);
 
 }

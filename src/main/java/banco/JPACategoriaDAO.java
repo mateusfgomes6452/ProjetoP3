@@ -27,13 +27,14 @@ public class JPACategoriaDAO implements ICategoriaRepositorio {
 		}
 	}
 	@Override
-	public void atualizar(Categoria categoria) {
+	public Categoria atualizar(Categoria categoria) {
 		EntityManager em = JPAUtil.getEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		try {
 			tx.begin();
-			em.merge(categoria);
+			Categoria atualizada = em.merge(categoria);
 			tx.commit();
+			return atualizada;
 		} catch (RuntimeException e) {
 			if (tx.isActive()) {
 				tx.rollback();
