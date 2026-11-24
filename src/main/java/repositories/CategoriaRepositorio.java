@@ -2,6 +2,7 @@ package repositories;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import entidades.Categoria;
 
@@ -36,7 +37,6 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
         return lista;
     }
     
-    @Override
     public void salvar() {
         List<String[]> linhas = new ArrayList<>();
 
@@ -78,4 +78,15 @@ public class CategoriaRepositorio implements ICategoriaRepositorio {
         }
         return null;
     }
+
+	@Override
+	public void atualizar(Categoria categoria) {
+		for (int i = 0; i<categorias.size(); i++) {
+			if (Objects.equals(categorias.get(i).getId(), categoria.getId())) {
+				categorias.set(i, categoria);
+				salvar();
+				return;
+			}
+		}	
+	}
 }

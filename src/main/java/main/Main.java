@@ -11,7 +11,6 @@ import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoItens;
 import business.interfaces.IGerenciamentoUsuarios;
 import business.relatorios.GeradorRelatorios;
-import banco.JPAFornecedorDAO;
 import entidades.Administrador;
 import facade.SistemaFacade;
 import javafx.application.Application;
@@ -19,7 +18,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import repositories.CategoriaRepositorio;
+import banco.JPACategoriaDAO;
+import banco.JPAFornecedorDAO;
 import repositories.ContratoRepositorio;
 import repositories.ItemRepositorio;
 import repositories.MultaRepositorio;
@@ -41,7 +41,7 @@ public class Main extends Application {
 
     static SistemaFacade criarSistema() {
         UsuarioRepositorio usuarios = new UsuarioRepositorio();
-        CategoriaRepositorio categorias = new CategoriaRepositorio();
+        JPACategoriaDAO categorias = new JPACategoriaDAO();
         JPAFornecedorDAO fornecedores = new JPAFornecedorDAO();
         ItemRepositorio itens = new ItemRepositorio(categorias, fornecedores);
         ContratoRepositorio contratos = new ContratoRepositorio(usuarios, itens);
