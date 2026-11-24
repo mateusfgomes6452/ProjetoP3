@@ -43,7 +43,6 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
         return lista;
     }
     
-    @Override
     public void salvar() {
         List<String[]> linhas = new ArrayList<>();
 
@@ -95,5 +94,15 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
             }
         }
         return null;
+    }
+    @Override
+    public void atualizar(Fornecedor fornecedor) {
+    	for (int i = 0; i < fornecedores.size(); i++) {
+    		if (Objects.equals(fornecedores.get(i).getId(), fornecedor.getId())) {
+    			fornecedores.set(i, fornecedor);
+    			salvar();
+    			return;
+    		}
+    	}
     }
 }
