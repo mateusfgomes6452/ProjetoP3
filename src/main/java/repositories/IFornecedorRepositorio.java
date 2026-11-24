@@ -15,5 +15,5 @@ public interface IFornecedorRepositorio {
 
     public abstract Fornecedor buscarPorId(Long id);
 
-    public abstract void salvar();
+    public abstract void atualizar(Fornecedor fornecedor);
 }
