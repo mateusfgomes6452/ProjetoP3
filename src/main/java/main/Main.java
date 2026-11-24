@@ -11,7 +11,7 @@ import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoItens;
 import business.interfaces.IGerenciamentoUsuarios;
 import business.relatorios.GeradorRelatorios;
-import coisas_antigas.FornecedorRepositorio;
+import banco.JPAFornecedorDAO;
 import entidades.Administrador;
 import facade.SistemaFacade;
 import javafx.application.Application;
@@ -42,7 +42,7 @@ public class Main extends Application {
     static SistemaFacade criarSistema() {
         UsuarioRepositorio usuarios = new UsuarioRepositorio();
         CategoriaRepositorio categorias = new CategoriaRepositorio();
-        FornecedorRepositorio fornecedores = new FornecedorRepositorio();
+        JPAFornecedorDAO fornecedores = new JPAFornecedorDAO();
         ItemRepositorio itens = new ItemRepositorio(categorias, fornecedores);
         ContratoRepositorio contratos = new ContratoRepositorio(usuarios, itens);
         MultaRepositorio multas = new MultaRepositorio();
