@@ -1,0 +1,84 @@
+package dao;
+
+import java.util.List;
+
+import entidades.Categoria;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import repositories.ICategoriaRepositorio;
+
+public class CategoriaDAO implements ICategoriaRepositorio {
+
+	@Override
+	public void adicionar(Categoria categoria) {
+		EntityManager em = JPAUtil.getEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.persist(categoria);
+			tx.commit();
+		} catch (RuntimeException e) {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			throw e;
+		} finally {
+			em.close();
+		}
+	}
+	@Override
+	public void atualizar(Categoria categoria) {
+		EntityManager em = JPAUtil.getEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.merge(categoria);
+			tx.commit();
+		} catch (RuntimeException e) {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			throw e;
+		} finally {
+			em.close();
+		}
+	}
+	@Override
+	public List<Categoria> listarTodos(){
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			return em.createQuery("SELECT c FROM Categoria c ORDER by c.id", Categoria.class).getResultList();
+		} finally {
+			em.close();
+		}
+	}
+	@Override
+	public Categoria buscarPorId(int id) {
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			return em.find(Categoria.class,id);
+		} finally {
+			em.close();
+		}
+	}
+	@Override 
+	public Categoria buscarPorNome(String nome) {
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			List<Categoria> resultado = em.createQuery("SELECT c FROM Categoria c WHERE LOWER(c.nome) = LOWER(:nome)", Categoria.class).setParameter("nome",nome).getResultList();
+			return resultado.isEmpty() ? null : resultado.get(0);
+		} finally {
+			em.close();
+		}
+	}
+	@Override
+	public int gerarProximoId() {
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			Integer maior = em.createQuery("SELECT MAX(c.id) FROM Categoria c",Integer.class).getSingleResult();
+			return maior == null ? 1 : maior + 1;
+		} finally {
+			em.close();
+		}
+	}
+}
