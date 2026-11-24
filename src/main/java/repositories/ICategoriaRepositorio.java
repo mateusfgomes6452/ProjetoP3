@@ -16,8 +16,6 @@ public interface ICategoriaRepositorio {
     
     public abstract void atualizar(Categoria categoria);
 
-    public abstract void salvar();
-
     public abstract int gerarProximoId();
 
 }
