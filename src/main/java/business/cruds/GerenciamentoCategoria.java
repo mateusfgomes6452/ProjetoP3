@@ -17,7 +17,7 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     @Override
     public boolean cadastrarCategoria(Categoria categoria) {
 
-        if (repositorio.buscarPorId(categoria.getId()) != null) {
+        if (categoria.getId() != null && repositorio.buscarPorId(categoria.getId()) != null) {
             return false;
         }
 
@@ -43,17 +43,11 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     @Override
     public boolean atualizarCategoria(Categoria categoriaNova) {
 
-        List<Categoria> categorias = repositorio.listarTodos();
-
-        for (int i = 0; i < categorias.size(); i++) {
-            if (categorias.get(i).getId() == categoriaNova.getId()) {
-                categorias.set(i, categoriaNova);
-                repositorio.salvar();
-                return true;
-            }
+        if (categoriaNova.getId() == null || repositorio.buscarPorId(categoriaNova.getId()) == null) {
+        	return false;
         }
-
-        return false;
+        repositorio.atualizar(categoriaNova);
+        return true;
     }
 
     @Override
@@ -67,7 +61,7 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
 
         categoria.desativar();
 
-        repositorio.salvar();
+        repositorio.atualizar(categoria);
 
         return true;
     }

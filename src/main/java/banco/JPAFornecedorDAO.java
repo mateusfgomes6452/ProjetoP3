@@ -27,16 +27,12 @@ public class JPAFornecedorDAO implements IFornecedorRepositorio{
 
 	@Override
 	public void desativar(Long id) {
-		EntityManager em = JPAUtil.getEntityManager();
-		em.getTransaction().begin();
-        
-	        Fornecedor f = em.find(Fornecedor.class, id);
-	        if (f != null) {
-	            f.desativar();
-        }
-	    em.persist(f);
-	    em.getTransaction().commit();
-	    em.close();
+		executar(em ->{
+			Fornecedor f = em.find(Fornecedor.class, id);
+			if (f!=null) {
+				f.desativar();
+			}
+		});
 	}
 
 	@Override
@@ -44,7 +40,7 @@ public class JPAFornecedorDAO implements IFornecedorRepositorio{
 		EntityManager em = JPAUtil.getEntityManager();
         try {
             return em.createQuery(
-                        "select f from fornecedores f where f.cnpj = :cnpj", Fornecedor.class)
+                        "select f from Fornecedor f where f.cnpj = :cnpj", Fornecedor.class)
                      .setParameter("cnpj", cnpj)
                      .getResultStream()
                      .findFirst()
@@ -79,7 +75,7 @@ public class JPAFornecedorDAO implements IFornecedorRepositorio{
     }
 
 	@Override
-	public void salvar() {
-		// TODO Auto-generated method stub
+	public void atualizar(Fornecedor fornecedor) {
+		executar(em -> em.merge(fornecedor));
 	}
 }

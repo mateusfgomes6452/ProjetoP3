@@ -13,6 +13,7 @@ public interface ICategoriaRepositorio {
     public abstract Categoria buscarPorId(Long id);
 
     public abstract Categoria buscarPorNome(String nome);
+    
+    public abstract Categoria atualizar(Categoria categoria);
 
-    public abstract void salvar();
 }

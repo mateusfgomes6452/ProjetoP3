@@ -6,6 +6,7 @@
 
        
         <class>entidades.Categoria</class>
+        <class>entidades.Fornecedor</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
