@@ -19,7 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import repositories.CategoriaRepositorio;
+import dao.CategoriaDAO;
 import repositories.ContratoRepositorio;
 import repositories.FornecedorRepositorio;
 import repositories.ItemRepositorio;
@@ -42,7 +42,7 @@ public class Main extends Application {
 
     static SistemaFacade criarSistema() {
         UsuarioRepositorio usuarios = new UsuarioRepositorio();
-        CategoriaRepositorio categorias = new CategoriaRepositorio();
+        CategoriaDAO categorias = new CategoriaDAO();
         FornecedorRepositorio fornecedores = new FornecedorRepositorio();
         ItemRepositorio itens = new ItemRepositorio(categorias, fornecedores);
         ContratoRepositorio contratos = new ContratoRepositorio(usuarios, itens);
