@@ -20,10 +20,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import banco.JPACategoriaDAO;
 import banco.JPAFornecedorDAO;
+import banco.JPAUsuarioDAO;
 import repositories.ContratoRepositorio;
 import repositories.ItemRepositorio;
 import repositories.MultaRepositorio;
-import repositories.UsuarioRepositorio;
 
 public class Main extends Application {
 
@@ -40,7 +40,7 @@ public class Main extends Application {
     }
 
     static SistemaFacade criarSistema() {
-        UsuarioRepositorio usuarios = new UsuarioRepositorio();
+        JPAUsuarioDAO usuarios = new JPAUsuarioDAO();
         JPACategoriaDAO categorias = new JPACategoriaDAO();
         JPAFornecedorDAO fornecedores = new JPAFornecedorDAO();
         ItemRepositorio itens = new ItemRepositorio(categorias, fornecedores);
