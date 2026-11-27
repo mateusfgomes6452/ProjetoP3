@@ -59,6 +59,10 @@ public class UsuarioRepositorio implements IUsuarioRepositorio {
     }
     
     @Override
+    public void atualizar(Usuario usuario) {
+        salvar();
+    }
+
     public void salvar() {
         List<String[]> linhas = new ArrayList<>();
 
