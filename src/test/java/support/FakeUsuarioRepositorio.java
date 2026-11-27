@@ -39,7 +39,7 @@ public class FakeUsuarioRepositorio implements IUsuarioRepositorio {
     @Override
     public Usuario buscarPorId(Long id) {
         for (Usuario usuario : usuarios) {
-            if (usuario.getId() == id) {
+            if (java.util.Objects.equals(usuario.getId(), id)) {
                 return usuario;
             }
         }
@@ -57,7 +57,7 @@ public class FakeUsuarioRepositorio implements IUsuarioRepositorio {
     }
  
     @Override
-    public void salvar() {
+    public void atualizar(Usuario usuario) {
         chamadasSalvar++;
     }
 
