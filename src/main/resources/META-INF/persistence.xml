@@ -7,6 +7,10 @@
        
         <class>entidades.Categoria</class>
         <class>entidades.Fornecedor</class>
+        <class>entidades.Usuario</class>
+        <class>entidades.Administrador</class>
+        <class>entidades.Funcionario</class>
+        <class>entidades.Cliente</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
