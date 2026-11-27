@@ -16,5 +16,5 @@ public interface IUsuarioRepositorio {
 
     public abstract Usuario buscarPorEmail(String email);
 
-    public abstract void salvar();
+    public abstract void atualizar(Usuario usuario);
 }
