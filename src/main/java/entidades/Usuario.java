@@ -5,21 +5,32 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "usuarios")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_usuario")
+@DiscriminatorColumn(name = "tipo_usuario", discriminatorType = DiscriminatorType.STRING)
 public abstract class Usuario {
 
-	@Id 
-    private Long id; 
-	@Column(nullable = false, unique = true)
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false, unique = true, updatable = false)
     private String cpf; //não deve ser modificada (final, não criar set)
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String senha;
+
+    @Column(nullable = false)
     private boolean ativo;
-    
-    protected Usuario() {}
-    
+
+    protected Usuario() {
+        //JPA quer.
+    }
+
     public record Infos(String nome, String email, String cpf, String senha) {}
 
     protected Usuario(Infos infos) {
@@ -31,7 +42,7 @@ public abstract class Usuario {
     }
 
     public abstract String getTipo();
-    
+
     public Long getId() {
         return id;
     }
@@ -60,7 +71,7 @@ public abstract class Usuario {
         return email;
     }
 
-    public void setEmail(String email){
+    public void setEmail(String email) {
         this.email = email;
     }
 
