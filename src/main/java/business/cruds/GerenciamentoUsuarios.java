@@ -20,7 +20,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
     @Override
     public boolean cadastrarUsuario(Usuario usuario) {
-        if (repositorio.buscarPorId(usuario.getId()) != null) {
+        if (usuario.getId() != null && repositorio.buscarPorId(usuario.getId()) != null) {
             return false;
         }
 
@@ -57,7 +57,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
         usuario.setEmail(email);
         usuario.setSenha(senha);
 
-        repositorio.salvar();
+        repositorio.atualizar(usuario);
 
         return true;
     }
@@ -76,7 +76,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
         usuario.setAtivo(false);
 
-        repositorio.salvar();
+        repositorio.atualizar(usuario);
 
         return true;
     }
